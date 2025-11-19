@@ -1,0 +1,473 @@
+name: CI/CD Pipeline - Viña Santa Cruz
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '20.x'
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # Job 1: Code Quality Checks
+  code-quality:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run Prettier check
+        run: npm run format:check
+        continue-on-error: false
+
+      - name: TypeScript type checking
+        run: npm run type-check
+        continue-on-error: false
+
+      - name: Check for console.log statements
+        run: |
+          if grep -r "console\.log" --include="*.ts" --include="*.tsx" --exclude-dir=node_modules .; then
+            echo "❌ Found console.log statements. Please remove them before merging."
+            exit 1
+          fi
+        continue-on-error: true
+
+  # Job 2: Security Scanning
+  security-scan:
+    name: Security & Dependency Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check for secrets in code
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'vina-santa-cruz'
+          path: '.'
+          format: 'HTML'
+        continue-on-error: true
+
+  # Job 3: Unit & Integration Tests
+  test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: vina_santa_cruz_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations (test)
+        env:
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/vina_santa_cruz_test
+        run: npm run db:migrate:test
+
+      - name: Run unit tests
+        run: npm run test:unit -- --coverage
+        env:
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/vina_santa_cruz_test
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/vina_santa_cruz_test
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-vina-santa-cruz
+
+  # Job 4: E2E Tests (Only on PR to main)
+  e2e-tests:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          CI: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Job 5: Build Verification
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [code-quality, test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js application
+        run: npm run build
+        env:
+          SKIP_ENV_VALIDATION: true
+
+      - name: Check bundle size
+        run: |
+          npm run analyze
+          # Check if bundle exceeds limits
+          BUNDLE_SIZE=$(du -sk .next/static | cut -f1)
+          MAX_SIZE=5120  # 5MB in KB
+          if [ $BUNDLE_SIZE -gt $MAX_SIZE ]; then
+            echo "❌ Bundle size ($BUNDLE_SIZE KB) exceeds maximum ($MAX_SIZE KB)"
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: next-build
+          path: .next/
+          retention-days: 7
+
+  # Job 6: Performance Testing (Lighthouse CI)
+  lighthouse:
+    name: Performance Testing (Lighthouse)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: next-build
+          path: .next/
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            http://localhost:3000
+            http://localhost:3000/productos
+            http://localhost:3000/nosotros
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 3
+
+  # Job 7: Deploy to Vercel (Preview)
+  deploy-preview:
+    name: Deploy Preview (Vercel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    needs: [code-quality, test, build]
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.preview-url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Preview to Vercel
+        id: deploy
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "### ✅ Preview Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** $DEPLOYMENT_URL" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment PR with preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 Preview Deployment Ready\n\n**Preview URL:** ${{ steps.deploy.outputs.preview-url }}\n\n✅ All checks passed. Ready for review!`
+            })
+
+  # Job 8: Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging (Vercel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: [code-quality, test, build]
+    environment:
+      name: staging
+      url: https://staging.vinasantacruz.cl
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (Staging)
+        id: deploy
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "staging-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+      - name: Run smoke tests
+        run: npm run test:smoke
+        env:
+          BASE_URL: ${{ steps.deploy.outputs.staging-url }}
+
+      - name: Notify deployment success
+        run: |
+          echo "### ✅ Staging Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "**Staging URL:** ${{ steps.deploy.outputs.staging-url }}" >> $GITHUB_STEP_SUMMARY
+
+  # Job 9: Deploy to Production
+  deploy-production:
+    name: Deploy to Production (Vercel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [code-quality, test, build, security-scan, lighthouse]
+    environment:
+      name: production
+      url: https://www.vinasantacruz.cl
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (Production)
+        id: deploy
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "production-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+      - name: Run smoke tests (Production)
+        run: npm run test:smoke
+        env:
+          BASE_URL: https://www.vinasantacruz.cl
+
+      - name: Run post-deployment checks
+        run: |
+          # Check if site is accessible
+          curl -f https://www.vinasantacruz.cl || exit 1
+          # Check critical endpoints
+          curl -f https://www.vinasantacruz.cl/api/health || exit 1
+
+      - name: Notify deployment success
+        run: |
+          echo "### ✅ Production Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "**Production URL:** https://www.vinasantacruz.cl" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment ID:** ${{ steps.deploy.outputs.production-url }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Send Slack notification
+        if: success()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "✅ Production deployment successful - Viña Santa Cruz",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment Successful* 🚀\n\n*Project:* Viña Santa Cruz\n*URL:* https://www.vinasantacruz.cl\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Job 10: Database Migration (Production)
+  migrate-production:
+    name: Run Database Migrations (Production)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [deploy-production]
+    environment:
+      name: production-db
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Backup database before migration
+        run: npm run db:backup
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
+          BACKUP_STORAGE: ${{ secrets.BACKUP_STORAGE_URL }}
+
+      - name: Run database migrations
+        run: npm run db:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
+
+      - name: Verify migration success
+        run: npm run db:verify
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
+
+      - name: Notify migration success
+        run: |
+          echo "### ✅ Database Migration Successful" >> $GITHUB_STEP_SUMMARY

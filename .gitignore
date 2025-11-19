@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+nul
+
+# Large media files (use cloud storage)
+public/images/Telferico.png
+public/images/Uva.png
+public/images/Uva2.png
+public/video/telef.mp4
+public/video/videoA.mp4
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

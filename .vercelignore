@@ -1,0 +1,52 @@
+# Dependencies
+node_modules
+
+# Testing
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+__mocks__
+test
+tests
+playwright-report
+test-results
+
+# Documentation
+*.md
+!README.md
+docs
+.github
+.vscode
+
+# Development
+.env.local
+.env.development
+.env.test
+*.log
+.DS_Store
+
+# Build artifacts
+.next/cache
+out
+
+# Database
+*.db
+*.sqlite
+migrations
+
+# Backup files
+*.bak
+*.backup
+
+# IDE
+.idea
+.vscode/*
+!.vscode/settings.json
+.history
+
+# Misc
+.eslintcache
+tsconfig.tsbuildinfo

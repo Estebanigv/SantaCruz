@@ -1,0 +1,181 @@
+name: Nightly Health Checks
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  # Check production health
+  health-check:
+    name: Production Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check main site
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://www.vinasantacruz.cl)
+          if [ $RESPONSE -ne 200 ]; then
+            echo "❌ Main site is down (HTTP $RESPONSE)"
+            exit 1
+          fi
+          echo "✅ Main site is healthy (HTTP $RESPONSE)"
+
+      - name: Check API health endpoint
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://www.vinasantacruz.cl/api/health)
+          if [ $RESPONSE -ne 200 ]; then
+            echo "❌ API health check failed (HTTP $RESPONSE)"
+            exit 1
+          fi
+          echo "✅ API is healthy (HTTP $RESPONSE)"
+
+      - name: Check critical pages
+        run: |
+          PAGES=("productos" "nosotros" "contacto" "tienda")
+          for page in "${PAGES[@]}"; do
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://www.vinasantacruz.cl/$page")
+            if [ $RESPONSE -ne 200 ]; then
+              echo "❌ Page /$page is down (HTTP $RESPONSE)"
+              exit 1
+            fi
+            echo "✅ Page /$page is healthy (HTTP $RESPONSE)"
+          done
+
+      - name: Check response time
+        run: |
+          RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' https://www.vinasantacruz.cl)
+          THRESHOLD=2.0
+          if (( $(echo "$RESPONSE_TIME > $THRESHOLD" | bc -l) )); then
+            echo "⚠️ Response time is slow: ${RESPONSE_TIME}s (threshold: ${THRESHOLD}s)"
+          else
+            echo "✅ Response time is good: ${RESPONSE_TIME}s"
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "❌ Nightly health check failed - Viña Santa Cruz",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Nightly Health Check Failed* ⚠️\n\n*Project:* Viña Santa Cruz\n*Time:* $(date)\n*Action Required:* Please investigate immediately"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Database backup verification
+  backup-verification:
+    name: Verify Database Backups
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify latest backup exists
+        run: npm run db:backup:verify
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
+          BACKUP_STORAGE: ${{ secrets.BACKUP_STORAGE_URL }}
+
+      - name: Test backup restore (staging)
+        run: npm run db:backup:test-restore
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+          BACKUP_STORAGE: ${{ secrets.BACKUP_STORAGE_URL }}
+
+  # Dependency updates check
+  dependency-check:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Check for outdated dependencies
+        run: |
+          npm outdated || true
+          echo "### 📦 Dependency Update Report" >> $GITHUB_STEP_SUMMARY
+          npm outdated >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Check for security vulnerabilities
+        run: |
+          npm audit --audit-level=moderate || true
+          echo "### 🔒 Security Audit Report" >> $GITHUB_STEP_SUMMARY
+          npm audit >> $GITHUB_STEP_SUMMARY || true
+
+  # SSL certificate check
+  ssl-check:
+    name: SSL Certificate Expiry Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check SSL certificate expiry
+        run: |
+          EXPIRY_DATE=$(echo | openssl s_client -servername www.vinasantacruz.cl -connect www.vinasantacruz.cl:443 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+          EXPIRY_EPOCH=$(date -d "$EXPIRY_DATE" +%s)
+          CURRENT_EPOCH=$(date +%s)
+          DAYS_REMAINING=$(( ($EXPIRY_EPOCH - $CURRENT_EPOCH) / 86400 ))
+
+          echo "SSL Certificate expires on: $EXPIRY_DATE"
+          echo "Days remaining: $DAYS_REMAINING"
+
+          if [ $DAYS_REMAINING -lt 30 ]; then
+            echo "⚠️ SSL certificate expires in less than 30 days!"
+            exit 1
+          fi
+
+  # Performance monitoring
+  performance-check:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://www.vinasantacruz.cl
+            https://www.vinasantacruz.cl/productos
+            https://www.vinasantacruz.cl/tienda
+          uploadArtifacts: true
+          temporaryPublicStorage: true

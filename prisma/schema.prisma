@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Wine Product Model
+model Wine {
+  id          String   @id @default(cuid())
+  sku         String   @unique
+  name        String
+  varietal    String
+  category    String
+  vintage     Int?
+  price       Int
+  image       String
+  rating      Float    @default(0)
+  badge       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([varietal])
+}
+
+// Tour/Experience Model
+model Tour {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  category    String
+  description String
+  highlights  String[]
+  duration    String
+  price       Int
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
+
+// Membership Model
+model Membership {
+  id       String   @id @default(cuid())
+  name     String   @unique
+  price    Int
+  benefits String[]
+  featured Boolean  @default(false)
+  popular  Boolean  @default(false)
+}
