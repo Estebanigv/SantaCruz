@@ -4,8 +4,9 @@ import { useState } from 'react'
 
 export default function WhatsAppButton() {
   const [isHovered, setIsHovered] = useState(false)
-  const phoneNumber = "56912345678" // Reemplazar con el número real de la viña
-  const message = encodeURIComponent("Estimados, me gustaría obtener información sobre las experiencias en Viña Santa Cruz. Gracias.")
+  // TODO: Connect to real WhatsApp when ready
+  // const phoneNumber = "56912345678" // Reemplazar con el número real de la viña
+  // const message = encodeURIComponent("Estimados, me gustaría obtener información sobre las experiencias en Viña Santa Cruz. Gracias.")
 
   return (
     <button

@@ -14,9 +14,9 @@ export default function Header() {
   const headerRef = useRef<HTMLElement>(null)
 
   // Cart and user state - TODO: Connect to real state management
-  const [cartItemCount, setCartItemCount] = useState(0)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [userName, setUserName] = useState('')
+  const [cartItemCount] = useState(0)
+  const [isAuthenticated] = useState(false)
+  const [userName] = useState('')
 
   useEffect(() => {
     setMounted(true)
@@ -131,7 +131,7 @@ export default function Header() {
 
             {/* Desktop Navigation - Elegant & Refined */}
             <div className="hidden lg:flex items-center gap-12">
-              {navigation.map((item, index) => (
+              {navigation.map((item) => (
                 <button
                   key={item.href}
                   onClick={(e) => e.preventDefault()}

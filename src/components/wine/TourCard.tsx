@@ -1,6 +1,6 @@
 import { Tour } from '@/types'
 import Button from '../ui/Button'
-import Badge from '../ui/Badge'
+// import Badge from '../ui/Badge'
 import Image from 'next/image'
 
 interface TourCardProps {

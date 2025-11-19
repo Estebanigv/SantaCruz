@@ -1,5 +1,5 @@
 import { testimonials } from '@/data/mockData'
-import Rating from '../ui/Rating'
+// import Rating from '../ui/Rating'
 import SectionHeader from '../ui/SectionHeader'
 
 export default function TestimonialsSection() {
@@ -53,7 +53,7 @@ export default function TestimonialsSection() {
 
               {/* Quote Text */}
               <p className="font-[family-name:var(--font-raleway)] text-base text-gray-700 leading-relaxed mb-8 font-light line-clamp-6" style={{ lineHeight: '1.8' }}>
-                "{testimonial.quote}"
+                &ldquo;{testimonial.quote}&rdquo;
               </p>
 
               {/* Divider */}

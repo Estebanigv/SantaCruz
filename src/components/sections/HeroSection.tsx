@@ -5,7 +5,6 @@ import gsap from 'gsap'
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
-  const [isHoveringButton, setIsHoveringButton] = useState(false)
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false)
   const [buttonFillProgress, setButtonFillProgress] = useState<{[key: string]: number}>({})
   const [isInHeroSection, setIsInHeroSection] = useState(false)
@@ -67,8 +66,6 @@ export default function HeroSection() {
   }
 
   const handleButtonHover = (buttonId: string, isEntering: boolean) => {
-    setIsHoveringButton(isEntering)
-
     // Clear any existing interval for this button
     if (intervalsRef.current[buttonId]) {
       clearInterval(intervalsRef.current[buttonId])

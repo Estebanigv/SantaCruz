@@ -1,4 +1,4 @@
-import Image from 'next/image'
+// import Image from 'next/image'
 import { Wine } from '@/types'
 import Rating from '../ui/Rating'
 import Badge from '../ui/Badge'

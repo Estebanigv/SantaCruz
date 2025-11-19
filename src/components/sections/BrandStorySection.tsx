@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import Button from '../ui/Button'
 import Image from 'next/image'
 import SectionHeader from '../ui/SectionHeader'
 
@@ -86,7 +85,7 @@ export default function BrandStorySection() {
 
             <div className="space-y-6 mb-12">
               <p className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light" style={{ lineHeight: '1.8' }}>
-                En el corazón de Lolol, Región de O'Higgins, te espera mucho más que una viña. Somos la primera viña 100% solar de Chile, pioneros en sustentabilidad y enoturismo de clase mundial.
+                En el corazón de Lolol, Región de O&apos;Higgins, te espera mucho más que una viña. Somos la primera viña 100% solar de Chile, pioneros en sustentabilidad y enoturismo de clase mundial.
               </p>
 
               <p className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light" style={{ lineHeight: '1.8' }}>

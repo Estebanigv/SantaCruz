@@ -88,7 +88,7 @@ export default function TripAdvisorSection() {
               ))}
             </div>
             <p className="font-[family-name:var(--font-raleway)] text-lg text-gray-700 leading-relaxed font-light mb-6 italic" style={{ lineHeight: '1.8' }}>
-              "Una experiencia inolvidable. El tour en teleférico es espectacular, los museos son fascinantes y la degustación de vinos superó todas nuestras expectativas. El personal es increíblemente amable y conocedor. ¡Altamente recomendado!"
+              &ldquo;Una experiencia inolvidable. El tour en teleférico es espectacular, los museos son fascinantes y la degustación de vinos superó todas nuestras expectativas. El personal es increíblemente amable y conocedor. ¡Altamente recomendado!&rdquo;
             </p>
             <div className="font-[family-name:var(--font-raleway)] text-sm text-gray-600">
               <span className="font-medium">— María José R.</span>, Santiago de Chile

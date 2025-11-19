@@ -1,5 +1,5 @@
 import { MembershipTier } from '@/types'
-import Button from '../ui/Button'
+// import Button from '../ui/Button'
 
 interface MembershipCardProps {
   tier: MembershipTier
