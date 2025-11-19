@@ -12,7 +12,6 @@ export default function PageTransition() {
           name: 'fade',
           async: true,
           async leave(data) {
-
             // Fade out animation
             await new Promise<void>((resolve) => {
               data.current.container.style.transition =
