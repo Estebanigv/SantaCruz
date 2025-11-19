@@ -16,7 +16,9 @@
       "Bash(npm install:*)",
       "Bash(npm run lint)",
       "Bash(npx eslint:*)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(npm run test:unit:*)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": [],
     "ask": []

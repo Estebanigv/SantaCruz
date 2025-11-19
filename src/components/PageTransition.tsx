@@ -10,8 +10,8 @@ export default function PageTransition() {
       transitions: [
         {
           name: 'fade',
+          async: true,
           async leave(data) {
-            const done = this.async()
 
             // Fade out animation
             await new Promise<void>((resolve) => {
@@ -24,8 +24,6 @@ export default function PageTransition() {
                 resolve()
               }, 500)
             })
-
-            done()
           },
           async enter(data) {
             // Set initial state
