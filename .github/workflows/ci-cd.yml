@@ -227,41 +227,42 @@ jobs:
           retention-days: 7
 
   # Job 6: Performance Testing (Lighthouse CI)
-  lighthouse:
-    name: Performance Testing (Lighthouse)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [build]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Next.js application
-        run: npm run build
-        env:
-          SKIP_ENV_VALIDATION: true
-
-      - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v10
-        with:
-          urls: |
-            http://localhost:3000
-            http://localhost:3000/productos
-            http://localhost:3000/nosotros
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-          runs: 3
+  # TODO: Configure Lighthouse to run with a local server
+  # lighthouse:
+  #   name: Performance Testing (Lighthouse)
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 15
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   needs: [build]
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+  #
+  #     - name: Install dependencies
+  #       run: npm ci
+  #
+  #     - name: Build Next.js application
+  #       run: npm run build
+  #       env:
+  #         SKIP_ENV_VALIDATION: true
+  #
+  #     - name: Run Lighthouse CI
+  #       uses: treosh/lighthouse-ci-action@v10
+  #       with:
+  #         urls: |
+  #           http://localhost:3000
+  #           http://localhost:3000/productos
+  #           http://localhost:3000/nosotros
+  #         uploadArtifacts: true
+  #         temporaryPublicStorage: true
+  #         runs: 3
 
   # Job 7: Deploy to Vercel (Preview)
   deploy-preview:
@@ -362,7 +363,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [code-quality, test, build, security-scan, lighthouse]
+    needs: [code-quality, test, build, security-scan]
     environment:
       name: production
       url: https://www.vinasantacruz.cl
