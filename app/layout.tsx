@@ -29,15 +29,13 @@ const raleway = Raleway({
 
 export const metadata: Metadata = {
   title: 'Viña Santa Cruz | Vinos Premium, Tours y Experiencias en Valle de Colchagua',
-  description: 'Descubre vinos premium chilenos, reserva tours exclusivos y únete a nuestro club de vinos. 150 años de tradición en el Valle de Colchagua.',
-  keywords: 'vinos chilenos, valle de colchagua, tours de vino, club de vinos, carmenere, cabernet sauvignon',
+  description:
+    'Descubre vinos premium chilenos, reserva tours exclusivos y únete a nuestro club de vinos. 150 años de tradición en el Valle de Colchagua.',
+  keywords:
+    'vinos chilenos, valle de colchagua, tours de vino, club de vinos, carmenere, cabernet sauvignon',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${playfair.variable} ${inter.variable} ${raleway.variable}`}>
       <body>

@@ -13,7 +13,8 @@ export default function WineCard({ wine }: WineCardProps) {
     return `$${price.toLocaleString('es-CL')}`
   }
 
-  const badgeVariant = wine.badge === 'premiado' ? 'award' : wine.badge === 'nuevo' ? 'new' : 'exclusive'
+  const badgeVariant =
+    wine.badge === 'premiado' ? 'award' : wine.badge === 'nuevo' ? 'new' : 'exclusive'
 
   return (
     <div className="group bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col h-full">
@@ -21,16 +22,24 @@ export default function WineCard({ wine }: WineCardProps) {
       <div className="relative aspect-[3/4] bg-gradient-to-br from-cream-50 to-gray-50 overflow-hidden">
         {wine.badge && (
           <div className="absolute top-4 right-4 z-10">
-            <Badge variant={badgeVariant}>
-              {wine.badge}
-            </Badge>
+            <Badge variant={badgeVariant}>{wine.badge}</Badge>
           </div>
         )}
 
         {/* Elegant bottle silhouette */}
         <div className="absolute inset-0 bg-gradient-to-br from-cream-100 to-gray-100 flex items-center justify-center transition-all duration-700 group-hover:scale-105">
-          <svg className="w-24 h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          <svg
+            className="w-24 h-24 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={0.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
           </svg>
         </div>
 
@@ -63,19 +72,16 @@ export default function WineCard({ wine }: WineCardProps) {
             <p className="text-2xl font-bold text-gold-600 font-[family-name:var(--font-raleway)]">
               {formatPrice(wine.price)}
             </p>
-            <span className="font-[family-name:var(--font-raleway)] text-xs text-gray-500">CLP</span>
+            <span className="font-[family-name:var(--font-raleway)] text-xs text-gray-500">
+              CLP
+            </span>
           </div>
 
           {/* Divider */}
           <div className="h-px bg-gray-200 mb-4" />
 
           {/* Add to Cart Button */}
-          <Button
-            variant="gold"
-            size="md"
-            className="w-full"
-            onClick={() => {}}
-          >
+          <Button variant="gold" size="md" className="w-full" onClick={() => {}}>
             Añadir al Carro
           </Button>
 

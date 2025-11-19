@@ -5,8 +5,8 @@ import Image from 'next/image'
 import SectionHeader from '../ui/SectionHeader'
 
 export default function BrandStorySection() {
-  const [buttonFillProgress, setButtonFillProgress] = useState<{[key: string]: number}>({})
-  const intervalsRef = useRef<{[key: string]: NodeJS.Timeout}>({})
+  const [buttonFillProgress, setButtonFillProgress] = useState<{ [key: string]: number }>({})
+  const intervalsRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
 
   const handleButtonHover = (buttonId: string, isEntering: boolean) => {
     // Clear any existing interval for this button
@@ -20,7 +20,7 @@ export default function BrandStorySection() {
       let progress = 0
       const interval = setInterval(() => {
         progress += 5
-        setButtonFillProgress(prev => ({ ...prev, [buttonId]: progress }))
+        setButtonFillProgress((prev) => ({ ...prev, [buttonId]: progress }))
         if (progress >= 100) {
           clearInterval(interval)
           delete intervalsRef.current[buttonId]
@@ -29,7 +29,7 @@ export default function BrandStorySection() {
       intervalsRef.current[buttonId] = interval
     } else {
       // Reset immediately
-      setButtonFillProgress(prev => ({ ...prev, [buttonId]: 0 }))
+      setButtonFillProgress((prev) => ({ ...prev, [buttonId]: 0 }))
     }
   }
 
@@ -68,8 +68,22 @@ export default function BrandStorySection() {
           {/* Decorative element - more subtle */}
           <div className="absolute inset-0 flex items-center justify-center opacity-5">
             <svg viewBox="0 0 200 200" className="w-96 h-96 text-gold-500">
-              <circle cx="100" cy="100" r="80" stroke="currentColor" strokeWidth="0.5" fill="none" />
-              <circle cx="100" cy="100" r="60" stroke="currentColor" strokeWidth="0.5" fill="none" />
+              <circle
+                cx="100"
+                cy="100"
+                r="80"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                fill="none"
+              />
+              <circle
+                cx="100"
+                cy="100"
+                r="60"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                fill="none"
+              />
             </svg>
           </div>
         </div>
@@ -84,12 +98,22 @@ export default function BrandStorySection() {
             />
 
             <div className="space-y-6 mb-12">
-              <p className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light" style={{ lineHeight: '1.8' }}>
-                En el corazón de Lolol, Región de O&apos;Higgins, te espera mucho más que una viña. Somos la primera viña 100% solar de Chile, pioneros en sustentabilidad y enoturismo de clase mundial.
+              <p
+                className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light"
+                style={{ lineHeight: '1.8' }}
+              >
+                En el corazón de Lolol, Región de O&apos;Higgins, te espera mucho más que una viña.
+                Somos la primera viña 100% solar de Chile, pioneros en sustentabilidad y enoturismo
+                de clase mundial.
               </p>
 
-              <p className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light" style={{ lineHeight: '1.8' }}>
-                Vive experiencias únicas: recorre nuestros viñedos en teleférico, explora el Museo del Automóvil y el Museo del Vino, y degusta vinos premium con la mejor vista del Valle de Colchagua.
+              <p
+                className="font-[family-name:var(--font-raleway)] text-lg text-gray-600 leading-relaxed font-light"
+                style={{ lineHeight: '1.8' }}
+              >
+                Vive experiencias únicas: recorre nuestros viñedos en teleférico, explora el Museo
+                del Automóvil y el Museo del Vino, y degusta vinos premium con la mejor vista del
+                Valle de Colchagua.
               </p>
             </div>
 
@@ -104,7 +128,7 @@ export default function BrandStorySection() {
                 <span
                   className="relative z-10 transition-colors duration-500"
                   style={{
-                    color: (buttonFillProgress['historia'] || 0) > 50 ? 'white' : 'white'
+                    color: (buttonFillProgress['historia'] || 0) > 50 ? 'white' : 'white',
                   }}
                 >
                   Nuestra Historia
@@ -139,7 +163,7 @@ export default function BrandStorySection() {
                 <span
                   className="relative z-10 transition-colors duration-500"
                   style={{
-                    color: (buttonFillProgress['tours'] || 0) > 50 ? 'white' : 'black'
+                    color: (buttonFillProgress['tours'] || 0) > 50 ? 'white' : 'black',
                   }}
                 >
                   Visitar la Viña
@@ -168,16 +192,28 @@ export default function BrandStorySection() {
             {/* Stats - Ultra Elegant */}
             <div className="pt-10 border-t border-gray-200 grid grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">100%</div>
-                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">Solar</div>
+                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">
+                  100%
+                </div>
+                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">
+                  Solar
+                </div>
               </div>
               <div className="text-center">
-                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">2</div>
-                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">Museos</div>
+                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">
+                  2
+                </div>
+                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">
+                  Museos
+                </div>
               </div>
               <div className="text-center">
-                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">360°</div>
-                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">Vista</div>
+                <div className="font-[family-name:var(--font-raleway)] text-4xl md:text-5xl font-extralight text-gold-600 mb-2">
+                  360°
+                </div>
+                <div className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.2em] font-medium">
+                  Vista
+                </div>
               </div>
             </div>
           </div>

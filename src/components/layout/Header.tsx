@@ -86,9 +86,12 @@ export default function Header() {
             ? 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.08) 70%, transparent 100%)'
             : 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.04) 70%, transparent 100%)',
           backdropFilter: isScrolled ? 'blur(8px) saturate(110%)' : 'blur(4px) saturate(105%)',
-          WebkitBackdropFilter: isScrolled ? 'blur(8px) saturate(110%)' : 'blur(4px) saturate(105%)',
+          WebkitBackdropFilter: isScrolled
+            ? 'blur(8px) saturate(110%)'
+            : 'blur(4px) saturate(105%)',
           transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
-          transition: 'transform 0.3s ease-out, background 0.5s ease-out, backdrop-filter 0.5s ease-out',
+          transition:
+            'transform 0.3s ease-out, background 0.5s ease-out, backdrop-filter 0.5s ease-out',
           borderBottom: isScrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
         }}
       >
@@ -115,9 +118,7 @@ export default function Header() {
                   src="/images/logo_vsc_png_byw.png"
                   alt="Viña Santa Cruz"
                   className={`h-12 md:h-14 w-auto object-contain filter brightness-0 invert transition-all duration-500 ease-out ${
-                    activeLink === 'logo'
-                      ? 'opacity-100 scale-105'
-                      : 'opacity-95 scale-100'
+                    activeLink === 'logo' ? 'opacity-100 scale-105' : 'opacity-95 scale-100'
                   }`}
                 />
                 {/* Glow effect on hover */}
@@ -141,13 +142,11 @@ export default function Header() {
                 >
                   <span
                     className={`relative z-10 font-[family-name:var(--font-raleway)] font-medium tracking-[0.15em] uppercase transition-all duration-500 ${
-                      activeLink === item.href
-                        ? 'text-white'
-                        : 'text-white'
+                      activeLink === item.href ? 'text-white' : 'text-white'
                     }`}
                     style={{
                       fontSize: '13px',
-                      textShadow: '0 1px 4px rgba(0,0,0,0.5)'
+                      textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                     }}
                   >
                     {item.label}
@@ -174,7 +173,7 @@ export default function Header() {
                   className="flex items-center gap-2 text-white hover:text-white transition-all duration-300 font-[family-name:var(--font-raleway)] font-medium tracking-widest uppercase"
                   style={{
                     fontSize: '12px',
-                    textShadow: '0 1px 4px rgba(0,0,0,0.5)'
+                    textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                   }}
                 >
                   <svg
@@ -184,7 +183,11 @@ export default function Header() {
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
+                    />
                   </svg>
                   <span>ES</span>
                   <svg
@@ -218,9 +221,7 @@ export default function Header() {
                       <button
                         key={lang}
                         className={`w-full px-4 py-2 font-[family-name:var(--font-raleway)] text-xs tracking-wider transition-all duration-200 text-left ${
-                          idx === 0
-                            ? 'text-white font-medium'
-                            : 'text-white/40 hover:text-white/80'
+                          idx === 0 ? 'text-white font-medium' : 'text-white/40 hover:text-white/80'
                         }`}
                         onClick={() => setActiveLink(null)}
                         disabled={idx !== 0}
@@ -239,15 +240,16 @@ export default function Header() {
                 onMouseEnter={() => setActiveLink('cta')}
                 onMouseLeave={() => setActiveLink(null)}
                 style={{
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                 }}
               >
-                <span className={`relative z-10 font-[family-name:var(--font-raleway)] text-xs font-medium tracking-[0.2em] uppercase transition-none ${
-                  activeLink === 'cta' ? 'text-black' : 'text-white'
-                }`}
-                style={{
-                  textShadow: activeLink === 'cta' ? 'none' : '0 1px 4px rgba(0,0,0,0.5)'
-                }}
+                <span
+                  className={`relative z-10 font-[family-name:var(--font-raleway)] text-xs font-medium tracking-[0.2em] uppercase transition-none ${
+                    activeLink === 'cta' ? 'text-black' : 'text-white'
+                  }`}
+                  style={{
+                    textShadow: activeLink === 'cta' ? 'none' : '0 1px 4px rgba(0,0,0,0.5)',
+                  }}
                 >
                   Contacto
                 </span>
@@ -278,7 +280,11 @@ export default function Header() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                      />
                     </svg>
                     <span className="font-[family-name:var(--font-raleway)] font-normal text-white/90 group-hover:text-white text-xs tracking-wider uppercase transition-colors duration-300">
                       Ingresar
@@ -317,7 +323,11 @@ export default function Header() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                      />
                     </svg>
                     {/* Badge showing cart item count */}
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold-500 text-black text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -338,9 +348,7 @@ export default function Header() {
               <div className="relative w-6 h-5">
                 <span
                   className={`absolute left-0 w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-out ${
-                    isMobileMenuOpen
-                      ? 'top-1/2 -translate-y-1/2 rotate-45'
-                      : 'top-0 rotate-0'
+                    isMobileMenuOpen ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-0 rotate-0'
                   }`}
                 />
                 <span
@@ -350,17 +358,17 @@ export default function Header() {
                 />
                 <span
                   className={`absolute left-0 w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-out ${
-                    isMobileMenuOpen
-                      ? 'top-1/2 -translate-y-1/2 -rotate-45'
-                      : 'bottom-0 rotate-0'
+                    isMobileMenuOpen ? 'top-1/2 -translate-y-1/2 -rotate-45' : 'bottom-0 rotate-0'
                   }`}
                 />
               </div>
 
               {/* Ripple effect on click */}
-              <div className={`absolute inset-0 rounded-full bg-white/10 transition-all duration-300 ${
-                isMobileMenuOpen ? 'scale-150 opacity-0' : 'scale-100 opacity-0'
-              }`} />
+              <div
+                className={`absolute inset-0 rounded-full bg-white/10 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'scale-150 opacity-0' : 'scale-100 opacity-0'
+                }`}
+              />
             </button>
           </div>
         </nav>
@@ -380,7 +388,8 @@ export default function Header() {
               isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
-              background: 'linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(15,15,15,0.98) 50%, rgba(0,0,0,0.98) 100%)',
+              background:
+                'linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(15,15,15,0.98) 50%, rgba(0,0,0,0.98) 100%)',
             }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
@@ -411,9 +420,7 @@ export default function Header() {
                 <div
                   key={item.href}
                   className={`transition-all duration-700 ${
-                    isMobileMenuOpen
-                      ? 'opacity-100 translate-y-0'
-                      : 'opacity-0 -translate-y-8'
+                    isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
                   }`}
                   style={{ transitionDelay: `${100 + index * 80}ms` }}
                 >
@@ -437,9 +444,7 @@ export default function Header() {
 
             <div
               className={`mt-16 transition-all duration-700 delay-500 ${
-                isMobileMenuOpen
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-8'
+                isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
               <button

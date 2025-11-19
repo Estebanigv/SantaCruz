@@ -11,7 +11,7 @@ export default function SectionHeader({
   title,
   subtitle,
   align = 'center',
-  theme = 'light'
+  theme = 'light',
 }: SectionHeaderProps) {
   const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-left'
   const labelColor = theme === 'light' ? 'text-gold-600' : 'text-gold-400'
@@ -38,7 +38,7 @@ export default function SectionHeader({
       <h2
         className={`font-[family-name:var(--font-raleway)] text-5xl md:text-6xl lg:text-7xl font-extralight ${titleColor} mb-6 leading-[1.1] tracking-tight`}
         style={{
-          textShadow: theme === 'dark' ? '0 2px 20px rgba(0,0,0,0.3)' : 'none'
+          textShadow: theme === 'dark' ? '0 2px 20px rgba(0,0,0,0.3)' : 'none',
         }}
       >
         {title}
@@ -46,7 +46,9 @@ export default function SectionHeader({
 
       {/* Subtitle if provided */}
       {subtitle && (
-        <p className={`font-[family-name:var(--font-raleway)] text-lg md:text-xl ${subtitleColor} leading-relaxed font-light max-w-2xl ${alignClass}`}>
+        <p
+          className={`font-[family-name:var(--font-raleway)] text-lg md:text-xl ${subtitleColor} leading-relaxed font-light max-w-2xl ${alignClass}`}
+        >
           {subtitle}
         </p>
       )}

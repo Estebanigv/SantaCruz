@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs'
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -16,45 +16,42 @@ Sentry.init({
   beforeSend(event, hint) {
     // Filter out sensitive server-side information
     if (event.request) {
-      delete event.request.cookies;
+      delete event.request.cookies
 
       if (event.request.headers) {
-        delete event.request.headers['Authorization'];
-        delete event.request.headers['Cookie'];
-        delete event.request.headers['X-API-Key'];
+        delete event.request.headers['Authorization']
+        delete event.request.headers['Cookie']
+        delete event.request.headers['X-API-Key']
       }
 
       // Scrub query parameters
       if (event.request.query_string) {
-        const params = new URLSearchParams(event.request.query_string);
-        if (params.has('token')) params.set('token', '[REDACTED]');
-        if (params.has('key')) params.set('key', '[REDACTED]');
-        event.request.query_string = params.toString();
+        const params = new URLSearchParams(event.request.query_string)
+        if (params.has('token')) params.set('token', '[REDACTED]')
+        if (params.has('key')) params.set('key', '[REDACTED]')
+        event.request.query_string = params.toString()
       }
     }
 
     // Scrub environment variables from extra data
     if (event.extra) {
       Object.keys(event.extra).forEach((key) => {
-        if (key.toLowerCase().includes('password') ||
-            key.toLowerCase().includes('secret') ||
-            key.toLowerCase().includes('token') ||
-            key.toLowerCase().includes('key')) {
-          event.extra![key] = '[REDACTED]';
+        if (
+          key.toLowerCase().includes('password') ||
+          key.toLowerCase().includes('secret') ||
+          key.toLowerCase().includes('token') ||
+          key.toLowerCase().includes('key')
+        ) {
+          event.extra![key] = '[REDACTED]'
         }
-      });
+      })
     }
 
-    return event;
+    return event
   },
 
   // Ignore errors
-  ignoreErrors: [
-    'ECONNRESET',
-    'ETIMEDOUT',
-    'ENOTFOUND',
-    'socket hang up',
-  ],
+  ignoreErrors: ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'socket hang up'],
 
   // Add context to errors
   beforeSendTransaction(event) {
@@ -63,8 +60,8 @@ Sentry.init({
       event.contexts.runtime = {
         name: 'node',
         version: process.version,
-      };
+      }
     }
-    return event;
+    return event
   },
-});
+})

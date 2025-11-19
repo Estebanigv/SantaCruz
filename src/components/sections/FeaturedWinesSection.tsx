@@ -13,7 +13,7 @@ export default function FeaturedWinesSection() {
           className="absolute inset-0"
           style={{
             backgroundImage: `radial-gradient(circle, rgba(212, 175, 55, 0.15) 1px, transparent 1px)`,
-            backgroundSize: '40px 40px'
+            backgroundSize: '40px 40px',
           }}
         />
       </div>
@@ -39,7 +39,13 @@ export default function FeaturedWinesSection() {
             className="inline-flex items-center gap-3 text-base font-semibold text-gold-500 hover:text-gold-400 transition-all hover:gap-4 group bg-transparent border-none cursor-pointer"
           >
             Ver Toda la Colección
-            <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <svg
+              className="w-5 h-5 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </button>

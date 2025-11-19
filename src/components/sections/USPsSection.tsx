@@ -29,18 +29,21 @@ export default function USPsSection() {
     {
       number: '01',
       title: '100% Solar',
-      description: 'Primera viña de Chile con energía 100% renovable. Pioneros en sustentabilidad y compromiso ambiental con el medio ambiente.'
+      description:
+        'Primera viña de Chile con energía 100% renovable. Pioneros en sustentabilidad y compromiso ambiental con el medio ambiente.',
     },
     {
       number: '02',
       title: 'Experiencia Única',
-      description: 'Teleférico panorámico con vista 360°, Museo del Automóvil y Museo del Vino en un solo lugar.'
+      description:
+        'Teleférico panorámico con vista 360°, Museo del Automóvil y Museo del Vino en un solo lugar.',
     },
     {
       number: '03',
       title: 'Valle de Colchagua',
-      description: 'En el corazón de Lolol, una de las regiones vitivinícolas más prestigiosas de Chile.'
-    }
+      description:
+        'En el corazón de Lolol, una de las regiones vitivinícolas más prestigiosas de Chile.',
+    },
   ]
 
   return (
@@ -55,9 +58,7 @@ export default function USPsSection() {
             <div
               key={index}
               className={`group relative transition-all duration-1000 ease-out ${
-                isVisible
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-12'
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
               }`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
@@ -88,7 +89,10 @@ export default function USPsSection() {
                 <div className="w-16 h-px bg-gold-500/30 mb-6 mx-auto" />
 
                 {/* Description */}
-                <p className="text-base text-gray-600 leading-relaxed font-light" style={{ lineHeight: '1.8' }}>
+                <p
+                  className="text-base text-gray-600 leading-relaxed font-light"
+                  style={{ lineHeight: '1.8' }}
+                >
                   {usp.description}
                 </p>
               </div>

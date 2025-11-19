@@ -16,38 +16,74 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
   const categoryLabels = {
     clasico: 'Tour Clásico',
     premium: 'Experiencia Premium',
-    privado: 'Tour Privado'
+    privado: 'Tour Privado',
   }
 
   const categoryIcons = {
     clasico: (
-      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      <svg
+        className="w-16 h-16"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        strokeWidth={1}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+        />
       </svg>
     ),
     premium: (
-      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+      <svg
+        className="w-16 h-16"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        strokeWidth={1}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+        />
       </svg>
     ),
     privado: (
-      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      <svg
+        className="w-16 h-16"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        strokeWidth={1}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+        />
       </svg>
-    )
+    ),
   }
 
   return (
-    <div className={`group relative bg-gradient-to-br from-gray-900 to-black-800 border border-gray-800 rounded-2xl overflow-hidden transition-all duration-700 hover:border-gold-500 hover:shadow-gold-subtle ${featured ? 'lg:col-span-2' : ''}`}>
+    <div
+      className={`group relative bg-gradient-to-br from-gray-900 to-black-800 border border-gray-800 rounded-2xl overflow-hidden transition-all duration-700 hover:border-gold-500 hover:shadow-gold-subtle ${featured ? 'lg:col-span-2' : ''}`}
+    >
       {/* Ambient glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-           style={{
-             background: `radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1), transparent 70%)`
-           }} />
+      <div
+        className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1), transparent 70%)`,
+        }}
+      />
 
       <div className={`grid ${featured ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} h-full`}>
         {/* Visual Section - With Real Image */}
-        <div className={`relative ${featured ? 'h-96 lg:h-full' : 'h-80'} overflow-hidden bg-gradient-to-br from-black-900 to-black-950`}>
+        <div
+          className={`relative ${featured ? 'h-96 lg:h-full' : 'h-80'} overflow-hidden bg-gradient-to-br from-black-900 to-black-950`}
+        >
           {/* Background Image - Optimized with better brightness */}
           <div className="absolute inset-0">
             <Image
@@ -81,7 +117,9 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
               <span className="font-[family-name:var(--font-raleway)] text-6xl md:text-7xl font-extralight text-white leading-none drop-shadow-2xl">
                 {formatPrice(tour.price)}
               </span>
-              <span className="font-[family-name:var(--font-raleway)] text-white/70 text-sm font-light">/ persona</span>
+              <span className="font-[family-name:var(--font-raleway)] text-white/70 text-sm font-light">
+                / persona
+              </span>
             </div>
           </div>
         </div>
@@ -95,7 +133,10 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
             </h3>
 
             {/* Description */}
-            <p className="font-[family-name:var(--font-raleway)] text-gray-400 text-base leading-relaxed mb-10 font-light" style={{ lineHeight: '1.8' }}>
+            <p
+              className="font-[family-name:var(--font-raleway)] text-gray-400 text-base leading-relaxed mb-10 font-light"
+              style={{ lineHeight: '1.8' }}
+            >
               {tour.description}
             </p>
 
@@ -120,25 +161,41 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
               {/* Meta info */}
               <div className="flex items-center gap-4 text-xs text-gray-500">
                 <span className="flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   2-3h
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
                   </svg>
                   Grupos pequeños
                 </span>
               </div>
 
               {/* CTA Button */}
-              <Button
-                variant="gold"
-                size="md"
-                className="group-hover:shadow-gold-glow"
-              >
+              <Button variant="gold" size="md" className="group-hover:shadow-gold-glow">
                 Reservar →
               </Button>
             </div>

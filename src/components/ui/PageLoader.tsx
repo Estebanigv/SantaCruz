@@ -129,9 +129,18 @@ export default function PageLoader() {
             VIÑA SANTA CRUZ
           </h2>
           <div className="flex items-center justify-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" style={{ animationDelay: '0ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" style={{ animationDelay: '200ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" style={{ animationDelay: '400ms' }} />
+            <div
+              className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse"
+              style={{ animationDelay: '0ms' }}
+            />
+            <div
+              className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse"
+              style={{ animationDelay: '200ms' }}
+            />
+            <div
+              className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse"
+              style={{ animationDelay: '400ms' }}
+            />
           </div>
         </div>
       </div>

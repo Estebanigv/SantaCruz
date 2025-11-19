@@ -11,14 +11,14 @@ export default function Rating({
   rating,
   maxRating = 5,
   size = 'md',
-  className = ''
+  className = '',
 }: RatingProps) {
   // Support both 'value' and 'rating' props for backward compatibility
   const ratingValue = value ?? rating ?? 0
   const sizeClasses = {
     sm: 'w-3.5 h-3.5',
     md: 'w-4 h-4',
-    lg: 'w-5 h-5'
+    lg: 'w-5 h-5',
   }
 
   const stars = Array.from({ length: maxRating }, (_, index) => {
@@ -37,9 +37,5 @@ export default function Rating({
     )
   })
 
-  return (
-    <div className={`inline-flex gap-1 items-center ${className}`}>
-      {stars}
-    </div>
-  )
+  return <div className={`inline-flex gap-1 items-center ${className}`}>{stars}</div>
 }

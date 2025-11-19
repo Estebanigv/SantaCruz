@@ -15,7 +15,8 @@ export default function PageTransition() {
 
             // Fade out animation
             await new Promise<void>((resolve) => {
-              data.current.container.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out'
+              data.current.container.style.transition =
+                'opacity 0.5s ease-out, transform 0.5s ease-out'
               data.current.container.style.opacity = '0'
               data.current.container.style.transform = 'translateY(20px)'
 
@@ -34,7 +35,8 @@ export default function PageTransition() {
             // Fade in animation
             await new Promise<void>((resolve) => {
               requestAnimationFrame(() => {
-                data.next.container.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out'
+                data.next.container.style.transition =
+                  'opacity 0.6s ease-out, transform 0.6s ease-out'
                 data.next.container.style.opacity = '1'
                 data.next.container.style.transform = 'translateY(0)'
 
@@ -46,8 +48,8 @@ export default function PageTransition() {
 
             // Scroll to top smoothly
             window.scrollTo({ top: 0, behavior: 'smooth' })
-          }
-        }
+          },
+        },
       ],
       views: [
         {
@@ -55,9 +57,9 @@ export default function PageTransition() {
           beforeEnter() {
             // Additional animations for home page
             console.log('Entering home page')
-          }
-        }
-      ]
+          },
+        },
+      ],
     })
 
     return () => {

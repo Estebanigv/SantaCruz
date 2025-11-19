@@ -15,14 +15,14 @@ export default function MembershipCard({ tier }: MembershipCardProps) {
     bronce: 'text-[#CD7F32]',
     plata: 'text-gray-400',
     oro: 'text-gold-500',
-    platino: 'text-gray-200'
+    platino: 'text-gray-200',
   }
 
   const tierNames = {
     bronce: 'Bronce',
     plata: 'Plata',
     oro: 'Oro',
-    platino: 'Platino'
+    platino: 'Platino',
   }
 
   return (
@@ -47,24 +47,32 @@ export default function MembershipCard({ tier }: MembershipCardProps) {
       )}
 
       {/* Header Section with subtle gradient */}
-      <div className={`relative pt-14 pb-12 px-6 ${tier.featured ? 'bg-gradient-to-b from-gold-50 via-cream-50 to-white' : 'bg-gradient-to-b from-gray-50/50 to-white'}`}>
+      <div
+        className={`relative pt-14 pb-12 px-6 ${tier.featured ? 'bg-gradient-to-b from-gold-50 via-cream-50 to-white' : 'bg-gradient-to-b from-gray-50/50 to-white'}`}
+      >
         {/* Minimal decorative element */}
         <div className="w-16 h-px bg-gradient-to-r from-transparent via-gold-500 to-transparent mb-10 mx-auto opacity-50" />
 
         {/* Tier Name */}
-        <h3 className={`font-[family-name:var(--font-raleway)] text-2xl font-light text-center mb-10 tracking-[0.2em] uppercase ${tierColors[tier.name]}`}>
+        <h3
+          className={`font-[family-name:var(--font-raleway)] text-2xl font-light text-center mb-10 tracking-[0.2em] uppercase ${tierColors[tier.name]}`}
+        >
           {tierNames[tier.name]}
         </h3>
 
         {/* Price - Elegant and readable */}
         <div className="text-center">
           <div className="flex items-baseline justify-center gap-1">
-            <span className="font-[family-name:var(--font-raleway)] text-2xl font-light text-black-900">$</span>
+            <span className="font-[family-name:var(--font-raleway)] text-2xl font-light text-black-900">
+              $
+            </span>
             <span className="font-[family-name:var(--font-raleway)] text-5xl font-extralight text-black-900 tabular-nums">
               {formatPrice(tier.price)}
             </span>
           </div>
-          <p className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.25em] font-medium mt-2">/año</p>
+          <p className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 uppercase tracking-[0.25em] font-medium mt-2">
+            /año
+          </p>
         </div>
       </div>
 

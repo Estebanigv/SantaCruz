@@ -24,7 +24,7 @@ export default function Button({
   disabled = false,
   className = '',
   icon,
-  type = 'button'
+  type = 'button',
 }: ButtonProps) {
   const baseClasses = `btn btn-${variant} btn-${size} ${className}`
 
@@ -38,12 +38,7 @@ export default function Button({
 
   if (href && !disabled) {
     return (
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={disabled}
-        className={baseClasses}
-      >
+      <button type="button" onClick={handleClick} disabled={disabled} className={baseClasses}>
         {icon && <span>{icon}</span>}
         {children}
       </button>

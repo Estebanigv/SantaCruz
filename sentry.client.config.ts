@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs'
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -38,12 +38,12 @@ Sentry.init({
     // Filter out sensitive information
     if (event.request) {
       // Remove cookies
-      delete event.request.cookies;
+      delete event.request.cookies
 
       // Remove authorization headers
       if (event.request.headers) {
-        delete event.request.headers['Authorization'];
-        delete event.request.headers['Cookie'];
+        delete event.request.headers['Authorization']
+        delete event.request.headers['Cookie']
       }
     }
 
@@ -56,18 +56,18 @@ Sentry.init({
             breadcrumb.message = breadcrumb.message.replace(
               /email=[\w\.-]+@[\w\.-]+/gi,
               'email=[REDACTED]'
-            );
+            )
             breadcrumb.message = breadcrumb.message.replace(
               /password=[\w]+/gi,
               'password=[REDACTED]'
-            );
+            )
           }
         }
-        return breadcrumb;
-      });
+        return breadcrumb
+      })
     }
 
-    return event;
+    return event
   },
 
   // Ignore specific errors
@@ -102,11 +102,12 @@ Sentry.init({
   beforeSendTransaction(event) {
     // Filter out very fast transactions to reduce noise
     if (event.start_timestamp && event.timestamp) {
-      const duration = event.timestamp - event.start_timestamp;
-      if (duration < 0.05) { // Less than 50ms
-        return null;
+      const duration = event.timestamp - event.start_timestamp
+      if (duration < 0.05) {
+        // Less than 50ms
+        return null
       }
     }
-    return event;
+    return event
   },
-});
+})
