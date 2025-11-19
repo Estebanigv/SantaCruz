@@ -20,9 +20,17 @@ declare module '@barba/core' {
     afterEnter?(data: ITransitionData): Promise<void> | void
   }
 
+  export interface IView {
+    namespace?: string
+    beforeLeave?(data: ITransitionData): Promise<void> | void
+    afterLeave?(data: ITransitionData): Promise<void> | void
+    beforeEnter?(data: ITransitionData): Promise<void> | void
+    afterEnter?(data: ITransitionData): Promise<void> | void
+  }
+
   export interface IBarbaOptions {
     transitions?: ITransition[]
-    views?: any[]
+    views?: IView[]
     prevent?: (args: { el: HTMLElement; href: string }) => boolean
   }
 
