@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from 'react'
 import gsap from 'gsap'
 import Rating from '../ui/Rating'
-import Button from '../ui/Button'
 
 interface LayeredWineCardProps {
   name: string

@@ -4,7 +4,6 @@
 import { Wine } from '@/types'
 import Rating from '../ui/Rating'
 import Badge from '../ui/Badge'
-import Button from '../ui/Button'
 import LayeredWineCard from './LayeredWineCard'
 import { useState, useRef, useEffect } from 'react'
 

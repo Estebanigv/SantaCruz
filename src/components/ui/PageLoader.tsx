@@ -4,25 +4,10 @@ import { useEffect, useState } from 'react'
 
 export default function PageLoader() {
   const [isLoading, setIsLoading] = useState(true)
-  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    // Simulate loading progress
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval)
-          return 100
-        }
-        // Smooth increment with variable speed
-        const increment = Math.random() * 15 + 5
-        return Math.min(prev + increment, 100)
-      })
-    }, 200)
-
     // Hide loader when page is loaded
     const handleLoad = () => {
-      setProgress(100)
       setTimeout(() => {
         setIsLoading(false)
       }, 800) // Small delay for smooth transition
@@ -34,7 +19,6 @@ export default function PageLoader() {
       window.addEventListener('load', handleLoad)
       return () => {
         window.removeEventListener('load', handleLoad)
-        clearInterval(progressInterval)
       }
     }
   }, [])

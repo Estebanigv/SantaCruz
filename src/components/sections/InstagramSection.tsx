@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
 
