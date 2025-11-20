@@ -5,7 +5,7 @@ import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
 
 export default function InstagramSection() {
-  const cardsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const cardsRef = useRef<{ [key: string]: HTMLAnchorElement | null }>({})
   const liquidsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const iconsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const textsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
