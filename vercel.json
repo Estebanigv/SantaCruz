@@ -107,21 +107,6 @@
     }
   ],
 
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30,
-      "memory": 1024
-    },
-    "api/checkout/**/*.ts": {
-      "maxDuration": 60,
-      "memory": 1024
-    },
-    "api/payments/**/*.ts": {
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  },
-
   "cleanUrls": true,
   "trailingSlash": false
 }
