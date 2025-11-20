@@ -107,21 +107,6 @@
     }
   ],
 
-  "crons": [
-    {
-      "path": "/api/cron/cleanup-sessions",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/update-inventory",
-      "schedule": "0 */6 * * *"
-    },
-    {
-      "path": "/api/cron/backup-check",
-      "schedule": "0 3 * * *"
-    }
-  ],
-
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30,

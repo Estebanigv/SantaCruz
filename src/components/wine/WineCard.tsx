@@ -1,20 +1,88 @@
+'use client'
+
 // import Image from 'next/image'
 import { Wine } from '@/types'
 import Rating from '../ui/Rating'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
+import LayeredWineCard from './LayeredWineCard'
+import { useState, useRef, useEffect } from 'react'
 
 interface WineCardProps {
   wine: Wine
 }
 
 export default function WineCard({ wine }: WineCardProps) {
+  const [buttonFillProgress, setButtonFillProgress] = useState(0)
+  const buttonFillIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
   const formatPrice = (price: number) => {
     return `$${price.toLocaleString('es-CL')}`
   }
 
   const badgeVariant =
-    wine.badge === 'premiado' ? 'award' : wine.badge === 'nuevo' ? 'new' : 'exclusive'
+    wine.badge === 'premiado'
+      ? 'award'
+      : wine.badge === 'nuevo'
+        ? 'new'
+        : wine.badge === 'icono'
+          ? 'exclusive'
+          : 'exclusive'
+
+  const handleButtonHover = (isEntering: boolean) => {
+    if (buttonFillIntervalRef.current) {
+      clearInterval(buttonFillIntervalRef.current)
+    }
+
+    if (isEntering) {
+      buttonFillIntervalRef.current = setInterval(() => {
+        setButtonFillProgress((prev) => {
+          if (prev >= 100) {
+            if (buttonFillIntervalRef.current) {
+              clearInterval(buttonFillIntervalRef.current)
+            }
+            return 100
+          }
+          return prev + 5
+        })
+      }, 15)
+    } else {
+      buttonFillIntervalRef.current = setInterval(() => {
+        setButtonFillProgress((prev) => {
+          if (prev <= 0) {
+            if (buttonFillIntervalRef.current) {
+              clearInterval(buttonFillIntervalRef.current)
+            }
+            return 0
+          }
+          return prev - 5
+        })
+      }, 15)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (buttonFillIntervalRef.current) {
+        clearInterval(buttonFillIntervalRef.current)
+      }
+    }
+  }, [])
+
+  // If wine has layered backgrounds, use LayeredWineCard
+  if (wine.grayBg && wine.colorBg) {
+    return (
+      <LayeredWineCard
+        name={wine.name}
+        varietal={wine.varietal}
+        price={wine.price}
+        rating={wine.rating}
+        wineImage={wine.image}
+        grayBg={wine.grayBg}
+        colorBg={wine.colorBg}
+      />
+    )
+  }
 
   return (
     <div className="group bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col h-full">
@@ -55,7 +123,7 @@ export default function WineCard({ wine }: WineCardProps) {
             {wine.name}
           </h3>
 
-          <p className="font-[family-name:var(--font-raleway)] text-sm text-gray-600 mb-4 font-medium">
+          <p className="font-[family-name:var(--font-raleway)] text-sm text-gray-600 mb-4 font-medium min-h-[20px]">
             {wine.varietal}
             {wine.vintage && ` • ${wine.vintage}`}
           </p>
@@ -68,11 +136,11 @@ export default function WineCard({ wine }: WineCardProps) {
 
         {/* Price - Always at bottom */}
         <div className="mt-auto">
-          <div className="flex items-baseline gap-2 mb-4">
-            <p className="text-2xl font-bold text-gold-600 font-[family-name:var(--font-raleway)]">
+          <div className="flex items-center gap-2 mb-4">
+            <p className="text-2xl font-bold text-gold-600 font-mono leading-none">
               {formatPrice(wine.price)}
             </p>
-            <span className="font-[family-name:var(--font-raleway)] text-xs text-gray-500">
+            <span className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 self-end pb-0.5">
               CLP
             </span>
           </div>
@@ -80,10 +148,40 @@ export default function WineCard({ wine }: WineCardProps) {
           {/* Divider */}
           <div className="h-px bg-gray-200 mb-4" />
 
-          {/* Add to Cart Button */}
-          <Button variant="gold" size="md" className="w-full" onClick={() => {}}>
-            Añadir al Carro
-          </Button>
+          {/* Add to Cart Button - Simple white with gold animation */}
+          <button
+            className="relative w-full inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg overflow-hidden transition-all duration-300 border border-gray-200 hover:border-gold-500 hover:shadow-md font-[family-name:var(--font-raleway)]"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={() => {}}
+          >
+            <span
+              className="relative z-10 transition-colors duration-200"
+              style={{
+                color: buttonFillProgress > 50 ? 'white' : '#374151',
+              }}
+            >
+              Añadir al Carro
+            </span>
+            {/* Gold filling from left to right */}
+            <div
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600"
+              style={{
+                width: `${buttonFillProgress}%`,
+                transition: 'width 0.15s ease-out',
+              }}
+            >
+              {/* Animated wave edge */}
+              <div
+                className="absolute right-0 inset-y-0 w-8"
+                style={{
+                  background:
+                    'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5))',
+                  transform: `translateX(${Math.sin(buttonFillProgress / 15) * 4}px)`,
+                }}
+              />
+            </div>
+          </button>
 
           {/* Quick view link */}
           <button

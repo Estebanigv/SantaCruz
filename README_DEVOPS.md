@@ -193,7 +193,6 @@ Jobs incluidos:
 - Security headers
 - Cache headers
 - Redirects & rewrites
-- Cron jobs
 - Function configuration
 
 ---

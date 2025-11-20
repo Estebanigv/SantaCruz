@@ -7,8 +7,10 @@ export interface Wine {
   vintage?: number
   price: number
   image: string
+  grayBg?: string
+  colorBg?: string
   rating: number
-  badge?: 'nuevo' | 'premiado' | 'exclusivo'
+  badge?: 'nuevo' | 'premiado' | 'exclusivo' | 'icono'
   description?: string
 }
 

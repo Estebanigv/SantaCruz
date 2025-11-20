@@ -1,34 +1,154 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import SectionHeader from '../ui/SectionHeader'
+import gsap from 'gsap'
 
 export default function InstagramSection() {
-  const [cardFillProgress, setCardFillProgress] = useState<{ [key: string]: number }>({})
-  const intervalsRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
+  const cardsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const liquidsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const iconsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const textsRef = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   const handleCardHover = (cardId: string, isEntering: boolean) => {
-    // Clear any existing interval for this card
-    if (intervalsRef.current[cardId]) {
-      clearInterval(intervalsRef.current[cardId])
-      delete intervalsRef.current[cardId]
-    }
+    const liquid = liquidsRef.current[cardId]
+    const icon = iconsRef.current[cardId]
+    const title = textsRef.current[`${cardId}-title`]
+    const username = textsRef.current[`${cardId}-username`]
+    const button = textsRef.current[`${cardId}-button`]
+
+    if (!liquid || !icon) return
+
+    // Kill all running animations on these elements to prevent sticking
+    gsap.killTweensOf([liquid, icon, title, username, button])
+    if (icon) gsap.killTweensOf(icon.querySelectorAll('svg'))
 
     if (isEntering) {
-      // Animate fill from 0 to 100 over time
-      let progress = 0
-      const interval = setInterval(() => {
-        progress += 5
-        setCardFillProgress((prev) => ({ ...prev, [cardId]: progress }))
-        if (progress >= 100) {
-          clearInterval(interval)
-          delete intervalsRef.current[cardId]
+      // Liquid fill animation from bottom
+      gsap.to(liquid, {
+        scaleY: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      })
+
+      // Icon animation - explosive entrance with multiple effects
+      gsap.fromTo(
+        icon,
+        {
+          scale: 0.8,
+          rotation: -15,
+        },
+        {
+          opacity: 1,
+          scale: 1.4,
+          rotation: 0,
+          duration: 0.6,
+          ease: 'elastic.out(1, 0.5)',
         }
-      }, 20)
-      intervalsRef.current[cardId] = interval
+      )
+
+      // Continuous floating/pulsing animation
+      gsap.to(icon, {
+        y: -8,
+        scale: 1.45,
+        duration: 0.8,
+        delay: 0.6,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      })
+
+      // Continuous subtle rotation
+      gsap.to(icon, {
+        rotation: 10,
+        duration: 1.2,
+        delay: 0.6,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      })
+
+      // Animate icon color to white with strong glow
+      gsap.to(icon.querySelectorAll('svg'), {
+        color: '#ffffff',
+        filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))',
+        duration: 0.5,
+      })
+
+      // Text animations
+      if (title) {
+        gsap.to(title, {
+          color: '#ffffff',
+          duration: 0.5,
+          delay: 0.2,
+        })
+      }
+
+      if (username) {
+        gsap.to(username, {
+          color: 'rgba(255, 255, 255, 0.9)',
+          duration: 0.5,
+          delay: 0.2,
+        })
+      }
+
+      // Show button
+      if (button) {
+        gsap.to(button, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          delay: 0.3,
+        })
+      }
     } else {
-      // Reset immediately
-      setCardFillProgress((prev) => ({ ...prev, [cardId]: 0 }))
+      // Drain liquid out
+      gsap.to(liquid, {
+        scaleY: 0,
+        duration: 0.6,
+        ease: 'power2.in',
+      })
+
+      // Reset icon with smooth animation - stop all continuous animations
+      gsap.to(icon, {
+        opacity: 0.25,
+        scale: 1,
+        rotation: 0,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+      })
+
+      // Reset icon color and remove glow
+      gsap.to(icon.querySelectorAll('svg'), {
+        color: '#D1D5DB',
+        filter: 'none',
+        duration: 0.5,
+      })
+
+      // Reset text colors
+      if (title) {
+        gsap.to(title, {
+          color: '#111827',
+          duration: 0.4,
+        })
+      }
+
+      if (username) {
+        gsap.to(username, {
+          color: '#6B7280',
+          duration: 0.4,
+        })
+      }
+
+      // Hide button
+      if (button) {
+        gsap.to(button, {
+          opacity: 0,
+          y: 10,
+          duration: 0.3,
+        })
+      }
     }
   }
 
@@ -89,104 +209,93 @@ export default function InstagramSection() {
         />
 
         {/* Social Networks Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
           {socialLinks.map((social) => (
-            <button
+            <a
               key={social.name}
-              onClick={(e) => e.preventDefault()}
-              className="group relative bg-white border border-gray-200 rounded-sm p-10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-transparent overflow-hidden cursor-pointer w-full"
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              ref={(el) => {
+                cardsRef.current[social.name] = el
+              }}
+              className="group relative bg-white border border-gray-200 rounded-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:border-transparent overflow-hidden cursor-pointer w-full block h-56"
               onMouseEnter={() => handleCardHover(social.name, true)}
               onMouseLeave={() => handleCardHover(social.name, false)}
             >
-              {/* Icon with super dynamic animations */}
+              {/* Liquid fill background - animates from bottom */}
               <div
-                className="flex justify-center mb-6 text-gray-700 transition-all duration-300 relative z-10"
-                style={{
-                  color: (cardFillProgress[social.name] || 0) > 30 ? 'white' : '',
-                  transform:
-                    social.name === 'Instagram'
-                      ? `rotate(${(cardFillProgress[social.name] || 0) * 7.2}deg) scale(${1 + (cardFillProgress[social.name] || 0) * 0.012})`
-                      : social.name === 'Facebook'
-                        ? `scale(${1 + (cardFillProgress[social.name] || 0) * 0.015}) translateY(${-(cardFillProgress[social.name] || 0) * 0.2}px) rotate(${Math.sin((cardFillProgress[social.name] || 0) / 10) * 15}deg)`
-                        : social.name === 'YouTube'
-                          ? `scale(${1 + (cardFillProgress[social.name] || 0) * 0.02}) translateY(${Math.sin((cardFillProgress[social.name] || 0) / 8) * 10}px)`
-                          : `translateX(${Math.sin((cardFillProgress[social.name] || 0) / 10) * 15}px) scale(${1 + (cardFillProgress[social.name] || 0) * 0.015}) translateY(${Math.cos((cardFillProgress[social.name] || 0) / 12) * 8}px)`,
-                  filter:
-                    (cardFillProgress[social.name] || 0) > 30
-                      ? `drop-shadow(0 6px 20px rgba(255,255,255,0.6)) brightness(${1 + (cardFillProgress[social.name] || 0) * 0.005})`
-                      : 'none',
+                ref={(el) => {
+                  liquidsRef.current[social.name] = el
                 }}
+                className={`absolute inset-0 ${social.bgColor} origin-bottom`}
+                style={{ transform: 'scaleY(0)' }}
               >
-                {social.icon}
+                {/* Wave effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
               </div>
 
-              {/* Network Name */}
-              <h3
-                className="font-[family-name:var(--font-raleway)] text-xl font-light text-center mb-3 text-black-900 tracking-wide transition-colors duration-500 relative z-10"
-                style={{
-                  color: (cardFillProgress[social.name] || 0) > 50 ? 'white' : '',
-                }}
-              >
-                {social.name}
-              </h3>
-
-              {/* Username */}
-              <p
-                className="font-[family-name:var(--font-raleway)] text-sm text-center text-gray-500 font-light transition-colors duration-500 relative z-10"
-                style={{
-                  color:
-                    (cardFillProgress[social.name] || 0) > 50 ? 'rgba(255, 255, 255, 0.9)' : '',
-                }}
-              >
-                {social.username}
-              </p>
-
-              {/* Follow indicator */}
+              {/* Social Media Icon - positioned higher to avoid text overlap */}
               <div
-                className="flex items-center justify-center gap-2 mt-6 transition-opacity duration-500 relative z-10"
-                style={{
-                  opacity: (cardFillProgress[social.name] || 0) > 30 ? 1 : 0,
+                ref={(el) => {
+                  iconsRef.current[social.name] = el
                 }}
+                className="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-300 opacity-25 pointer-events-none"
               >
-                <span className="font-[family-name:var(--font-raleway)] text-xs uppercase tracking-[0.15em] text-white font-medium">
-                  Seguir
-                </span>
-                <svg
-                  className="w-4 h-4 text-white transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  style={{
-                    transform: `translateX(${(cardFillProgress[social.name] || 0) > 50 ? '4px' : '0'})`,
+                <div className="flex items-center justify-center scale-[1.4]">
+                  {social.icon}
+                </div>
+              </div>
+
+              {/* Content Container */}
+              <div className="relative z-10 h-full flex flex-col justify-end p-6 pb-8">
+                {/* Network Name */}
+                <h3
+                  ref={(el) => {
+                    textsRef.current[`${social.name}-title`] = el
                   }}
+                  className="font-[family-name:var(--font-raleway)] text-xl font-light text-center mb-1.5 text-black-900 tracking-wide"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
+                  {social.name}
+                </h3>
 
-              {/* Circular expanding fill with brand colors - from center */}
-              <div
-                className={`absolute inset-0 ${social.bgColor} rounded-sm`}
-                style={{
-                  transform: `scale(${(cardFillProgress[social.name] || 0) / 100})`,
-                  opacity: (cardFillProgress[social.name] || 0) / 100,
-                  transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
-                  transformOrigin: 'center center',
-                }}
-              >
-                {/* Subtle pulse effect */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent 70%)',
-                    opacity: (cardFillProgress[social.name] || 0) > 50 ? 0.6 : 0,
-                    transition: 'opacity 0.3s ease-out',
+                {/* Username */}
+                <p
+                  ref={(el) => {
+                    textsRef.current[`${social.name}-username`] = el
                   }}
-                />
+                  className="font-[family-name:var(--font-raleway)] text-xs text-center text-gray-500 font-light mb-3"
+                >
+                  {social.username}
+                </p>
+
+                {/* Follow Button */}
+                <div
+                  ref={(el) => {
+                    textsRef.current[`${social.name}-button`] = el
+                  }}
+                  className="flex items-center justify-center gap-2"
+                  style={{ opacity: 0, transform: 'translateY(10px)' }}
+                >
+                  <span className="font-[family-name:var(--font-raleway)] text-xs uppercase tracking-[0.15em] text-white font-medium">
+                    Seguir
+                  </span>
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </div>
               </div>
-            </button>
+            </a>
           ))}
         </div>
       </div>

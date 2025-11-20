@@ -670,7 +670,7 @@ Define un pipeline conceptual para desplegar el proyecto en Vercel, incluyendo:
 - ADR-003: Cloudinary Image Management
 
 **10. Platform configuration:**
-- vercel.json (build, security headers, cache, cron jobs)
+- vercel.json (build, security headers, cache)
 - .env.example (60+ variables)
 - docker-compose.yml (local dev environment)
 - sentry.client.config.ts & sentry.server.config.ts
