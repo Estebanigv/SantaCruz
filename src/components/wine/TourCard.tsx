@@ -87,7 +87,7 @@ export default function TourCard({ tour, featured = false }: TourCardProps) {
           {/* Background Image - Optimized with better brightness */}
           <div className="absolute inset-0">
             <Image
-              src="/images/Telferico.png"
+              src="/images/webp/Telferico.webp"
               alt={tour.name}
               fill
               className="object-cover brightness-110 contrast-105 saturate-110"

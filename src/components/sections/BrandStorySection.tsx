@@ -38,7 +38,7 @@ export default function BrandStorySection() {
       {/* Decorative grape image - left side */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1/3 h-[600px] opacity-12 pointer-events-none hidden lg:block z-0">
         <Image
-          src="/images/Uva2.png"
+          src="/images/webp/Uva2.webp"
           alt="Decorative grape"
           fill
           className="object-contain"
@@ -53,7 +53,7 @@ export default function BrandStorySection() {
           {/* Background Image - Grape Image */}
           <div className="absolute inset-0">
             <Image
-              src="/images/Uva2.png"
+              src="/images/webp/Uva2.webp"
               alt="Viña Santa Cruz - Uvas"
               fill
               className="object-cover"
