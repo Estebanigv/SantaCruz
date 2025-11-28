@@ -101,15 +101,15 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
 
     // Tamaño deseado de la tarjeta expandida - responsive
     const maxWidth = isMobile
-      ? viewportWidth - 24 // En móvil: casi pantalla completa con padding
+      ? viewportWidth - 20 // En móvil: casi pantalla completa con padding mínimo
       : Math.min(1100, viewportWidth - 40) // En desktop: máximo 1100px
     const maxHeight = isMobile
-      ? Math.min(viewportHeight - 80, 700) // En móvil: casi toda la altura
+      ? Math.min(viewportHeight - 60, 750) // En móvil: más altura para mostrar mejor la botella
       : Math.min(580, viewportHeight - 40) // En desktop: máximo 580px
 
     // Calcular posición centrada en el viewport
     const centeredLeft = (viewportWidth - maxWidth) / 2
-    const centeredTop = isMobile ? 40 : (viewportHeight - maxHeight) / 2
+    const centeredTop = isMobile ? 30 : (viewportHeight - maxHeight) / 2
 
     gsap.set(expandedCard, {
       position: 'fixed',
@@ -617,8 +617,8 @@ function WineCardExpanded({
 
   return (
     <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
-      {/* Top/Left - Bottle with background */}
-      <div className="h-[35%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
+      {/* Top/Left - Bottle with background - más grande en móvil */}
+      <div className="h-[45%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
         {/* Background image - tenue */}
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -630,13 +630,13 @@ function WineCardExpanded({
             style={{ filter: 'saturate(0.6) brightness(1.05)', opacity: 0.7 }}
           />
         </div>
-        {/* Wine bottle - responsive */}
+        {/* Wine bottle - más grande en móvil */}
         <img
           src={wine.image}
           alt={wine.name}
           loading="eager"
           decoding="async"
-          className="relative z-10 h-[90%] md:h-[85%] w-auto object-contain max-h-[180px] md:max-h-none"
+          className="relative z-10 h-[95%] md:h-[85%] w-auto object-contain max-h-[260px] md:max-h-none"
           style={{ filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.35))' }}
         />
       </div>
