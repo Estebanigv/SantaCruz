@@ -87,6 +87,15 @@
     line-height: var(--line-height-relaxed);
   }
 
+  /* Zoom correction for high DPI screens with 150% scaling */
+  /* 1920x1080 @ 150% = 1280px viewport */
+  /* We apply 83.33% zoom (125/150) to make it look like 125% scale */
+  @media screen and (min-width: 1200px) and (max-width: 1400px) {
+    html {
+      zoom: 0.9; /* 90% zoom to compensate for 150% scale */
+    }
+  }
+
   h1, h2, h3 {
     font-family: var(--font-playfair), Georgia, serif;
     line-height: var(--line-height-tight);
