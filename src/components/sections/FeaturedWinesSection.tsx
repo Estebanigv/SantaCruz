@@ -651,7 +651,7 @@ function WineCardExpanded({
   return (
     <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
       {/* Top/Left - Bottle with background */}
-      <div className="h-[45%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
+      <div className="h-[40%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
         {/* Background image - usa expandedBg si está disponible, sino colorBg */}
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -669,7 +669,7 @@ function WineCardExpanded({
           alt={wine.name}
           loading="eager"
           decoding="async"
-          className="relative z-10 h-[92%] md:h-[85%] w-auto object-contain max-h-[280px] md:max-h-none"
+          className="relative z-10 h-[92%] md:h-[85%] w-auto object-contain max-h-[240px] md:max-h-none"
           style={{ filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.35))' }}
         />
       </div>
