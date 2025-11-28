@@ -6,7 +6,7 @@ import { tours } from '@/data/mockData'
 import { Tour } from '@/types'
 import { useCart } from '@/contexts/CartContext'
 import Image from 'next/image'
-import Link from 'next/link'
+// Link removed - not currently used but may be needed later
 
 type CategoryFilter = 'all' | 'vino' | 'cultural' | 'premium'
 
@@ -442,7 +442,7 @@ function ExperienceDetailModal({
       document.addEventListener('keydown', handleEscape)
     }
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen])
+  }, [isOpen, handleClose])
 
   if (!isOpen && !isAnimating) return null
 
@@ -811,7 +811,8 @@ function FeaturedExperience({ tour, onReserve }: { tour: Tour; onReserve: (tour:
   )
 }
 
-// Booking Modal Component
+// Booking Modal Component - Reserved for future use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function BookingModal({ tour, isOpen, onClose }: { tour: Tour; isOpen: boolean; onClose: () => void }) {
   const { addTour, openCart } = useCart()
   const [date, setDate] = useState('')

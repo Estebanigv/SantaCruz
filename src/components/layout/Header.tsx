@@ -13,6 +13,7 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHoveringTop, setIsHoveringTop] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [lastMouseMove, setLastMouseMove] = useState(Date.now())
   const headerRef = useRef<HTMLElement>(null)
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null)

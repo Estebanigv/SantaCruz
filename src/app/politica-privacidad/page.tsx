@@ -23,10 +23,10 @@ export default function PrivacyPolicyPage() {
                 1. Introducción
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Viña Santa Cruz (en adelante, "nosotros", "nuestro" o "la Viña") se compromete a
+                Viña Santa Cruz (en adelante, &quot;nosotros&quot;, &quot;nuestro&quot; o &quot;la Viña&quot;) se compromete a
                 proteger y respetar su privacidad. Esta Política de Privacidad explica cómo
                 recopilamos, usamos, compartimos y protegemos su información personal cuando visita
-                nuestro sitio web www.vinasantacruz.cl (el "Sitio").
+                nuestro sitio web www.vinasantacruz.cl (el &quot;Sitio&quot;).
               </p>
               <p className="text-gray-700 leading-relaxed">
                 Al utilizar nuestro Sitio, usted acepta las prácticas descritas en esta Política de
@@ -290,7 +290,7 @@ export default function PrivacyPolicyPage() {
                     +56 72 212 3456
                   </a>
                 </p>
-                <p className="text-gray-700">Valle de Colchagua, Región de O'Higgins, Chile</p>
+                <p className="text-gray-700">Valle de Colchagua, Región de O&apos;Higgins, Chile</p>
               </div>
             </section>
           </div>

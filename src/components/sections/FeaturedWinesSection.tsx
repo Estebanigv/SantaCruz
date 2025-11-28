@@ -87,7 +87,7 @@ export default function FeaturedWinesSection() {
     if (!selectedCard || !overlay || !expandedCard || !originalCardRect.current || !gridRect.current) return
 
     const rect = originalCardRect.current
-    const grid = gridRect.current
+    // Grid rect is available in gridRect.current if needed
 
     // Calcular el centro del viewport visible
     const viewportWidth = window.innerWidth
@@ -723,7 +723,7 @@ function WineCardExpanded({
 
             {/* Botón Descargar Ficha Técnica */}
             <button
-              onClick={() => window.open(`/fichas/${wine.slug || wine.id}.pdf`, '_blank')}
+              onClick={() => window.open(`/fichas/${wine.id}.pdf`, '_blank')}
               className="group/dl flex items-center justify-center gap-2 py-2.5 px-4 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium transition-all duration-300 hover:border-gold-400 hover:text-gold-600 hover:bg-gold-50/50"
             >
               <Download

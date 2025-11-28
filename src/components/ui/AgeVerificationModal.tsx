@@ -9,7 +9,8 @@ export default function AgeVerificationModal() {
   useEffect(() => {
     // Check if user has already verified their age
     const hasVerified = localStorage.getItem('ageVerified')
-    const isAdult = localStorage.getItem('isAdult')
+    // isAdult is stored for future use
+    localStorage.getItem('isAdult') // eslint-disable-line @typescript-eslint/no-unused-expressions
 
     if (!hasVerified) {
       setIsVisible(true)

@@ -24,7 +24,7 @@ export default function LayeredWineCard({
   wineImage,
   grayBg,
   colorBg,
-  description,
+  description: _description, // eslint-disable-line @typescript-eslint/no-unused-vars
   onViewDetails,
 }: LayeredWineCardProps) {
   const grayLayerRef = useRef<HTMLDivElement>(null)

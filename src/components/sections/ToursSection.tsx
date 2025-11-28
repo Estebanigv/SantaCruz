@@ -267,6 +267,7 @@ export default function ToursSection() {
     setExpandedCard(null)
   }, [activeCategory])
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleExpandCard = (expId: string, e: React.MouseEvent) => {
     e.stopPropagation()
     setExpandedCard(expandedCard === expId ? null : expId)
@@ -418,7 +419,7 @@ export default function ToursSection() {
                     ? '0 20px 40px -15px rgba(0,0,0,0.15)'
                     : '0 2px 15px -5px rgba(0,0,0,0.06)',
                   transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-                  ringColor: isSelected ? getCategoryColor(exp.category) : 'transparent',
+                  // Ring color is applied via className
                   maxWidth: '280px'
                 }}
               >

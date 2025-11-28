@@ -60,7 +60,7 @@ export default function TermsPage() {
                 </li>
                 <li>Eliminar cualquier derecho de autor u otras notaciones de propiedad</li>
                 <li>
-                  Transferir los materiales a otra persona o "reflejar" los materiales en cualquier
+                  Transferir los materiales a otra persona o &quot;reflejar&quot; los materiales en cualquier
                   otro servidor
                 </li>
               </ul>
@@ -304,7 +304,7 @@ export default function TermsPage() {
                     +56 72 212 3456
                   </a>
                 </p>
-                <p className="text-gray-700">Valle de Colchagua, Región de O'Higgins, Chile</p>
+                <p className="text-gray-700">Valle de Colchagua, Región de O&apos;Higgins, Chile</p>
               </div>
             </section>
           </div>

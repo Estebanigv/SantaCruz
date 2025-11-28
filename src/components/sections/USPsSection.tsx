@@ -10,7 +10,7 @@ export default function USPsSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
   const linesRef = useRef<(HTMLDivElement | null)[]>([])
-  const iconsRef = useRef<(SVGSVGElement | null)[]>([])
+  const iconsRef = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     const ctx = gsap.context(() => {

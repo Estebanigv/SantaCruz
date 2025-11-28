@@ -6,6 +6,7 @@ import gsap from 'gsap'
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [buttonFillProgress, setButtonFillProgress] = useState<{ [key: string]: number }>({})
   const [isInHeroSection, setIsInHeroSection] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
