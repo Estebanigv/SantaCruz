@@ -104,15 +104,16 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
 
     // Tamaño deseado de la tarjeta expandida - responsive
     const isSmallMobile = viewportWidth <= 375 // iPhone 13 mini, SE, etc
+    const modalMargin = isMobile ? 8 : 20 // Margen horizontal a cada lado
     const maxWidth = isMobile
-      ? viewportWidth - 16 // En móvil: casi pantalla completa
+      ? viewportWidth - (modalMargin * 2) // En móvil: pantalla completa menos márgenes
       : Math.min(1100, viewportWidth - 40) // En desktop: máximo 1100px
     const maxHeight = isMobile
       ? viewportHeight - (isSmallMobile ? 20 : 40) // Más espacio en pantallas pequeñas
       : Math.min(580, viewportHeight - 40) // En desktop: máximo 580px
 
     // Calcular posición centrada en el viewport
-    const centeredLeft = (viewportWidth - maxWidth) / 2
+    const centeredLeft = (viewportWidth - maxWidth) / 2 // Centrado horizontal
     const centeredTop = isMobile ? (isSmallMobile ? 10 : 20) : (viewportHeight - maxHeight) / 2
 
     gsap.set(expandedCard, {
