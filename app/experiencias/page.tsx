@@ -247,8 +247,21 @@ const categories = [
 ]
 
 // Experience Card Component - Click to expand
-function ExperienceCard({ tour, index, onViewDetails }: { tour: Tour; index: number; onViewDetails: (tour: Tour) => void }) {
+function ExperienceCard({
+  tour,
+  index,
+  onViewDetails,
+  isFavorite,
+  onToggleFavorite
+}: {
+  tour: Tour;
+  index: number;
+  onViewDetails: (tour: Tour) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (tourId: string) => void;
+}) {
   const [isVisible, setIsVisible] = useState(false)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -270,6 +283,18 @@ function ExperienceCard({ tour, index, onViewDetails }: { tour: Tour; index: num
   }, [])
 
   const formatPrice = (price: number) => price.toLocaleString('es-CL')
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // Por ahora mostrar mensaje de login ya que no hay sistema de autenticación
+    const isLoggedIn = false
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true)
+      setTimeout(() => setShowLoginPrompt(false), 3000)
+      return
+    }
+    onToggleFavorite(tour.id)
+  }
 
   const categoryStyles: Record<string, { badge: string }> = {
     vino: { badge: 'bg-wine-600/80 text-white' },
@@ -319,12 +344,55 @@ function ExperienceCard({ tour, index, onViewDetails }: { tour: Tour; index: num
           {categoryLabels[tour.category]}
         </div>
 
-        {/* Duration Badge - Nuevo diseño */}
-        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-gray-800 text-xs font-medium shadow-lg">
-          <svg className="w-3.5 h-3.5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {tour.duration}
+        {/* Duration Badge and Favorite Button */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          {/* Duration */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-gray-800 text-xs font-medium shadow-lg">
+            <svg className="w-3.5 h-3.5 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {tour.duration}
+          </div>
+
+          {/* Favorite Button */}
+          <div className="relative">
+            <button
+              onClick={handleFavoriteClick}
+              className={`w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110 shadow-lg ${
+                isFavorite
+                  ? 'bg-red-500 text-white'
+                  : 'bg-white/90 backdrop-blur-sm text-gray-400 hover:bg-red-50 hover:text-red-400'
+              }`}
+            >
+              <svg
+                className={`w-4 h-4 transition-all duration-200 ${isFavorite ? 'fill-current' : ''}`}
+                fill={isFavorite ? 'currentColor' : 'none'}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+
+            {/* Login Prompt Tooltip */}
+            {showLoginPrompt && (
+              <div className="absolute top-full right-0 mt-2 animate-fade-in z-30">
+                <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg shadow-lg text-xs whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3 h-3 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    </svg>
+                    <span>Inicia sesión para guardar</span>
+                  </div>
+                  <button className="mt-1 text-gold-400 hover:text-gold-300 font-medium transition-colors text-[10px]">
+                    Iniciar Sesión →
+                  </button>
+                  <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900/95 rotate-45" />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Título sobre la imagen */}
@@ -377,11 +445,15 @@ function ExperienceCard({ tour, index, onViewDetails }: { tour: Tour; index: num
 function ExperienceDetailModal({
   tour,
   isOpen,
-  onClose
+  onClose,
+  isFavorite,
+  onToggleFavorite
 }: {
   tour: Tour
   isOpen: boolean
   onClose: () => void
+  isFavorite: boolean
+  onToggleFavorite: (tourId: string) => void
 }) {
   const { addTour, openCart } = useCart()
   const [date, setDate] = useState('')
@@ -389,9 +461,20 @@ function ExperienceDetailModal({
   const [persons, setPersons] = useState(2)
   const [isAnimating, setIsAnimating] = useState(false)
   const [showContent, setShowContent] = useState(false)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
   const formatPrice = (price: number) => price.toLocaleString('es-CL')
   const totalPrice = tour.priceType === 'persona' ? tour.price * persons : tour.price
+
+  const handleFavoriteClick = () => {
+    const isLoggedIn = false
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true)
+      setTimeout(() => setShowLoginPrompt(false), 3000)
+      return
+    }
+    onToggleFavorite(tour.id)
+  }
 
   const priceTypeLabels: Record<string, string> = {
     persona: '/ persona',
@@ -483,15 +566,58 @@ function ExperienceDetailModal({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/30" />
 
-              {/* Close button */}
-              <button
-                onClick={handleClose}
-                className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors z-10"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {/* Action buttons: Favorite & Close */}
+              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                {/* Favorite button */}
+                <div className="relative">
+                  <button
+                    onClick={handleFavoriteClick}
+                    className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110 ${
+                      isFavorite
+                        ? 'bg-red-500 text-white'
+                        : 'bg-white/20 backdrop-blur-sm text-white hover:bg-red-500/80'
+                    }`}
+                  >
+                    <svg
+                      className={`w-5 h-5 transition-all duration-200 ${isFavorite ? 'fill-current' : ''}`}
+                      fill={isFavorite ? 'currentColor' : 'none'}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+
+                  {/* Login Prompt Tooltip */}
+                  {showLoginPrompt && (
+                    <div className="absolute top-full right-0 mt-2 animate-fade-in z-30">
+                      <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg shadow-lg text-xs whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-3 h-3 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                          </svg>
+                          <span>Inicia sesión para guardar</span>
+                        </div>
+                        <button className="mt-1 text-gold-400 hover:text-gold-300 font-medium transition-colors text-[10px]">
+                          Iniciar Sesión →
+                        </button>
+                        <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900/95 rotate-45" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Close button */}
+                <button
+                  onClick={handleClose}
+                  className="w-10 h-10 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
 
               {/* Category Badge */}
               <div className="absolute top-4 left-4 px-4 py-2 bg-gold-500 text-black rounded-full text-sm font-bold uppercase tracking-wider">
@@ -947,7 +1073,20 @@ function ExperienciasContent() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const experiencesSectionRef = useRef<HTMLElement>(null)
+
+  const handleToggleFavorite = useCallback((tourId: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(tourId)) {
+        newFavorites.delete(tourId)
+      } else {
+        newFavorites.add(tourId)
+      }
+      return newFavorites
+    })
+  }, [])
 
   // Filter tours based on age - minors don't see wine tours
   const isMinor = isAdult === false
@@ -1240,6 +1379,8 @@ function ExperienciasContent() {
                   tour={tour}
                   index={index}
                   onViewDetails={handleViewDetails}
+                  isFavorite={favorites.has(tour.id)}
+                  onToggleFavorite={handleToggleFavorite}
                 />
               ))}
             </div>
@@ -1257,6 +1398,8 @@ function ExperienciasContent() {
             setIsBookingOpen(false)
             setSelectedTour(null)
           }}
+          isFavorite={favorites.has(selectedTour.id)}
+          onToggleFavorite={handleToggleFavorite}
         />
       )}
     </>
