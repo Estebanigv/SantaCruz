@@ -142,7 +142,7 @@ export default function HeroSection() {
 
       <section
         ref={sectionRef}
-        className="relative overflow-hidden h-[85vh] sm:h-[90vh] md:h-[95vh] min-h-[500px] sm:min-h-[550px] md:min-h-[600px] max-h-[900px]"
+        className="relative overflow-hidden h-[100svh] sm:h-[100svh] md:h-[95vh] min-h-[100svh] sm:min-h-[100svh] md:min-h-[600px] md:max-h-[900px]"
       >
         {/* Background Image - Optimized with Next.js Image */}
         <div className="absolute inset-0">
