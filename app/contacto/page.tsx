@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, Phone, Mail, Clock, Send, ChevronRight } from 'lucide-react'
+import { WebPageSchema, BreadcrumbSchema, LocalBusinessSchema } from '@/components/seo/StructuredData'
 
 export default function ContactoPage() {
   const [formData, setFormData] = useState({
@@ -42,8 +43,23 @@ export default function ContactoPage() {
   ]
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section - Elegant and Minimal */}
+    <>
+      {/* SEO: Structured Data for Contact Page */}
+      <WebPageSchema
+        name="Contacto - Viña Santa Cruz"
+        description="Contáctanos para reservar tours, experiencias de enoturismo o eventos en Viña Santa Cruz. Ubicados en Ruta I-72 Km 25, Lolol, Valle de Colchagua."
+        url="https://www.vinasantacruz.cl/contacto"
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Inicio', url: 'https://www.vinasantacruz.cl' },
+          { name: 'Contacto', url: 'https://www.vinasantacruz.cl/contacto' },
+        ]}
+      />
+      <LocalBusinessSchema />
+
+      <main className="min-h-screen">
+        {/* Hero Section - Elegant and Minimal */}
       <section className="relative h-[45vh] min-h-[350px] md:h-[50vh] md:min-h-[400px] overflow-hidden">
         <Image
           src="/images/Tours y Expériencias/Paseo teleférico y Cerro de las Culturas.webp"
@@ -393,6 +409,7 @@ export default function ContactoPage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </>
   )
 }
