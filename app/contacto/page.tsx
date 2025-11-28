@@ -62,7 +62,7 @@ export default function ContactoPage() {
         {/* Hero Section - Elegant and Minimal */}
       <section className="relative h-[45vh] min-h-[350px] md:h-[50vh] md:min-h-[400px] overflow-hidden">
         <Image
-          src="/images/Tours y Expériencias/Paseo teleférico y Cerro de las Culturas.webp"
+          src="/images/webp/Enoturismo-y-sustentabilidad.webp"
           alt="Viña Santa Cruz - Valle de Colchagua"
           fill
           className="object-cover"

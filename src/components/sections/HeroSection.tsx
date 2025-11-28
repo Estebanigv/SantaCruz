@@ -10,6 +10,7 @@ export default function HeroSection() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [buttonFillProgress, setButtonFillProgress] = useState<{ [key: string]: number }>({})
   const [isInHeroSection, setIsInHeroSection] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
   const intervalsRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
@@ -145,6 +146,21 @@ export default function HeroSection() {
       >
         {/* Background Image - Optimized with Next.js Image */}
         <div className="absolute inset-0">
+          {/* Loading placeholder with corkscrew */}
+          <div
+            className={`absolute inset-0 z-10 flex items-center justify-center bg-[#1a1a1a] transition-opacity duration-700 ${
+              imageLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}
+          >
+            <div className="flex flex-col items-center gap-4">
+              <img
+                src="/images/ICONOS/preloaderMenada.gif"
+                alt="Cargando..."
+                className="w-24 h-24 sm:w-32 sm:h-32 object-contain"
+              />
+            </div>
+          </div>
+
           <Image
             src="/images/principal.png"
             alt="Viña Santa Cruz - Valle de Colchagua"
@@ -152,10 +168,13 @@ export default function HeroSection() {
             priority
             quality={85}
             sizes="100vw"
-            className="object-cover object-[center_35%] sm:object-[center_30%]"
+            className={`object-cover object-[center_35%] sm:object-[center_30%] transition-opacity duration-700 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{
               filter: 'brightness(0.95) contrast(1.05) saturate(1.1)',
             }}
+            onLoad={() => setImageLoaded(true)}
           />
 
           {/* Minimal gradient overlay */}
