@@ -243,10 +243,10 @@ export default function Header() {
             </div>
 
             {/* Utilities - far right */}
-            <div className="hidden md:flex items-center gap-2 lg:gap-3 xl:gap-4 absolute right-2 lg:right-4 xl:right-6">
-              {/* Language Selector */}
+            <div className="hidden md:flex items-center gap-1 lg:gap-2 xl:gap-4 absolute right-1 lg:right-4 xl:right-6">
+              {/* Language Selector - hidden on md, visible on lg+ */}
               <div
-                className="relative"
+                className="relative hidden lg:block"
                 onMouseEnter={() => setActiveLink('lang')}
                 onMouseLeave={() => setActiveLink(null)}
               >
@@ -318,12 +318,12 @@ export default function Header() {
               {!isAuthenticated ? (
                 <button
                   type="button"
-                  className="group relative p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
+                  className="group relative p-1.5 lg:p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
                   aria-label="Iniciar sesión"
                   onClick={(e) => e.preventDefault()}
                 >
                   <svg
-                    className="w-[18px] h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
+                    className="w-4 h-4 lg:w-[18px] lg:h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -343,8 +343,8 @@ export default function Header() {
                   aria-label="Mi perfil"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <div className="w-7 h-7 rounded-full bg-gold-500 flex items-center justify-center">
-                    <span className="font-[family-name:var(--font-raleway)] font-semibold text-black text-xs">
+                  <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-gold-500 flex items-center justify-center">
+                    <span className="font-[family-name:var(--font-raleway)] font-semibold text-black text-[10px] lg:text-xs">
                       {userName ? userName.charAt(0).toUpperCase() : 'U'}
                     </span>
                   </div>
@@ -354,12 +354,12 @@ export default function Header() {
               {/* Shopping Cart Icon */}
               <button
                 type="button"
-                className="group relative p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
+                className="group relative p-1.5 lg:p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
                 aria-label={`Carrito de compras${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
                 onClick={openCart}
               >
                 <svg
-                  className="w-[18px] h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
+                  className="w-4 h-4 lg:w-[18px] lg:h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -373,7 +373,7 @@ export default function Header() {
                 </svg>
                 {/* Badge showing cart item count */}
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-gold-500 text-black text-[9px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 lg:w-4 lg:h-4 bg-gold-500 text-black text-[8px] lg:text-[9px] font-bold rounded-full flex items-center justify-center">
                     {totalItems}
                   </span>
                 )}
@@ -382,7 +382,7 @@ export default function Header() {
               {/* CTA Button - Contacto */}
               <Link
                 href="/contacto"
-                className="group relative px-5 py-2 border border-white/50 rounded-full overflow-hidden hover:border-gold-400 cursor-pointer ml-1 transition-all duration-300"
+                className="group relative px-3 lg:px-5 py-1.5 lg:py-2 border border-white/50 rounded-full overflow-hidden hover:border-gold-400 cursor-pointer ml-0.5 lg:ml-1 transition-all duration-300"
                 onMouseEnter={() => setActiveLink('cta')}
                 onMouseLeave={() => setActiveLink(null)}
                 style={{
@@ -390,7 +390,7 @@ export default function Header() {
                 }}
               >
                 <span
-                  className={`relative z-10 font-[family-name:var(--font-raleway)] text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors duration-300 ${
+                  className={`relative z-10 font-[family-name:var(--font-raleway)] text-[9px] lg:text-[11px] font-semibold tracking-[0.08em] lg:tracking-[0.12em] uppercase transition-colors duration-300 ${
                     activeLink === 'cta' ? 'text-black' : 'text-white'
                   }`}
                   style={{
