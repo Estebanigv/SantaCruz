@@ -366,11 +366,13 @@ function WineCardFront({
   showLoginPrompt: boolean
 }) {
   const [revealProgress, setRevealProgress] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
   const grayLayerRef = useRef<HTMLDivElement>(null)
   const wineImageRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
 
   const handleHover = (isEntering: boolean) => {
+    setIsHovered(isEntering)
     const grayLayer = grayLayerRef.current
     const wineImg = wineImageRef.current
 
@@ -516,14 +518,33 @@ function WineCardFront({
             className="w-full h-full object-cover"
             style={{ filter: 'saturate(0.85) brightness(1.02)' }}
           />
-          {/* Shimmer effect - brillo continuo */}
-          <div
-            className="absolute inset-0 pointer-events-none animate-shimmer-slow"
-            style={{
-              background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.08) 35%, rgba(212,175,55,0.12) 50%, rgba(255,255,255,0.08) 65%, transparent 80%)',
-              backgroundSize: '300% 100%',
-            }}
-          />
+          {/* Smoke effect - humo animado solo al hover */}
+          <div className={`absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            {/* Capa de humo 1 - movimiento lento */}
+            <div
+              className={`absolute inset-0 ${isHovered ? 'animate-smoke-drift-1' : ''}`}
+              style={{
+                background: 'radial-gradient(ellipse 80% 60% at 20% 80%, rgba(255,255,255,0.18) 0%, transparent 50%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+                filter: 'blur(18px)',
+              }}
+            />
+            {/* Capa de humo 2 - movimiento medio */}
+            <div
+              className={`absolute inset-0 ${isHovered ? 'animate-smoke-drift-2' : ''}`}
+              style={{
+                background: 'radial-gradient(ellipse 70% 50% at 60% 70%, rgba(255,255,255,0.12) 0%, transparent 45%), radial-gradient(ellipse 50% 70% at 30% 30%, rgba(212,175,55,0.1) 0%, transparent 50%)',
+                filter: 'blur(22px)',
+              }}
+            />
+            {/* Capa de humo 3 - movimiento rápido */}
+            <div
+              className={`absolute inset-0 ${isHovered ? 'animate-smoke-drift-3' : ''}`}
+              style={{
+                background: 'radial-gradient(ellipse 90% 40% at 40% 90%, rgba(255,255,255,0.1) 0%, transparent 40%), radial-gradient(ellipse 40% 60% at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 45%)',
+                filter: 'blur(25px)',
+              }}
+            />
+          </div>
         </div>
 
         {/* Wine Bottle */}

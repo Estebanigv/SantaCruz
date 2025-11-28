@@ -4,6 +4,7 @@ import Header from '../src/components/layout/Header'
 import Footer from '../src/components/layout/Footer'
 import PageLoader from '../src/components/ui/PageLoader'
 import AgeVerificationModal from '../src/components/ui/AgeVerificationModal'
+import ScaleDetector from '../src/components/ui/ScaleDetector'
 import { CartProvider } from '../src/contexts/CartContext'
 import { AgeProvider } from '../src/contexts/AgeContext'
 import { ModalProvider } from '../src/contexts/ModalContext'
@@ -116,6 +117,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AgeProvider>
           <CartProvider>
             <ModalProvider>
+              <ScaleDetector />
               <PageLoader />
               <AgeVerificationModal />
               <Header />
