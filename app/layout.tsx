@@ -6,6 +6,8 @@ import PageLoader from '../src/components/ui/PageLoader'
 import AgeVerificationModal from '../src/components/ui/AgeVerificationModal'
 import { CartProvider } from '../src/contexts/CartContext'
 import { AgeProvider } from '../src/contexts/AgeContext'
+import { ModalProvider } from '../src/contexts/ModalContext'
+import WhatsAppButton from '../src/components/ui/WhatsAppButton'
 import CartSidebar from '../src/components/cart/CartSidebar'
 // import PageTransition from '../src/components/PageTransition'
 import '../src/styles/globals.css'
@@ -113,12 +115,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AgeProvider>
           <CartProvider>
-            <PageLoader />
-            <AgeVerificationModal />
-            <Header />
-            {children}
-            <Footer />
-            <CartSidebar />
+            <ModalProvider>
+              <PageLoader />
+              <AgeVerificationModal />
+              <Header />
+              {children}
+              <Footer />
+              <CartSidebar />
+              <WhatsAppButton />
+            </ModalProvider>
           </CartProvider>
         </AgeProvider>
       </body>

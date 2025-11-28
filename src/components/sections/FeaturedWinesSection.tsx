@@ -8,12 +8,14 @@ import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
 import { ShoppingCart, Heart, X, User, Download } from 'lucide-react'
 import Link from 'next/link'
+import { useModal } from '@/contexts/ModalContext'
 
 interface FeaturedWinesSectionProps {
   isAdult?: boolean | null
 }
 
 export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSectionProps) {
+  const { setIsModalOpen } = useModal()
   const [expandedWine, setExpandedWine] = useState<Wine | null>(null)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -78,7 +80,8 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
     gridRect.current = grid.getBoundingClientRect()
     setExpandedWine(wine)
     setExpandedIndex(index)
-  }, [isAnimating, expandedWine])
+    setIsModalOpen(true)
+  }, [isAnimating, expandedWine, setIsModalOpen])
 
   useEffect(() => {
     if (!expandedWine || expandedIndex === null) return
@@ -180,6 +183,7 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
         setExpandedWine(null)
         setExpandedIndex(null)
         setIsAnimating(false)
+        setIsModalOpen(false)
         cards.forEach(card => {
           gsap.set(card, { clearProps: 'all' })
         })

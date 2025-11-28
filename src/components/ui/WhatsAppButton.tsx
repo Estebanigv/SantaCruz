@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useModal } from '@/contexts/ModalContext'
 
 export default function WhatsAppButton() {
   const [isHovered, setIsHovered] = useState(false)
@@ -9,6 +10,7 @@ export default function WhatsAppButton() {
   const [isVisible, setIsVisible] = useState(true)
   const lastScrollY = useRef(0)
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
+  const { isModalOpen } = useModal()
 
   // TODO: Connect to real WhatsApp when ready
   // const phoneNumber = "56912345678"
@@ -83,7 +85,7 @@ export default function WhatsAppButton() {
       className={`
         fixed z-50 cursor-pointer transition-all duration-500 ease-out
         ${isMobile ? 'bottom-4 right-3' : 'bottom-6 right-6'}
-        ${isVisible
+        ${isVisible && !isModalOpen
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 translate-y-4 scale-90 pointer-events-none'
         }
