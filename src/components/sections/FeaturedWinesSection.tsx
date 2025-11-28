@@ -651,7 +651,7 @@ function WineCardExpanded({
   return (
     <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
       {/* Top/Left - Bottle with background */}
-      <div className="h-[40%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
+      <div className="h-[35%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
         {/* Background image - usa expandedBg si está disponible, sino colorBg */}
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -669,13 +669,13 @@ function WineCardExpanded({
           alt={wine.name}
           loading="eager"
           decoding="async"
-          className="relative z-10 h-[92%] md:h-[85%] w-auto object-contain max-h-[240px] md:max-h-none"
+          className="relative z-10 h-[90%] md:h-[85%] w-auto object-contain max-h-[200px] md:max-h-none"
           style={{ filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.35))' }}
         />
       </div>
 
       {/* Bottom/Right - Details */}
-      <div className="flex-1 md:w-[58%] p-4 md:p-4 lg:p-5 flex flex-col relative bg-white overflow-y-auto">
+      <div className="flex-1 md:w-[58%] p-3 md:p-4 lg:p-5 flex flex-col relative bg-white overflow-y-auto">
         {/* Top Actions */}
         <div className="absolute top-2 right-2 md:top-4 md:right-4 flex items-center gap-2 md:gap-3 z-10">
           {/* Botón favorito con tooltip */}
@@ -720,51 +720,51 @@ function WineCardExpanded({
         </div>
 
         {/* Header */}
-        <div className="mb-3 md:mb-4 pr-16 md:pr-24">
-          <p className="text-gold-600 text-xs md:text-xs font-semibold uppercase tracking-wider mb-1">
+        <div className="mb-2 md:mb-4 pr-16 md:pr-24">
+          <p className="text-gold-600 text-[11px] md:text-xs font-semibold uppercase tracking-wider mb-0.5">
             {wine.varietal}
           </p>
-          <h2 className="text-lg md:text-xl lg:text-2xl font-medium text-gray-900">
+          <h2 className="text-base md:text-xl lg:text-2xl font-medium text-gray-900">
             {wine.name}
           </h2>
-          <div className="h-0.5 w-10 md:w-10 bg-gold-400 mt-2" />
+          <div className="h-0.5 w-8 md:w-10 bg-gold-400 mt-1.5" />
         </div>
 
-        {/* Description - texto completo */}
-        <div className="mb-4 md:mb-7">
-          <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
+        {/* Description - texto completo con scroll si es necesario */}
+        <div className="mb-3 md:mb-7">
+          <p className="text-gray-600 text-[11px] md:text-sm leading-relaxed line-clamp-4 md:line-clamp-none">
             {wine.description || 'Descripción no disponible.'}
           </p>
         </div>
 
         {/* Characteristics */}
-        <div className="grid grid-cols-2 gap-2 md:gap-2 mb-4 md:mb-5">
-          <div className="bg-gray-50 rounded-lg px-3 py-2 md:px-3 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Añada</p>
-            <p className="font-medium text-gray-800 text-xs md:text-sm">{wine.vintage}</p>
+        <div className="grid grid-cols-2 gap-1.5 md:gap-2 mb-3 md:mb-5">
+          <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 md:px-3 md:py-2">
+            <p className="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Añada</p>
+            <p className="font-medium text-gray-800 text-[11px] md:text-sm">{wine.vintage}</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-3 py-2 md:px-3 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Crianza</p>
-            <p className="font-medium text-gray-800 text-xs md:text-sm">12 meses en barrica</p>
+          <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 md:px-3 md:py-2">
+            <p className="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Crianza</p>
+            <p className="font-medium text-gray-800 text-[11px] md:text-sm">12 meses en barrica</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-3 py-2 md:px-3 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Temperatura</p>
-            <p className="font-medium text-gray-800 text-xs md:text-sm">16-18°C</p>
+          <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 md:px-3 md:py-2">
+            <p className="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Temperatura</p>
+            <p className="font-medium text-gray-800 text-[11px] md:text-sm">16-18°C</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-3 py-2 md:px-3 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Maridaje</p>
-            <p className="font-medium text-gray-800 text-xs md:text-sm">Carnes rojas, quesos</p>
+          <div className="bg-gray-50 rounded-lg px-2.5 py-1.5 md:px-3 md:py-2">
+            <p className="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Maridaje</p>
+            <p className="font-medium text-gray-800 text-[11px] md:text-sm">Carnes rojas, quesos</p>
           </div>
         </div>
 
         {/* Price & Actions */}
-        <div className="pt-3 md:pt-4 mt-auto border-t border-gray-100">
+        <div className="pt-2 md:pt-4 mt-auto border-t border-gray-100">
           {/* Price */}
-          <div className="mb-3 md:mb-3">
-            <span className="text-xl md:text-xl lg:text-2xl font-semibold text-gold-600">
+          <div className="mb-2 md:mb-3">
+            <span className="text-lg md:text-xl lg:text-2xl font-semibold text-gold-600">
               {formatPrice(wine.price)}
             </span>
-            <span className="text-gray-400 text-xs md:text-sm ml-2 md:ml-2">CLP</span>
+            <span className="text-gray-400 text-[10px] md:text-sm ml-1.5 md:ml-2">CLP</span>
           </div>
 
           {/* Action Buttons */}
@@ -772,11 +772,11 @@ function WineCardExpanded({
             {/* Botón Añadir al Carro */}
             <button
               onClick={onAddToCart}
-              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-xs sm:text-sm font-medium py-2.5 sm:py-2.5 px-4 sm:px-4 rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
+              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-1.5 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-[11px] sm:text-sm font-medium py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
               <ShoppingCart
-                className="relative w-4 h-4 transition-all duration-300 group-hover/btn:rotate-12"
+                className="relative w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 group-hover/btn:rotate-12"
                 strokeWidth={1.5}
               />
               <span className="relative whitespace-nowrap">Añadir al Carrito</span>
@@ -786,10 +786,10 @@ function WineCardExpanded({
             <button
               onClick={(e) => e.preventDefault()}
               disabled
-              className="group/dl flex items-center justify-center gap-2 py-2.5 sm:py-2.5 px-3 sm:px-4 border border-gray-200 text-gray-400 rounded-lg text-xs sm:text-sm font-medium cursor-not-allowed opacity-50 whitespace-nowrap"
+              className="group/dl flex items-center justify-center gap-1.5 py-2 sm:py-2.5 px-2.5 sm:px-4 border border-gray-200 text-gray-400 rounded-lg text-[11px] sm:text-sm font-medium cursor-not-allowed opacity-50 whitespace-nowrap"
             >
               <Download
-                className="w-4 h-4 flex-shrink-0"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
                 strokeWidth={1.5}
               />
               <span className="sm:hidden">Ficha</span>
