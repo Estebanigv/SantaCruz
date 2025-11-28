@@ -1,32 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useAge } from '@/contexts/AgeContext'
 
 export default function AgeVerificationModal() {
   const [isVisible, setIsVisible] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const { isVerified, setAge } = useAge()
 
   useEffect(() => {
-    // Check if user has already verified their age
-    const hasVerified = localStorage.getItem('ageVerified')
-    // isAdult is stored for future use
-    localStorage.getItem('isAdult') // eslint-disable-line @typescript-eslint/no-unused-expressions
-
-    if (!hasVerified) {
+    if (!isVerified) {
       setIsVisible(true)
     }
-  }, [])
+  }, [isVerified])
 
   const handleVerify = (isOfAge: boolean) => {
     setIsTransitioning(true)
-    localStorage.setItem('ageVerified', 'true')
-    localStorage.setItem('isAdult', isOfAge ? 'true' : 'false')
+    setAge(isOfAge)
 
     // Smooth transition out
     setTimeout(() => {
       setIsVisible(false)
-      // Reload page to show appropriate content
-      window.location.reload()
     }, 800)
   }
 

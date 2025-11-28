@@ -1,0 +1,24 @@
+# Viña Santa Cruz - Robots.txt
+# Optimized for search engine crawling
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Allow crawling of images
+Allow: /images/
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.avif$
+
+# Sitemap location
+Sitemap: https://www.vinasantacruz.cl/sitemap.xml
+
+# Crawl-delay (optional, adjust if needed)
+# Crawl-delay: 1

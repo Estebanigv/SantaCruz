@@ -5,6 +5,7 @@ import Footer from '../src/components/layout/Footer'
 import PageLoader from '../src/components/ui/PageLoader'
 import AgeVerificationModal from '../src/components/ui/AgeVerificationModal'
 import { CartProvider } from '../src/contexts/CartContext'
+import { AgeProvider } from '../src/contexts/AgeContext'
 import CartSidebar from '../src/components/cart/CartSidebar'
 // import PageTransition from '../src/components/PageTransition'
 import '../src/styles/globals.css'
@@ -31,25 +32,95 @@ const raleway = Raleway({
 })
 
 export const metadata: Metadata = {
-  title: 'Viña Santa Cruz | Vinos Premium, Tours y Experiencias en Valle de Colchagua',
+  metadataBase: new URL('https://www.vinasantacruz.cl'),
+  title: {
+    default: 'Viña Santa Cruz | Vinos Premium y Enoturismo Valle de Colchagua',
+    template: '%s | Viña Santa Cruz',
+  },
   description:
-    'Descubre vinos premium chilenos, reserva tours exclusivos y únete a nuestro club de vinos. 150 años de tradición en el Valle de Colchagua.',
-  keywords:
-    'vinos chilenos, valle de colchagua, tours de vino, club de vinos, carmenere, cabernet sauvignon',
+    'Descubre vinos premium chilenos, reserva tours exclusivos de enoturismo y vive experiencias únicas. 150 años de tradición vitivinícola en el Valle de Colchagua, Chile.',
+  keywords: [
+    'viña santa cruz',
+    'vinos chilenos premium',
+    'valle de colchagua',
+    'enoturismo chile',
+    'tours de vino',
+    'degustación de vinos',
+    'carmenere',
+    'cabernet sauvignon',
+    'club de vinos',
+    'experiencias enológicas',
+    'turismo del vino',
+    'viñedos chile',
+  ],
+  authors: [{ name: 'Viña Santa Cruz' }],
+  creator: 'Viña Santa Cruz',
+  publisher: 'Viña Santa Cruz',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'es_CL',
+    url: 'https://www.vinasantacruz.cl',
+    siteName: 'Viña Santa Cruz',
+    title: 'Viña Santa Cruz | Vinos Premium y Enoturismo Valle de Colchagua',
+    description:
+      'Descubre vinos premium chilenos, reserva tours exclusivos de enoturismo y vive experiencias únicas. 150 años de tradición vitivinícola en el Valle de Colchagua.',
+    images: [
+      {
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Viña Santa Cruz - Valle de Colchagua',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Viña Santa Cruz | Vinos Premium y Enoturismo Valle de Colchagua',
+    description:
+      'Descubre vinos premium chilenos y vive experiencias únicas de enoturismo en el Valle de Colchagua.',
+    images: ['/images/og-image.jpg'],
+    creator: '@vinasantacruz',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://www.vinasantacruz.cl',
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    // yandex: 'your-yandex-verification-code',
+    // bing: 'your-bing-verification-code',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${playfair.variable} ${inter.variable} ${raleway.variable}`}>
       <body>
-        <CartProvider>
-          <PageLoader />
-          <AgeVerificationModal />
-          <Header />
-          {children}
-          <Footer />
-          <CartSidebar />
-        </CartProvider>
+        <AgeProvider>
+          <CartProvider>
+            <PageLoader />
+            <AgeVerificationModal />
+            <Header />
+            {children}
+            <Footer />
+            <CartSidebar />
+          </CartProvider>
+        </AgeProvider>
       </body>
     </html>
   )

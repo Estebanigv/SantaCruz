@@ -169,16 +169,16 @@ export default function HeroSection() {
         {/* Content - text at top, buttons at bottom, center clear */}
         <div className="relative z-30 h-full flex flex-col">
           {/* Text at top */}
-          <div className="flex-none pt-28 md:pt-36 text-center px-6">
+          <div className="flex-none pt-24 sm:pt-28 md:pt-36 text-center px-4 sm:px-6">
             {/* Main Heading */}
             <h1
-              className={`font-[family-name:var(--font-raleway)] text-white mb-4 transition-all duration-1000 ease-out ${
+              className={`font-[family-name:var(--font-raleway)] text-white mb-3 sm:mb-4 transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+                fontSize: 'clamp(2rem, 5vw, 4rem)',
                 lineHeight: '1.15',
-                letterSpacing: '0.15em',
+                letterSpacing: 'clamp(0.08em, 0.15em, 0.15em)',
                 textShadow: '0 4px 20px rgba(0,0,0,0.6)',
                 transitionDelay: '200ms',
                 fontWeight: '300',
@@ -193,11 +193,11 @@ export default function HeroSection() {
 
             {/* Subtitle */}
             <p
-              className={`font-[family-name:var(--font-raleway)] text-white/95 text-lg md:text-xl max-w-2xl mx-auto transition-all duration-1000 ease-out ${
+              className={`font-[family-name:var(--font-raleway)] text-white/95 text-base sm:text-lg md:text-xl max-w-2xl mx-auto transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
-                letterSpacing: '0.05em',
+                letterSpacing: 'clamp(0.02em, 0.05em, 0.05em)',
                 textShadow: '0 3px 15px rgba(0,0,0,0.8)',
                 transitionDelay: '400ms',
                 fontWeight: '400',
@@ -224,9 +224,9 @@ export default function HeroSection() {
           <div className="flex-1" />
 
           {/* Buttons at bottom - Animated CTAs */}
-          <div className="flex-none pb-28 md:pb-32 text-center px-6">
+          <div className="flex-none pb-20 sm:pb-24 md:pb-32 text-center px-4 sm:px-6">
             <div
-              className={`flex flex-col sm:flex-row gap-5 sm:gap-6 justify-center transition-all duration-1000 ease-out ${
+              className={`flex flex-col sm:flex-row gap-4 sm:gap-5 md:gap-6 justify-center transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: '600ms' }}
@@ -234,7 +234,7 @@ export default function HeroSection() {
               {/* Reserva - Botón principal dorado */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-3 px-12 py-4 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.2em] uppercase text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 md:px-12 py-3 sm:py-4 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('tour', true)}
                 onMouseLeave={() => handleButtonHover('tour', false)}
               >
@@ -249,7 +249,7 @@ export default function HeroSection() {
               {/* Ver Vinos - Botón secundario elegante */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-3 px-12 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.2em] uppercase text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 md:px-12 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('vinos', true)}
                 onMouseLeave={() => handleButtonHover('vinos', false)}
               >

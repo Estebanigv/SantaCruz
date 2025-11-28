@@ -9,6 +9,7 @@ import BrandStorySection from '@/components/sections/BrandStorySection'
 import InstagramSection from '@/components/sections/InstagramSection'
 import WhatsAppButton from '@/components/ui/WhatsAppButton'
 import { useAgeVerification } from '@/hooks/useAgeVerification'
+import { OrganizationSchema, LocalBusinessSchema, WebPageSchema } from '@/components/seo/StructuredData'
 
 export default function HomePage() {
   const { isAdult, isLoading } = useAgeVerification()
@@ -19,8 +20,18 @@ export default function HomePage() {
   }
 
   return (
-    <main>
-      <HeroSection />
+    <>
+      {/* SEO: Structured Data for Homepage */}
+      <OrganizationSchema />
+      <LocalBusinessSchema />
+      <WebPageSchema
+        name="Viña Santa Cruz - Vinos Premium y Enoturismo en Valle de Colchagua"
+        description="Descubre vinos premium chilenos, reserva tours exclusivos de enoturismo y vive experiencias únicas. 150 años de tradición vitivinícola en el Valle de Colchagua."
+        url="https://www.vinasantacruz.cl"
+      />
+
+      <main>
+        <HeroSection />
 
       {/* Wrapper with watercolor background - extends through wines section */}
       <div className="relative bg-gradient-to-b from-[#faf8f5] via-[#faf8f5] via-60% to-white">
@@ -58,15 +69,16 @@ export default function HomePage() {
 
         {/* Content sections */}
         <USPsSection />
-        <FeaturedWinesSection />
+        <FeaturedWinesSection isAdult={isAdult} />
         <RestaurantSection isAdult={isAdult} />
       </div>
       <BrandStorySection />
       <ToursSection />
       <InstagramSection />
 
-      {/* WhatsApp floating button */}
-      <WhatsAppButton />
-    </main>
+        {/* WhatsApp floating button */}
+        <WhatsAppButton />
+      </main>
+    </>
   )
 }

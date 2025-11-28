@@ -155,8 +155,8 @@ export default function Header() {
           }}
         />
 
-        <nav className="w-full px-4 lg:px-6">
-          <div className="relative flex items-center justify-center h-20 md:h-24 lg:h-32">
+        <nav className="w-full px-4 sm:px-6 lg:px-6">
+          <div className="relative flex items-center justify-between lg:justify-center h-16 sm:h-20 md:h-24 lg:h-32">
             {/* Left Navigation - Experiencias, Restaurante (to the left of logo) */}
             <div className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-[calc(100%+150px)]">
               {leftNavigation.map((item) => (
@@ -416,12 +416,13 @@ export default function Header() {
             </div>
 
             {/* Mobile Logo */}
-            <Link href="/" className="lg:hidden group relative z-10 flex items-center">
+            <Link href="/" className="lg:hidden group relative z-10 flex items-center flex-shrink-0">
               <div className="relative">
                 <img
                   src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
                   alt="Viña Santa Cruz"
-                  className="h-10 sm:h-12 w-auto object-contain opacity-95"
+                  className="h-8 sm:h-10 md:h-12 w-auto object-contain opacity-95"
+                  style={{ maxWidth: '180px' }}
                 />
               </div>
             </Link>
@@ -429,7 +430,7 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden relative w-12 h-12 flex items-center justify-center group"
+              className="lg:hidden relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group flex-shrink-0"
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
@@ -495,15 +496,15 @@ export default function Header() {
           </div>
 
           {/* Menu content */}
-          <div className="relative flex flex-col items-center justify-center h-full px-8">
+          <div className="relative flex flex-col items-center justify-center h-full px-4 sm:px-8">
             {/* Decorative top line */}
             <div
-              className={`absolute top-32 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 ${
+              className={`absolute top-24 sm:top-32 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 ${
                 isMobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
               }`}
             />
 
-            <nav className="space-y-6 text-center">
+            <nav className="space-y-4 sm:space-y-6 text-center">
               {[...leftNavigation, ...rightNavigation].map((item, index) => (
                 <div
                   key={item.href}
@@ -517,7 +518,7 @@ export default function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="group relative inline-block cursor-pointer"
                   >
-                    <span className="block text-4xl md:text-5xl font-[family-name:var(--font-playfair)] font-bold text-white group-hover:text-white/80 transition-all duration-500">
+                    <span className="block text-3xl sm:text-4xl md:text-5xl font-[family-name:var(--font-playfair)] font-bold text-white group-hover:text-white/80 transition-all duration-500">
                       {item.label}
                     </span>
 

@@ -1,7 +1,17 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
+import { useAge } from '@/contexts/AgeContext'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const [showAgeReset, setShowAgeReset] = useState(false)
+  const { resetVerification } = useAge()
+
+  const handleResetAgeVerification = () => {
+    resetVerification()
+  }
 
   const footerLinks = {
     experiencias: [
@@ -89,29 +99,29 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Footer Content */}
-      <div className="relative container-custom py-20 md:py-28">
+      <div className="relative container-custom py-12 sm:py-16 md:py-20 lg:py-28">
         {/* Top Section: Brand + Newsletter */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-20 pb-16 border-b border-gray-800/50">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-24 mb-12 sm:mb-16 lg:mb-20 pb-8 sm:pb-12 lg:pb-16 border-b border-gray-800/50">
           {/* Brand Column - Ultra elegant */}
           <div>
-            <Link href="/" className="inline-block group mb-8">
+            <Link href="/" className="inline-block group mb-6 sm:mb-8">
               <img
                 src="/images/logo_vsc_png_byw.png"
                 alt="Viña Santa Cruz"
-                className="h-16 md:h-20 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity duration-500"
+                className="h-12 sm:h-16 md:h-20 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity duration-500"
               />
             </Link>
 
             <p
-              className="text-gray-400 text-base leading-relaxed mb-10 max-w-md"
+              className="text-gray-400 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 md:mb-10 max-w-md"
               style={{ lineHeight: '1.8' }}
             >
               Primera viña 100% solar de Chile. Enoturismo premium en Lolol, Valle de Colchagua.
             </p>
 
             {/* Contact info */}
-            <div className="space-y-3 mb-10">
-              <div className="flex items-start gap-3 text-sm text-gray-400">
+            <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 md:mb-10">
+              <div className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-gray-400">
                 <svg
                   className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5"
                   fill="none"
@@ -158,18 +168,18 @@ export default function Footer() {
             </div>
 
             {/* Social Links - Modern & Elegant */}
-            <div className="mb-8">
-              <p className="text-xs text-gray-500 uppercase tracking-[0.2em] mb-5 font-semibold">
+            <div className="mb-6 sm:mb-8">
+              <p className="text-xs text-gray-500 uppercase tracking-[0.2em] mb-3 sm:mb-5 font-semibold">
                 Síguenos
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {socialLinks.map((social) => (
                   <a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative w-11 h-11 rounded-lg border border-gray-800 bg-gray-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:border-gold-500 transition-all duration-500 overflow-hidden"
+                    className="group relative w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-gray-800 bg-gray-900/30 flex items-center justify-center text-gray-400 hover:text-white hover:border-gold-500 transition-all duration-500 overflow-hidden"
                     aria-label={social.name}
                   >
                     {/* Glow effect on hover */}
@@ -184,10 +194,10 @@ export default function Footer() {
           {/* Newsletter - Premium design */}
           <div className="flex flex-col justify-center">
             <div className="max-w-lg">
-              <h3 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-white mb-4">
+              <h3 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
                 Newsletter Exclusivo
               </h3>
-              <p className="text-gray-400 text-base mb-8 leading-relaxed">
+              <p className="text-gray-400 text-sm sm:text-base mb-6 sm:mb-8 leading-relaxed">
                 Suscríbete y recibe ofertas especiales, lanzamientos exclusivos y contenido premium.
               </p>
 
@@ -196,13 +206,13 @@ export default function Footer() {
                 {/* Glow effect */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 rounded-xl opacity-0 group-hover:opacity-20 blur transition-all duration-500" />
 
-                <div className="relative flex gap-3">
+                <div className="relative flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <input
                     type="email"
                     placeholder="tu@email.com"
-                    className="flex-1 bg-gray-900/80 border border-gray-800 rounded-lg px-5 py-4 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-gold-500 focus:bg-gray-900 transition-all duration-300 backdrop-blur-sm"
+                    className="flex-1 bg-gray-900/80 border border-gray-800 rounded-lg px-4 sm:px-5 py-3 sm:py-4 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-gold-500 focus:bg-gray-900 transition-all duration-300 backdrop-blur-sm"
                   />
-                  <button className="bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-black-900 px-8 py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:shadow-gold-glow whitespace-nowrap">
+                  <button className="bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-black-900 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-sm transition-all duration-300 hover:shadow-gold-glow whitespace-nowrap">
                     Suscribir
                   </button>
                 </div>
@@ -223,18 +233,18 @@ export default function Footer() {
         </div>
 
         {/* Links Grid - Clean & organized */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 md:gap-12 lg:gap-8 mb-10 sm:mb-12 lg:mb-16">
           {/* Experiencias */}
           <div>
-            <h4 className="font-semibold text-sm mb-6 text-gold-500 uppercase tracking-[0.15em]">
+            <h4 className="font-semibold text-xs sm:text-sm mb-4 sm:mb-6 text-gold-500 uppercase tracking-[0.15em]">
               Experiencias
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.experiencias.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
+                    className="text-xs sm:text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
                   >
                     <span className="relative">
                       {link.label}
@@ -248,15 +258,15 @@ export default function Footer() {
 
           {/* Vinos */}
           <div>
-            <h4 className="font-semibold text-sm mb-6 text-gold-500 uppercase tracking-[0.15em]">
+            <h4 className="font-semibold text-xs sm:text-sm mb-4 sm:mb-6 text-gold-500 uppercase tracking-[0.15em]">
               Vinos
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.vinos.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
+                    className="text-xs sm:text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
                   >
                     <span className="relative">
                       {link.label}
@@ -270,15 +280,15 @@ export default function Footer() {
 
           {/* Nosotros */}
           <div>
-            <h4 className="font-semibold text-sm mb-6 text-gold-500 uppercase tracking-[0.15em]">
+            <h4 className="font-semibold text-xs sm:text-sm mb-4 sm:mb-6 text-gold-500 uppercase tracking-[0.15em]">
               Nosotros
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.nosotros.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
+                    className="text-xs sm:text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
                   >
                     <span className="relative">
                       {link.label}
@@ -292,15 +302,15 @@ export default function Footer() {
 
           {/* Contacto */}
           <div>
-            <h4 className="font-semibold text-sm mb-6 text-gold-500 uppercase tracking-[0.15em]">
+            <h4 className="font-semibold text-xs sm:text-sm mb-4 sm:mb-6 text-gold-500 uppercase tracking-[0.15em]">
               Contacto
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.contacto.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
+                    className="text-xs sm:text-sm text-gray-400 hover:text-white transition-all duration-300 inline-block relative group"
                   >
                     <span className="relative">
                       {link.label}
@@ -314,14 +324,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar - Minimal & elegant */}
-        <div className="pt-8 border-t border-gray-800/50">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-            <div className="flex items-center gap-4">
-              <p className="text-sm text-gray-600">
+        <div className="pt-6 sm:pt-8 border-t border-gray-800/50">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-center md:text-left">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-4">
+              <p className="text-xs sm:text-sm text-gray-600">
                 © {currentYear} Viña Santa Cruz
               </p>
               {/* Subtle review links */}
-              <span className="text-gray-700">·</span>
+              <span className="hidden sm:inline text-gray-700">·</span>
               <a
                 href="https://www.tripadvisor.cl/Attraction_Review-g7300025-d1414952-Reviews-Vina_Santa_Cruz-Lolol_O_Higgins_Region.html"
                 target="_blank"
@@ -352,7 +362,7 @@ export default function Footer() {
                 Google
               </a>
             </div>
-            <div className="flex items-center gap-8">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
               <Link
                 href="/terminos-condiciones"
                 className="text-sm text-gray-500 hover:text-gold-500 transition-all duration-300 relative group"
@@ -380,6 +390,40 @@ export default function Footer() {
                   <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gold-500 group-hover:w-full transition-all duration-300" />
                 </span>
               </Link>
+              <span className="text-gray-700">·</span>
+              {/* Age verification reset button */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowAgeReset(!showAgeReset)}
+                  className="text-sm text-gray-500 hover:text-gold-500 transition-all duration-300 relative group"
+                >
+                  <span className="relative">
+                    Verificación de edad
+                    <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gold-500 group-hover:w-full transition-all duration-300" />
+                  </span>
+                </button>
+                {showAgeReset && (
+                  <div className="absolute bottom-full right-0 mb-2 p-4 bg-gray-900 border border-gray-700 rounded-lg shadow-xl min-w-[240px] z-50">
+                    <p className="text-sm text-gray-300 mb-3">
+                      ¿Deseas cambiar tu respuesta de verificación de edad?
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleResetAgeVerification}
+                        className="flex-1 px-3 py-2 bg-gold-500 text-black text-sm font-medium rounded hover:bg-gold-400 transition-colors"
+                      >
+                        Sí, cambiar
+                      </button>
+                      <button
+                        onClick={() => setShowAgeReset(false)}
+                        className="flex-1 px-3 py-2 bg-gray-700 text-white text-sm rounded hover:bg-gray-600 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

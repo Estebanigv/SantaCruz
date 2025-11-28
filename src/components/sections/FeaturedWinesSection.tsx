@@ -7,8 +7,13 @@ import { Wine } from '@/types'
 import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
 import { ShoppingCart, Heart, X, User, Download } from 'lucide-react'
+import Link from 'next/link'
 
-export default function FeaturedWinesSection() {
+interface FeaturedWinesSectionProps {
+  isAdult?: boolean | null
+}
+
+export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSectionProps) {
   const [expandedWine, setExpandedWine] = useState<Wine | null>(null)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -224,6 +229,11 @@ export default function FeaturedWinesSection() {
 
   const formatPrice = (price: number) => {
     return `$${price.toLocaleString('es-CL')}`
+  }
+
+  // If user is a minor, show alternative content (after all hooks are called)
+  if (isAdult === false) {
+    return <MinorAlternativeSection />
   }
 
   return (
@@ -736,5 +746,137 @@ function WineCardExpanded({
         </div>
       </div>
     </div>
+  )
+}
+
+// Alternative section for users under legal drinking age
+function MinorAlternativeSection() {
+  const experiences = [
+    {
+      title: 'Teleférico Panorámico',
+      description: 'Disfruta de vistas espectaculares del Valle de Colchagua desde nuestro teleférico de última generación.',
+      image: '/images/Tours y Expériencias/Teleférico.webp',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Museo Indígena',
+      description: 'Explora la rica cultura de los pueblos originarios de Chile en nuestro museo interactivo.',
+      image: '/images/Tours y Expériencias/Museo Indigena.webp',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Observatorio Astronómico',
+      description: 'Descubre los cielos más limpios de Chile y observa estrellas, planetas y galaxias.',
+      image: '/images/Tours y Expériencias/Observatorio.webp',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Paseos en Bicicleta',
+      description: 'Recorre nuestros viñedos y el valle en bicicleta con rutas para todos los niveles.',
+      image: '/images/Tours y Expériencias/Bicicleta.webp',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ),
+    },
+  ]
+
+  return (
+    <section className="bg-transparent py-12 md:py-16 relative overflow-hidden">
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.01]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(212, 175, 55, 0.1) 1px, transparent 1px)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+      </div>
+
+      <div className="container-custom relative">
+        <SectionHeader
+          label="Experiencias para Todos"
+          title="Descubre el Valle"
+          subtitle="Explora nuestras actividades culturales y de aventura para toda la familia"
+        />
+
+        {/* Experiences Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {experiences.map((experience) => (
+            <div
+              key={experience.title}
+              className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+            >
+              {/* Image */}
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img
+                  src={experience.image}
+                  alt={experience.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Icon badge */}
+                <div className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gold-600 shadow-lg">
+                  {experience.icon}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <h3 className="text-lg font-medium text-gray-900 mb-2 group-hover:text-gold-600 transition-colors">
+                  {experience.title}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  {experience.description}
+                </p>
+                <Link
+                  href="/experiencias"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-gold-600 hover:text-gold-700 transition-colors"
+                >
+                  <span>Más información</span>
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-14">
+          <Link
+            href="/experiencias"
+            className="group inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-[family-name:var(--font-raleway)] font-medium text-sm tracking-wide rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105"
+          >
+            <span>Ver Todas las Experiencias</span>
+            <svg
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </section>
   )
 }
