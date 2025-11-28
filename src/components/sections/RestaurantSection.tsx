@@ -52,7 +52,7 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
   ]
 
   return (
-    <section className="relative bg-transparent pt-6 pb-16 md:pt-8 md:pb-20 overflow-hidden">
+    <section id="gastronomia" className="relative bg-transparent pt-6 pb-16 md:pt-8 md:pb-20 overflow-hidden scroll-mt-24">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.015]">
         <div
@@ -68,7 +68,7 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
         {/* Custom Header with Logo */}
         <div className="text-center mb-12 md:mb-16">
           {/* Label with decorative lines */}
-          <div className="flex items-center gap-4 mb-4 justify-center">
+          <div className="flex items-center gap-4 mb-6 justify-center">
             <div className="flex items-center gap-2">
               <div className="w-12 h-px bg-gradient-to-r from-transparent to-gold-500" />
               <div className="relative px-6 py-3 text-gold-600">
@@ -80,14 +80,12 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
               <div className="w-12 h-px bg-gradient-to-l from-transparent to-gold-500" />
             </div>
           </div>
-          <div className="flex flex-row items-center justify-center gap-4">
-            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-black-900">
-              Restaurante
-            </h2>
+          {/* Loló Logo prominently displayed */}
+          <div className="flex flex-col items-center justify-center mb-4">
             <img
               src="/images/Logotipos/Logo-Lolo.svg"
               alt="Loló - Cocina de Origen"
-              className="h-10 md:h-14 w-auto object-contain"
+              className="h-16 md:h-20 lg:h-24 w-auto object-contain"
             />
           </div>
           <p className="font-[family-name:var(--font-raleway)] text-gray-600 text-base md:text-lg max-w-2xl mx-auto mt-4">

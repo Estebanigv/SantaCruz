@@ -119,7 +119,7 @@ export default function Header() {
 
   const leftNavigation = [
     { label: 'Vinos', href: '/vinos' },
-    { label: 'Restaurante', href: '/restaurante' },
+    { label: 'Gastronomía', href: '/#gastronomia' },
   ]
 
   const rightNavigation = [
@@ -155,10 +155,10 @@ export default function Header() {
           }}
         />
 
-        <nav className="w-full px-4 sm:px-6 md:px-4 lg:px-6 xl:px-8">
-          <div className="relative flex items-center justify-between md:justify-center h-16 sm:h-20 md:h-22 lg:h-28 xl:h-32">
-            {/* Left Navigation - Experiencias, Restaurante (to the left of logo) */}
-            <div className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-8 absolute left-1/2 -translate-x-[calc(100%+70px)] lg:-translate-x-[calc(100%+100px)] xl:-translate-x-[calc(100%+140px)]">
+        <nav className="w-full px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
+          <div className="relative flex items-center justify-between md:justify-center h-16 sm:h-20 md:h-20 lg:h-24 xl:h-28">
+            {/* Left Navigation - Desktop (next to logo on left) */}
+            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 -translate-x-[calc(100%+60px)] lg:-translate-x-[calc(100%+80px)] xl:-translate-x-[calc(100%+110px)]">
               {leftNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -168,7 +168,7 @@ export default function Header() {
                   onMouseLeave={() => setActiveLink(null)}
                 >
                   <span
-                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.08em] md:tracking-[0.1em] lg:tracking-[0.12em] xl:tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[10px] md:text-[11px] lg:text-[12px] xl:text-[14px]"
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.08em] lg:tracking-[0.1em] xl:tracking-[0.12em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[10px] lg:text-[11px] xl:text-[13px]"
                     style={{
                       textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                     }}
@@ -189,7 +189,7 @@ export default function Header() {
             </div>
 
             {/* Logo - Absolute Center */}
-            <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center justify-center">
+            <div className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
               <Link
                 href="/"
                 className="group relative z-10 flex items-center"
@@ -200,7 +200,7 @@ export default function Header() {
                   <img
                     src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
                     alt="Viña Santa Cruz"
-                    className={`h-10 md:h-11 lg:h-14 xl:h-16 w-auto object-contain transition-all duration-500 ease-out ${
+                    className={`h-8 md:h-9 lg:h-11 xl:h-14 w-auto object-contain transition-all duration-500 ease-out ${
                       activeLink === 'logo' ? 'opacity-100 scale-105' : 'opacity-95 scale-100'
                     }`}
                     style={{
@@ -211,8 +211,8 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Right Navigation - Hotel, Vinos (to the right of logo) */}
-            <div className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-8 absolute left-1/2 translate-x-[70px] lg:translate-x-[100px] xl:translate-x-[140px]">
+            {/* Right Navigation - Desktop (next to logo on right) */}
+            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 translate-x-[60px] lg:translate-x-[80px] xl:translate-x-[110px]">
               {rightNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -222,7 +222,7 @@ export default function Header() {
                   onMouseLeave={() => setActiveLink(null)}
                 >
                   <span
-                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.08em] md:tracking-[0.1em] lg:tracking-[0.12em] xl:tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[10px] md:text-[11px] lg:text-[12px] xl:text-[14px]"
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.08em] lg:tracking-[0.1em] xl:tracking-[0.12em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[10px] lg:text-[11px] xl:text-[13px]"
                     style={{
                       textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                     }}
@@ -242,11 +242,8 @@ export default function Header() {
               ))}
             </div>
 
-            {/* Utilities - right side with some margin */}
-            <div className="hidden md:flex items-center gap-1 lg:gap-2 xl:gap-4 absolute right-1 lg:right-2 xl:right-4">
-              {/* Separator - elegant vertical line */}
-              <div className="w-px h-4 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
-
+            {/* Utilities - far right */}
+            <div className="hidden md:flex items-center gap-2 lg:gap-3 xl:gap-4 absolute right-2 lg:right-4 xl:right-6">
               {/* Language Selector */}
               <div
                 className="relative"
