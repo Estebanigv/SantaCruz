@@ -423,7 +423,7 @@ export default function ToursSection({ isAdult = true }: ToursSectionProps) {
 
       {/* Experience Cards Grid */}
       <div className={`container-custom transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className={`flex flex-wrap gap-5 md:gap-6 ${
+        <div className={`flex flex-wrap gap-4 sm:gap-5 md:gap-6 ${
           totalExperiences <= 3 ? 'justify-center' : 'justify-start'
         }`}>
           {filteredExperiences.map((exp, index) => {
@@ -436,7 +436,7 @@ export default function ToursSection({ isAdult = true }: ToursSectionProps) {
                 data-experience-card
                 onMouseEnter={() => setHoveredCard(exp.id)}
                 onMouseLeave={() => setHoveredCard(null)}
-                className={`group relative transition-all duration-500 ease-out rounded-xl overflow-hidden bg-white w-[calc(50%-10px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] ${
+                className={`group relative transition-all duration-500 ease-out rounded-xl overflow-hidden bg-white w-[calc(50%-8px)] sm:w-[calc(50%-10px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] ${
                   isSelected ? 'ring-2 ring-offset-2' : ''
                 }`}
                 style={{
@@ -444,9 +444,7 @@ export default function ToursSection({ isAdult = true }: ToursSectionProps) {
                   boxShadow: isHovered
                     ? '0 20px 40px -15px rgba(0,0,0,0.15)'
                     : '0 2px 15px -5px rgba(0,0,0,0.06)',
-                  transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-                  // Ring color is applied via className
-                  maxWidth: '280px'
+                  transform: isHovered ? 'translateY(-4px)' : 'translateY(0)'
                 }}
               >
                 {/* Image Container */}

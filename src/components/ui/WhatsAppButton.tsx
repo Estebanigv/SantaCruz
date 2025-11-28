@@ -59,7 +59,7 @@ export default function WhatsAppButton() {
   return (
     <button
       onClick={(e) => e.preventDefault()}
-      className="fixed bottom-6 right-6 z-50 group cursor-pointer"
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 group cursor-pointer"
       aria-label="Contactar vía WhatsApp"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -72,15 +72,15 @@ export default function WhatsAppButton() {
           }`}
         />
 
-        {/* Main button - Elegant design */}
+        {/* Main button - Más pequeño en móvil */}
         <div
-          className={`relative w-16 h-16 rounded-full bg-[#25D366] flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 ${
+          className={`relative w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg md:shadow-2xl hover:shadow-xl md:hover:shadow-3xl transition-all duration-500 hover:scale-110 ${
             isPulsing ? 'scale-105' : 'scale-100'
           }`}
         >
-          {/* WhatsApp Icon */}
+          {/* WhatsApp Icon - Más pequeño en móvil */}
           <svg
-            className={`w-8 h-8 text-white transition-transform duration-500 group-hover:rotate-12 ${
+            className={`w-6 h-6 md:w-7 md:h-7 text-white transition-transform duration-500 group-hover:rotate-12 ${
               isPulsing ? 'scale-110' : 'scale-100'
             }`}
             fill="currentColor"
@@ -97,15 +97,15 @@ export default function WhatsAppButton() {
           />
         </div>
 
-        {/* Tooltip - Refined and formal */}
+        {/* Tooltip - Solo visible en desktop */}
         <div
-          className={`absolute right-full mr-5 top-1/2 -translate-y-1/2 transition-all duration-300 ${
+          className={`hidden md:block absolute right-full mr-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${
             (isHovered || showInitialLabel) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
           }`}
         >
-          <div className="bg-black-900 text-white px-6 py-3 rounded-xl shadow-2xl border border-gold-500/20 backdrop-blur-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-gold-500" />
+          <div className="bg-black-900 text-white px-5 py-2.5 rounded-lg shadow-xl border border-gold-500/20 backdrop-blur-xl">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-gold-500" />
               <span className="font-[family-name:var(--font-raleway)] text-sm font-light tracking-wide whitespace-nowrap">
                 Comunícate con nosotros
               </span>
@@ -113,7 +113,7 @@ export default function WhatsAppButton() {
           </div>
           {/* Arrow */}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full">
-            <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-black-900" />
+            <div className="w-0 h-0 border-t-6 border-t-transparent border-b-6 border-b-transparent border-l-6 border-l-black-900" />
           </div>
         </div>
       </div>
