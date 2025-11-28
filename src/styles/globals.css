@@ -89,10 +89,10 @@
 
   /* Zoom correction for high DPI screens with 150% scaling */
   /* 1920x1080 @ 150% = 1280px viewport */
-  /* We apply 83.33% zoom (125/150) to make it look like 125% scale */
+  /* We apply 85% zoom to make it look more like 125% scale */
   @media screen and (min-width: 1200px) and (max-width: 1400px) {
     html {
-      zoom: 0.9; /* 90% zoom to compensate for 150% scale */
+      zoom: 0.85; /* 85% zoom to compensate for 150% scale */
     }
   }
 
@@ -747,6 +747,35 @@ html {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* Modal Animations */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInModal 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleInModal 0.3s ease-out forwards;
 }
 
 /* Respect prefers-reduced-motion */

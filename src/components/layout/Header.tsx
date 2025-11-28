@@ -158,7 +158,7 @@ export default function Header() {
         <nav className="w-full px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
           <div className="relative flex items-center justify-between md:justify-center h-16 sm:h-20 md:h-20 lg:h-24 xl:h-28">
             {/* Left Navigation - Desktop (next to logo on left) */}
-            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 -translate-x-[calc(100%+60px)] lg:-translate-x-[calc(100%+80px)] xl:-translate-x-[calc(100%+110px)]">
+            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 -translate-x-[calc(100%+85px)] lg:-translate-x-[calc(100%+100px)] xl:-translate-x-[calc(100%+130px)]">
               {leftNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -212,7 +212,7 @@ export default function Header() {
             </div>
 
             {/* Right Navigation - Desktop (next to logo on right) */}
-            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 translate-x-[60px] lg:translate-x-[80px] xl:translate-x-[110px]">
+            <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 translate-x-[85px] lg:translate-x-[100px] xl:translate-x-[130px]">
               {rightNavigation.map((item) => (
                 <Link
                   key={item.href}

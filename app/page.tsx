@@ -36,7 +36,7 @@ export default function HomePage() {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url('/images/freepik__haz-esto-es-un-estilo-acurela-en-blanco-y-negro-qu__88624.png')`,
+              backgroundImage: `url('/images/webp/backgorund vinos destacados.webp')`,
               backgroundSize: '130%',
               backgroundPosition: 'center -5%',
               backgroundRepeat: 'no-repeat',
@@ -50,7 +50,7 @@ export default function HomePage() {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url('/images/freepik__haz-esto-es-un-estilo-acurela-en-blanco-y-negro-qu__88624.png')`,
+              backgroundImage: `url('/images/webp/backgorund vinos destacados.webp')`,
               backgroundSize: '120%',
               backgroundPosition: 'center top',
               backgroundRepeat: 'no-repeat',
