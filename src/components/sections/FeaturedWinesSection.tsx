@@ -734,32 +734,33 @@ function WineCardExpanded({
             <span className="text-gray-400 text-xs md:text-sm ml-1 md:ml-2">CLP</span>
           </div>
 
-          {/* Action Buttons - Stack on mobile */}
-          <div className="flex flex-col sm:flex-row gap-2">
+          {/* Action Buttons - Siempre en fila, compactos en móvil */}
+          <div className="flex flex-row gap-2">
             {/* Botón Añadir al Carro */}
             <button
               onClick={onAddToCart}
-              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-sm font-medium py-3 sm:py-2.5 px-4 rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
+              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-1.5 sm:gap-2 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-xs sm:text-sm font-medium py-2.5 sm:py-2.5 px-3 sm:px-4 rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
               <ShoppingCart
                 className="relative w-4 h-4 transition-all duration-300 group-hover/btn:rotate-12"
                 strokeWidth={1.5}
               />
-              <span className="relative">Añadir al Carrito</span>
+              <span className="relative whitespace-nowrap">Añadir al Carrito</span>
             </button>
 
-            {/* Botón Descargar Ficha Técnica - Desactivado por ahora */}
+            {/* Botón Descargar Ficha Técnica - Compacto en móvil */}
             <button
               onClick={(e) => e.preventDefault()}
               disabled
-              className="group/dl flex items-center justify-center gap-2 py-3 sm:py-2.5 px-4 border border-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed opacity-50"
+              className="group/dl flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-2.5 sm:px-4 border border-gray-200 text-gray-400 rounded-lg text-xs sm:text-sm font-medium cursor-not-allowed opacity-50 whitespace-nowrap"
             >
               <Download
-                className="w-4 h-4"
+                className="w-4 h-4 flex-shrink-0"
                 strokeWidth={1.5}
               />
-              <span>Ficha Técnica</span>
+              <span className="sm:hidden">Ficha</span>
+              <span className="hidden sm:inline">Ficha Técnica</span>
             </button>
           </div>
         </div>
