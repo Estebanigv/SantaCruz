@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 
 export default function HeroSection() {
@@ -142,29 +143,20 @@ export default function HeroSection() {
         ref={sectionRef}
         className="relative overflow-hidden h-[85vh] sm:h-[90vh] md:h-[95vh] min-h-[500px] sm:min-h-[550px] md:min-h-[600px] max-h-[900px]"
       >
-        {/* Background Image - Balanced exposure */}
+        {/* Background Image - Optimized with Next.js Image */}
         <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 w-full h-full bg-cover bg-no-repeat"
+          <Image
+            src="/images/principal.png"
+            alt="Viña Santa Cruz - Valle de Colchagua"
+            fill
+            priority
+            quality={85}
+            sizes="100vw"
+            className="object-cover object-[center_35%] sm:object-[center_30%]"
             style={{
-              backgroundImage: 'url(/images/principal.png)',
-              backgroundPosition: 'center 35%',
               filter: 'brightness(0.95) contrast(1.05) saturate(1.1)',
             }}
           />
-          {/* Additional responsive positioning for mobile */}
-          <style jsx>{`
-            @media (max-width: 640px) {
-              div[style*="principal.png"] {
-                background-position: center 30% !important;
-              }
-            }
-            @media (max-width: 480px) {
-              div[style*="principal.png"] {
-                background-position: center 25% !important;
-              }
-            }
-          `}</style>
 
           {/* Minimal gradient overlay */}
           <div
