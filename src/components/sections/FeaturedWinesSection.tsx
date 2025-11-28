@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { featuredWines } from '@/data/mockData'
+import { featuredWines, tours } from '@/data/mockData'
 import { Wine } from '@/types'
 import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
@@ -758,8 +758,7 @@ function WineCardExpanded({
 function MinorAlternativeSection() {
   // Filter tours to only show cultural experiences (no wine tours)
   // IDs: 5 = Carruaje, 6 = Museo, 7 = Teleférico
-  const { tours } = require('@/data/mockData')
-  const culturalExperiences = tours.filter((tour: { category: string }) => tour.category === 'cultural')
+  const culturalExperiences = tours.filter((tour) => tour.category === 'cultural')
 
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
@@ -785,7 +784,7 @@ function MinorAlternativeSection() {
 
         {/* Experiences Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {culturalExperiences.map((tour: { id: string; name: string; description: string; image: string; duration: string; price: number; slug: string }) => (
+          {culturalExperiences.map((tour) => (
             <Link
               key={tour.id}
               href={`/experiencias?categoria=cultural`}
