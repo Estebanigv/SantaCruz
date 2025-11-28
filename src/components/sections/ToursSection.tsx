@@ -225,8 +225,31 @@ const categories = [
   { id: 'eventos', label: 'Eventos', color: '#B8860B' },
 ]
 
-export default function ToursSection() {
-  const [activeCategory, setActiveCategory] = useState<string>('tours-vino')
+interface ToursSectionProps {
+  isAdult?: boolean | null
+}
+
+export default function ToursSection({ isAdult = true }: ToursSectionProps) {
+  const isMinor = isAdult === false
+
+  // Filter categories for minors (no wine tours)
+  const availableCategories = isMinor
+    ? categories.filter(c => c.id !== 'tours-vino')
+    : categories
+
+  // Filter experiences for minors (no wine-related content)
+  const availableExperiences = isMinor
+    ? experiences.filter(exp => {
+        // Exclude wine tours category
+        if (exp.category === 'tours-vino') return false
+        // Exclude experiences that mention wine/degustación in description or highlights
+        const wineKeywords = ['vino', 'vinos', 'degustación', 'chamán', 'enológic']
+        const textToCheck = (exp.description + ' ' + exp.highlights.join(' ')).toLowerCase()
+        return !wineKeywords.some(keyword => textToCheck.includes(keyword))
+      })
+    : experiences
+
+  const [activeCategory, setActiveCategory] = useState<string>(isMinor ? 'experiencias' : 'tours-vino')
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null)
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
@@ -234,7 +257,7 @@ export default function ToursSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const detailRef = useRef<HTMLDivElement>(null)
 
-  const filteredExperiences = experiences.filter(exp => exp.category === activeCategory)
+  const filteredExperiences = availableExperiences.filter(exp => exp.category === activeCategory)
   const totalExperiences = filteredExperiences.length
 
   const formatPrice = (price: number) => price.toLocaleString('es-CL')
@@ -360,7 +383,10 @@ export default function ToursSection() {
           Vive el Valle de Colchagua
         </h2>
         <p className="text-gray-600 text-lg font-medium max-w-2xl mx-auto mb-6">
-          Descubre experiencias diseñadas para conectar con la esencia del vino y la cultura chilena
+          {isMinor
+            ? 'Descubre experiencias diseñadas para conectar con la cultura y naturaleza chilena'
+            : 'Descubre experiencias diseñadas para conectar con la esencia del vino y la cultura chilena'
+          }
         </p>
         {/* Decorative dots and line - Gold */}
         <div className="flex items-center justify-center gap-2">
@@ -374,7 +400,7 @@ export default function ToursSection() {
       <div className={`container-custom mb-12 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="flex justify-center">
           <div className="inline-flex gap-2 p-1.5 bg-gray-100/80 rounded-full">
-            {categories.map((cat) => (
+            {availableCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}

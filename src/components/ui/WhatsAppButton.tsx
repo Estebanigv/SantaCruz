@@ -5,10 +5,46 @@ import { useState, useEffect } from 'react'
 export default function WhatsAppButton() {
   const [isHovered, setIsHovered] = useState(false)
   const [isPulsing, setIsPulsing] = useState(false)
+  const [showInitialLabel, setShowInitialLabel] = useState(true)
 
   // TODO: Connect to real WhatsApp when ready
   // const phoneNumber = "56912345678" // Reemplazar con el número real de la viña
   // const message = encodeURIComponent("Estimados, me gustaría obtener información sobre las experiencias en Viña Santa Cruz. Gracias.")
+
+  // Hide label permanently on first scroll or when mouse passes half of the banner
+  useEffect(() => {
+    let hasHidden = false
+
+    const hideLabel = () => {
+      if (!hasHidden) {
+        hasHidden = true
+        setShowInitialLabel(false)
+        // Remove listeners after hiding
+        window.removeEventListener('scroll', handleScroll)
+        window.removeEventListener('mousemove', handleMouseMove)
+      }
+    }
+
+    const handleScroll = () => {
+      hideLabel()
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const heroHeight = window.innerHeight
+      // If mouse Y position is past half of the hero/banner
+      if (e.clientY > heroHeight * 0.5) {
+        hideLabel()
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])
 
   // Subtle pulse animation every 5 seconds
   useEffect(() => {
@@ -64,7 +100,7 @@ export default function WhatsAppButton() {
         {/* Tooltip - Refined and formal */}
         <div
           className={`absolute right-full mr-5 top-1/2 -translate-y-1/2 transition-all duration-300 ${
-            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
+            (isHovered || showInitialLabel) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
           }`}
         >
           <div className="bg-black-900 text-white px-6 py-3 rounded-xl shadow-2xl border border-gold-500/20 backdrop-blur-xl">

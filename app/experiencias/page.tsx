@@ -6,6 +6,8 @@ import { tours } from '@/data/mockData'
 import { Tour } from '@/types'
 import { useCart } from '@/contexts/CartContext'
 import Image from 'next/image'
+import { BreadcrumbSchema, EventSchema, WebPageSchema } from '@/components/seo/StructuredData'
+import { useAgeVerification } from '@/hooks/useAgeVerification'
 // Link removed - not currently used but may be needed later
 
 type CategoryFilter = 'all' | 'vino' | 'cultural' | 'premium'
@@ -84,10 +86,12 @@ function CategoryCard({
 // Categories Section with floating border
 function CategoriesSection({
   categoryFilter,
-  onCategoryClick
+  onCategoryClick,
+  availableCategories
 }: {
   categoryFilter: CategoryFilter
   onCategoryClick: (catId: string, isActive: boolean) => void
+  availableCategories: typeof categories
 }) {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
@@ -185,8 +189,8 @@ function CategoriesSection({
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {categories.map((cat, index) => {
+        <div className={`grid gap-6 ${availableCategories.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'}`}>
+          {availableCategories.map((cat, index) => {
             const tourCount = tours.filter(t => t.category === cat.id).length
             const isActive = categoryFilter === cat.id
 
@@ -939,25 +943,57 @@ function BookingModal({ tour, isOpen, onClose }: { tour: Tour; isOpen: boolean; 
 
 function ExperienciasContent() {
   const searchParams = useSearchParams()
+  const { isAdult } = useAgeVerification()
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const experiencesSectionRef = useRef<HTMLElement>(null)
 
+  // Filter tours based on age - minors don't see wine tours
+  const isMinor = isAdult === false
+
+  // Available tours for the current user (minors can't see wine category)
+  const availableTours = useMemo(() => {
+    if (isMinor) {
+      // For minors: only cultural and premium (events) tours, excluding those with wine tastings
+      return tours.filter(tour => tour.category === 'cultural' || tour.category === 'premium')
+    }
+    return tours
+  }, [isMinor])
+
+  // Categories available for the current user
+  const availableCategories = useMemo(() => {
+    if (isMinor) {
+      // For minors: only cultural and premium categories (no wine)
+      return categories.filter(cat => cat.id !== 'vino')
+    }
+    return categories
+  }, [isMinor])
+
   useEffect(() => {
     const categoria = searchParams.get('categoria')
+    // For minors, don't allow 'vino' category
     if (categoria && ['vino', 'cultural', 'premium'].includes(categoria)) {
-      setCategoryFilter(categoria as CategoryFilter)
+      if (isMinor && categoria === 'vino') {
+        setCategoryFilter('all')
+      } else {
+        setCategoryFilter(categoria as CategoryFilter)
+      }
     }
-  }, [searchParams])
+  }, [searchParams, isMinor])
 
   const filteredTours = useMemo(() => {
-    if (categoryFilter === 'all') return tours
-    return tours.filter(tour => tour.category === categoryFilter)
-  }, [categoryFilter])
+    if (categoryFilter === 'all') return availableTours
+    return availableTours.filter(tour => tour.category === categoryFilter)
+  }, [categoryFilter, availableTours])
 
-  // Featured tour is Teleférico & Cerro de las Culturas
-  const featuredTour = tours.find(t => t.slug === 'teleferico-cerro-culturas') || tours[0]
+  // Featured tour - for minors use Teleférico, for adults use the default
+  const featuredTour = useMemo(() => {
+    if (isMinor) {
+      return availableTours.find(t => t.slug === 'teleferico-cerro-culturas') || availableTours[0]
+    }
+    return tours.find(t => t.slug === 'teleferico-cerro-culturas') || tours[0]
+  }, [isMinor, availableTours])
 
   const handleViewDetails = (tour: Tour) => {
     setSelectedTour(tour)
@@ -981,6 +1017,27 @@ function ExperienciasContent() {
 
   return (
     <>
+      {/* SEO: Structured Data for Experiences Page */}
+      <WebPageSchema
+        name="Experiencias y Tours de Vino - Viña Santa Cruz"
+        description="Reserva tours exclusivos de vino, experiencias culturales y eventos premium en el Valle de Colchagua. Degustaciones, teleférico, noches astronómicas y más."
+        url="https://www.vinasantacruz.cl/experiencias"
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Inicio', url: 'https://www.vinasantacruz.cl' },
+          { name: 'Experiencias', url: 'https://www.vinasantacruz.cl/experiencias' },
+        ]}
+      />
+      {/* Featured Tour Schema */}
+      <EventSchema
+        name={featuredTour.name}
+        description={featuredTour.description}
+        image={`https://www.vinasantacruz.cl${featuredTour.image}`}
+        price={featuredTour.price}
+        url={`https://www.vinasantacruz.cl/experiencias/${featuredTour.slug}`}
+      />
+
       <main className="min-h-screen bg-[#faf9f7]">
         {/* Hero Section - Full Screen */}
         <section className="relative h-screen min-h-[700px] overflow-hidden">
@@ -1077,6 +1134,7 @@ function ExperienciasContent() {
         <CategoriesSection
           categoryFilter={categoryFilter}
           onCategoryClick={handleCategoryClick}
+          availableCategories={availableCategories}
         />
 
         {/* Featured Experience */}
@@ -1136,10 +1194,10 @@ function ExperienciasContent() {
                     : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
                 }`}
               >
-                Todas ({tours.length})
+                Todas ({availableTours.length})
               </button>
-              {categories.map((cat) => {
-                const count = tours.filter(t => t.category === cat.id).length
+              {availableCategories.map((cat) => {
+                const count = availableTours.filter(t => t.category === cat.id).length
                 return (
                   <button
                     key={cat.id}

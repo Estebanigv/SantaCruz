@@ -8,16 +8,11 @@ import RestaurantSection from '@/components/sections/RestaurantSection'
 import BrandStorySection from '@/components/sections/BrandStorySection'
 import InstagramSection from '@/components/sections/InstagramSection'
 import WhatsAppButton from '@/components/ui/WhatsAppButton'
-import { useAgeVerification } from '@/hooks/useAgeVerification'
+import { useAge } from '@/contexts/AgeContext'
 import { OrganizationSchema, LocalBusinessSchema, WebPageSchema } from '@/components/seo/StructuredData'
 
 export default function HomePage() {
-  const { isAdult, isLoading } = useAgeVerification()
-
-  // Don't render wine sections until age verification is loaded
-  if (isLoading) {
-    return null
-  }
+  const { isAdult } = useAge()
 
   return (
     <>
@@ -73,7 +68,7 @@ export default function HomePage() {
         <RestaurantSection isAdult={isAdult} />
       </div>
       <BrandStorySection />
-      <ToursSection />
+      <ToursSection isAdult={isAdult} />
       <InstagramSection />
 
         {/* WhatsApp floating button */}

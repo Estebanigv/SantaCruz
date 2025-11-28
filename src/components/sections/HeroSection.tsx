@@ -140,21 +140,31 @@ export default function HeroSection() {
 
       <section
         ref={sectionRef}
-        className="relative overflow-hidden"
-        style={{ height: '95vh', minHeight: '600px', maxHeight: '900px' }}
+        className="relative overflow-hidden h-[85vh] sm:h-[90vh] md:h-[95vh] min-h-[500px] sm:min-h-[550px] md:min-h-[600px] max-h-[900px]"
       >
         {/* Background Image - Balanced exposure */}
         <div className="absolute inset-0">
           <div
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: 'url(/images/principal.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center 40%',
-              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center 35%',
               filter: 'brightness(0.95) contrast(1.05) saturate(1.1)',
             }}
           />
+          {/* Additional responsive positioning for mobile */}
+          <style jsx>{`
+            @media (max-width: 640px) {
+              div[style*="principal.png"] {
+                background-position: center 30% !important;
+              }
+            }
+            @media (max-width: 480px) {
+              div[style*="principal.png"] {
+                background-position: center 25% !important;
+              }
+            }
+          `}</style>
 
           {/* Minimal gradient overlay */}
           <div
@@ -169,7 +179,7 @@ export default function HeroSection() {
         {/* Content - text at top, buttons at bottom, center clear */}
         <div className="relative z-30 h-full flex flex-col">
           {/* Text at top */}
-          <div className="flex-none pt-24 sm:pt-28 md:pt-36 text-center px-4 sm:px-6">
+          <div className="flex-none pt-20 sm:pt-24 md:pt-32 lg:pt-36 text-center px-4 sm:px-6">
             {/* Main Heading */}
             <h1
               className={`font-[family-name:var(--font-raleway)] text-white mb-3 sm:mb-4 transition-all duration-1000 ease-out ${
@@ -224,7 +234,7 @@ export default function HeroSection() {
           <div className="flex-1" />
 
           {/* Buttons at bottom - Animated CTAs */}
-          <div className="flex-none pb-20 sm:pb-24 md:pb-32 text-center px-4 sm:px-6">
+          <div className="flex-none pb-16 sm:pb-20 md:pb-28 lg:pb-32 text-center px-4 sm:px-6">
             <div
               className={`flex flex-col sm:flex-row gap-4 sm:gap-5 md:gap-6 justify-center transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'

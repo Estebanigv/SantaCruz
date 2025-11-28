@@ -231,7 +231,10 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
     return `$${price.toLocaleString('es-CL')}`
   }
 
-  // If user is a minor, show alternative content (after all hooks are called)
+  // Only show alternative content if user explicitly confirmed they are a minor
+  // isAdult === null means not verified yet, show wines by default
+  // isAdult === true means verified adult, show wines
+  // isAdult === false means verified minor, show alternative (no alcohol content)
   if (isAdult === false) {
     return <MinorAlternativeSection />
   }
@@ -731,13 +734,14 @@ function WineCardExpanded({
               <span className="relative">Añadir al Carro</span>
             </button>
 
-            {/* Botón Descargar Ficha Técnica */}
+            {/* Botón Descargar Ficha Técnica - Desactivado por ahora */}
             <button
-              onClick={() => window.open(`/fichas/${wine.id}.pdf`, '_blank')}
-              className="group/dl flex items-center justify-center gap-2 py-2.5 px-4 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium transition-all duration-300 hover:border-gold-400 hover:text-gold-600 hover:bg-gold-50/50"
+              onClick={(e) => e.preventDefault()}
+              disabled
+              className="group/dl flex items-center justify-center gap-2 py-2.5 px-4 border border-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed opacity-50"
             >
               <Download
-                className="w-4 h-4 transition-transform duration-300 group-hover/dl:-translate-y-0.5"
+                className="w-4 h-4"
                 strokeWidth={1.5}
               />
               <span>Ficha Técnica</span>
@@ -750,49 +754,14 @@ function WineCardExpanded({
 }
 
 // Alternative section for users under legal drinking age
+// Shows cultural experiences that don't include wine/alcohol
 function MinorAlternativeSection() {
-  const experiences = [
-    {
-      title: 'Teleférico Panorámico',
-      description: 'Disfruta de vistas espectaculares del Valle de Colchagua desde nuestro teleférico de última generación.',
-      image: '/images/Tours y Expériencias/Teleférico.webp',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Museo Indígena',
-      description: 'Explora la rica cultura de los pueblos originarios de Chile en nuestro museo interactivo.',
-      image: '/images/Tours y Expériencias/Museo Indigena.webp',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Observatorio Astronómico',
-      description: 'Descubre los cielos más limpios de Chile y observa estrellas, planetas y galaxias.',
-      image: '/images/Tours y Expériencias/Observatorio.webp',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Paseos en Bicicleta',
-      description: 'Recorre nuestros viñedos y el valle en bicicleta con rutas para todos los niveles.',
-      image: '/images/Tours y Expériencias/Bicicleta.webp',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-    },
-  ]
+  // Filter tours to only show cultural experiences (no wine tours)
+  // IDs: 5 = Carruaje, 6 = Museo, 7 = Teleférico
+  const { tours } = require('@/data/mockData')
+  const culturalExperiences = tours.filter((tour: { category: string }) => tour.category === 'cultural')
+
+  const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
   return (
     <section className="bg-transparent py-12 md:py-16 relative overflow-hidden">
@@ -815,53 +784,60 @@ function MinorAlternativeSection() {
         />
 
         {/* Experiences Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {experiences.map((experience) => (
-            <div
-              key={experience.title}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {culturalExperiences.map((tour: { id: string; name: string; description: string; image: string; duration: string; price: number; slug: string }) => (
+            <Link
+              key={tour.id}
+              href={`/experiencias?categoria=cultural`}
               className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={experience.image}
-                  alt={experience.title}
+                  src={tour.image}
+                  alt={tour.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {/* Icon badge */}
-                <div className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gold-600 shadow-lg">
-                  {experience.icon}
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                {/* Duration badge */}
+                <div className="absolute top-3 right-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-gray-700 shadow-lg">
+                  {tour.duration}
+                </div>
+                {/* Title on image */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-lg font-semibold text-white group-hover:text-gold-300 transition-colors">
+                    {tour.name}
+                  </h3>
                 </div>
               </div>
 
               {/* Content */}
               <div className="p-5">
-                <h3 className="text-lg font-medium text-gray-900 mb-2 group-hover:text-gold-600 transition-colors">
-                  {experience.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                  {experience.description}
+                <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
+                  {tour.description}
                 </p>
-                <Link
-                  href="/experiencias"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-gold-600 hover:text-gold-700 transition-colors"
-                >
-                  <span>Más información</span>
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </Link>
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-semibold text-gold-600">
+                    {formatPrice(tour.price)}
+                    <span className="text-xs text-gray-400 ml-1">/ persona</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-gold-600 group-hover:text-gold-700 transition-colors">
+                    Ver más
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center mt-14">
           <Link
-            href="/experiencias"
+            href="/experiencias?categoria=cultural"
             className="group inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-[family-name:var(--font-raleway)] font-medium text-sm tracking-wide rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105"
           >
             <span>Ver Todas las Experiencias</span>

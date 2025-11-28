@@ -385,8 +385,8 @@ export default function Header() {
               </button>
 
               {/* CTA Button - Contacto */}
-              <button
-                onClick={(e) => e.preventDefault()}
+              <Link
+                href="/contacto"
                 className="group relative px-5 py-2 border border-white/50 rounded-full overflow-hidden hover:border-gold-400 cursor-pointer ml-1 transition-all duration-300"
                 onMouseEnter={() => setActiveLink('cta')}
                 onMouseLeave={() => setActiveLink(null)}
@@ -412,7 +412,7 @@ export default function Header() {
                     width: activeLink === 'cta' ? '100%' : '0%',
                   }}
                 />
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Logo */}
@@ -534,11 +534,9 @@ export default function Header() {
                 isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  setIsMobileMenuOpen(false)
-                }}
+              <Link
+                href="/contacto"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="group relative inline-flex items-center px-10 py-4 rounded-full overflow-hidden bg-transparent border-none cursor-pointer"
               >
                 <div className="absolute inset-0 bg-white transition-transform duration-500 group-hover:scale-105" />
@@ -546,7 +544,7 @@ export default function Header() {
                 <span className="relative z-10 text-base font-semibold text-black tracking-wide">
                   Contacto
                 </span>
-              </button>
+              </Link>
             </div>
 
             {/* Decorative bottom line */}
