@@ -1,8 +1,13 @@
+'use client'
+
 import { membershipTiers } from '@/data/mockData'
 import MembershipCard from '../wine/MembershipCard'
 import SectionHeader from '../ui/SectionHeader'
+import { useState } from 'react'
 
 export default function MembershipsSection() {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+
   return (
     <section className="bg-gradient-to-b from-black-950 via-black-900 to-black-950 section-padding relative overflow-hidden">
       {/* Ambient background effects */}
@@ -29,6 +34,98 @@ export default function MembershipsSection() {
           subtitle="Únete a nuestra comunidad exclusiva y disfruta de beneficios únicos, acceso prioritario y experiencias memorables durante todo el año"
           theme="dark"
         />
+
+        {/* Video Introduction Section */}
+        <div className="mb-20 max-w-5xl mx-auto">
+          <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
+            {/* Video placeholder / thumbnail */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black-800 to-black-900">
+              <img
+                src="/images/club-video-thumbnail.jpg"
+                alt="Club de Vinos"
+                className="w-full h-full object-cover opacity-60"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200&auto=format&fit=crop'
+                }}
+              />
+            </div>
+
+            {/* Play button overlay */}
+            {!isVideoPlaying && (
+              <button
+                onClick={() => setIsVideoPlaying(true)}
+                className="absolute inset-0 flex items-center justify-center group cursor-pointer"
+              >
+                <div className="relative">
+                  {/* Pulsing rings */}
+                  <div className="absolute inset-0 rounded-full bg-gold-500/20 animate-ping" />
+                  <div className="absolute inset-0 rounded-full bg-gold-500/30 animate-pulse" />
+
+                  {/* Play button */}
+                  <div className="relative w-20 h-20 rounded-full bg-gold-500 flex items-center justify-center group-hover:bg-gold-400 transition-all duration-300 group-hover:scale-110">
+                    <svg
+                      className="w-8 h-8 text-white ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Text overlay */}
+                <div className="absolute bottom-8 left-8 right-8 text-white">
+                  <h3 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold mb-2">
+                    Descubre el Club de Vinos
+                  </h3>
+                  <p className="font-[family-name:var(--font-raleway)] text-sm md:text-base opacity-90">
+                    Mira cómo nuestros miembros disfrutan de experiencias exclusivas
+                  </p>
+                </div>
+              </button>
+            )}
+
+            {/* Video iframe (shown when playing) */}
+            {isVideoPlaying && (
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                title="Club de Vinos Santa Cruz"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </div>
+
+          {/* Quick stats below video */}
+          <div className="grid grid-cols-3 gap-6 mt-8">
+            <div className="text-center">
+              <div className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-gold-500 mb-2">
+                2,500+
+              </div>
+              <div className="font-[family-name:var(--font-raleway)] text-sm text-gray-400 uppercase tracking-wider">
+                Miembros Activos
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-gold-500 mb-2">
+                50+
+              </div>
+              <div className="font-[family-name:var(--font-raleway)] text-sm text-gray-400 uppercase tracking-wider">
+                Eventos Anuales
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-gold-500 mb-2">
+                15%
+              </div>
+              <div className="font-[family-name:var(--font-raleway)] text-sm text-gray-400 uppercase tracking-wider">
+                Descuento Miembros
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Membership Grid - Perfectly aligned */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 mb-24 items-end pt-8">

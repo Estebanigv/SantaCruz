@@ -127,10 +127,12 @@ export default function WineCard({ wine }: WineCardProps) {
             {wine.vintage && ` • ${wine.vintage}`}
           </p>
 
-          {/* Rating */}
-          <div className="mb-4">
-            <Rating value={wine.rating} />
-          </div>
+          {/* Rating - only show if rating > 0 */}
+          {wine.rating > 0 && (
+            <div className="mb-4">
+              <Rating value={wine.rating} />
+            </div>
+          )}
         </div>
 
         {/* Price - Always at bottom */}

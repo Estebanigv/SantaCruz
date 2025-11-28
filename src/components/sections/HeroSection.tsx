@@ -140,7 +140,7 @@ export default function HeroSection() {
       <section
         ref={sectionRef}
         className="relative overflow-hidden"
-        style={{ height: '100vh', minHeight: '700px' }}
+        style={{ height: '95vh', minHeight: '600px', maxHeight: '900px' }}
       >
         {/* Background Image - Balanced exposure */}
         <div className="absolute inset-0">
@@ -168,7 +168,7 @@ export default function HeroSection() {
         {/* Content - text at top, buttons at bottom, center clear */}
         <div className="relative z-30 h-full flex flex-col">
           {/* Text at top */}
-          <div className="flex-none pt-32 md:pt-40 text-center px-6">
+          <div className="flex-none pt-28 md:pt-36 text-center px-6">
             {/* Main Heading */}
             <h1
               className={`font-[family-name:var(--font-raleway)] text-white mb-4 transition-all duration-1000 ease-out ${
@@ -223,83 +223,39 @@ export default function HeroSection() {
           <div className="flex-1" />
 
           {/* Buttons at bottom - Animated CTAs */}
-          <div className="flex-none pb-32 md:pb-40 text-center px-6">
+          <div className="flex-none pb-28 md:pb-32 text-center px-6">
             <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 ease-out ${
+              className={`flex flex-col sm:flex-row gap-5 sm:gap-6 justify-center transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: '600ms' }}
             >
-              {/* Reserva tu Tour - Water fill from left to right */}
+              {/* Reserva - Botón principal dorado */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="relative inline-flex items-center justify-center px-10 py-3.5 bg-white text-black font-[family-name:var(--font-raleway)] font-medium tracking-[0.15em] uppercase text-xs rounded-sm overflow-hidden transition-all duration-300 cursor-pointer"
+                className="group relative inline-flex items-center justify-center gap-3 px-12 py-4 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.2em] uppercase text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('tour', true)}
                 onMouseLeave={() => handleButtonHover('tour', false)}
               >
-                <span
-                  className="relative z-10 transition-colors duration-150"
-                  style={{
-                    color: (buttonFillProgress['tour'] || 0) > 50 ? 'white' : 'black',
-                  }}
-                >
-                  Reserva tu Tour
-                </span>
-
-                {/* Water filling from left to right with wave motion */}
-                <div
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600"
-                  style={{
-                    width: `${buttonFillProgress['tour'] || 0}%`,
-                    transition: 'width 0.15s ease-out',
-                  }}
-                >
-                  {/* Animated wave edge */}
-                  <div
-                    className="absolute right-0 inset-y-0 w-8"
-                    style={{
-                      background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5))',
-                      transform: `translateX(${Math.sin((buttonFillProgress['tour'] || 0) / 15) * 4}px)`,
-                      transition: 'transform 0.3s ease-out',
-                    }}
-                  />
-                </div>
+                {/* Shimmer effect */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+                <svg className="relative w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="relative">Reserva</span>
               </button>
 
-              {/* Ver Vinos - Water fill from left to right */}
+              {/* Ver Vinos - Botón secundario elegante */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="relative inline-flex items-center justify-center px-10 py-3.5 border border-white/70 text-white font-[family-name:var(--font-raleway)] font-light tracking-[0.15em] uppercase text-xs rounded-sm overflow-hidden transition-all duration-300 cursor-pointer"
+                className="group relative inline-flex items-center justify-center gap-3 px-12 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.2em] uppercase text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('vinos', true)}
                 onMouseLeave={() => handleButtonHover('vinos', false)}
               >
-                <span
-                  className="relative z-10 transition-colors duration-150"
-                  style={{
-                    color: (buttonFillProgress['vinos'] || 0) > 50 ? 'black' : 'white',
-                  }}
-                >
-                  Ver Vinos
-                </span>
-
-                {/* Water filling from left to right with wave motion */}
-                <div
-                  className="absolute inset-y-0 left-0 bg-white"
-                  style={{
-                    width: `${buttonFillProgress['vinos'] || 0}%`,
-                    transition: 'width 0.15s ease-out',
-                  }}
-                >
-                  {/* Animated wave edge */}
-                  <div
-                    className="absolute right-0 inset-y-0 w-8"
-                    style={{
-                      background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5))',
-                      transform: `translateX(${Math.sin((buttonFillProgress['vinos'] || 0) / 15) * 4}px)`,
-                      transition: 'transform 0.3s ease-out',
-                    }}
-                  />
-                </div>
+                <svg className="relative w-5 h-5 transition-transform group-hover:rotate-12 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span className="relative">Ver Vinos</span>
               </button>
             </div>
           </div>
@@ -308,15 +264,15 @@ export default function HeroSection() {
         {/* Scroll indicator - Minimal */}
         <button
           onClick={scrollToNextSection}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 group"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 group"
           aria-label="Scroll to next section"
         >
-          <div className="flex flex-col items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-            <span className="text-xs uppercase tracking-[0.2em] text-white font-light">
+          <div className="flex flex-col items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-white/80 font-light">
               Descubrir
             </span>
             <svg
-              className="w-6 h-6 text-white transition-transform duration-300 group-hover:translate-y-1"
+              className="w-5 h-5 text-white/80 transition-transform duration-300 group-hover:translate-y-1 animate-bounce"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

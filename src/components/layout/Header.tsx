@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useCart } from '@/contexts/CartContext'
 
 export default function Header() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -11,10 +12,15 @@ export default function Header() {
   const [activeLink, setActiveLink] = useState<string | null>(null)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const [isHoveringTop, setIsHoveringTop] = useState(false)
+  const [lastMouseMove, setLastMouseMove] = useState(Date.now())
   const headerRef = useRef<HTMLElement>(null)
+  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Cart and user state - TODO: Connect to real state management
-  const [cartItemCount] = useState(0)
+  // Cart context
+  const { totalItems, openCart } = useCart()
+
+  // User state - TODO: Connect to real auth state management
   const [isAuthenticated] = useState(false)
   const [userName] = useState('')
 
@@ -35,18 +41,59 @@ export default function Header() {
       setIsScrolled(scrollY > 20)
 
       // Hide navbar when scrolling down, show when scrolling up
-      if (scrollY > lastScrollY && scrollY > 100) {
-        setIsVisible(false)
-      } else {
-        setIsVisible(true)
+      // But always show if hovering near top or at the very top
+      if (!isHoveringTop) {
+        const scrollDiff = scrollY - lastScrollY
+        if (scrollDiff > 5 && scrollY > 80) {
+          // Scrolling down - hide navbar
+          setIsVisible(false)
+        } else if (scrollDiff < -5 || scrollY < 80) {
+          // Scrolling up or near top - show navbar
+          setIsVisible(true)
+        }
       }
       setLastScrollY(scrollY)
     }
 
+    // Detect mouse near top of screen to show header
+    const handleMouseMove = (e: MouseEvent) => {
+      const threshold = 80 // pixels from top
+      setLastMouseMove(Date.now())
+
+      // Clear existing inactivity timeout
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current)
+      }
+
+      if (e.clientY <= threshold) {
+        setIsHoveringTop(true)
+        setIsVisible(true)
+      } else if (e.clientY > 150) {
+        setIsHoveringTop(false)
+      }
+
+      // Set new inactivity timeout - hide navbar after 3 seconds of no mouse movement
+      // Only if not at the top of the page
+      if (window.scrollY > 80) {
+        inactivityTimeoutRef.current = setTimeout(() => {
+          if (!isHoveringTop) {
+            setIsVisible(false)
+          }
+        }, 3000)
+      }
+    }
+
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('mousemove', handleMouseMove)
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current)
+      }
+    }
+  }, [lastScrollY, isHoveringTop])
 
   // Close mobile menu on escape key
   useEffect(() => {
@@ -69,11 +116,14 @@ export default function Header() {
     }
   }, [isMobileMenuOpen])
 
-  const navigation = [
+  const leftNavigation = [
     { label: 'Vinos', href: '/vinos' },
-    { label: 'Tours', href: '/tours' },
-    { label: 'Club', href: '/club' },
+    { label: 'Restaurante', href: '/restaurante' },
+  ]
+
+  const rightNavigation = [
     { label: 'Nosotros', href: '/nosotros' },
+    { label: 'Experiencias', href: '/experiencias' },
   ]
 
   return (
@@ -104,75 +154,110 @@ export default function Header() {
           }}
         />
 
-        <nav className="container-custom">
-          <div className="flex items-center justify-between h-20 md:h-24 relative">
-            {/* Logo with magnetic hover effect */}
-            <Link
-              href="/"
-              className="group relative z-10 flex items-center"
-              onMouseEnter={() => setActiveLink('logo')}
-              onMouseLeave={() => setActiveLink(null)}
-            >
-              <div className="relative">
-                <img
-                  src="/images/logo_vsc_png_byw.png"
-                  alt="Viña Santa Cruz"
-                  className={`h-12 md:h-14 w-auto object-contain filter brightness-0 invert transition-all duration-500 ease-out ${
-                    activeLink === 'logo' ? 'opacity-100 scale-105' : 'opacity-95 scale-100'
-                  }`}
-                />
-                {/* Glow effect on hover */}
-                <div
-                  className={`absolute inset-0 blur-xl bg-white/30 rounded-full transition-all duration-500 ${
-                    activeLink === 'logo' ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
-                  }`}
-                />
-              </div>
-            </Link>
-
-            {/* Desktop Navigation - Elegant & Refined */}
-            <div className="hidden lg:flex items-center gap-12">
-              {navigation.map((item) => (
-                <button
+        <nav className="w-full px-4 lg:px-6">
+          <div className="relative flex items-center justify-center h-20 md:h-24 lg:h-32">
+            {/* Left Navigation - Experiencias, Restaurante (to the left of logo) */}
+            <div className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-[calc(100%+150px)]">
+              {leftNavigation.map((item) => (
+                <Link
                   key={item.href}
-                  onClick={(e) => e.preventDefault()}
-                  className="group relative cursor-pointer bg-transparent border-none"
+                  href={item.href}
+                  className="group relative cursor-pointer whitespace-nowrap py-2"
                   onMouseEnter={() => setActiveLink(item.href)}
                   onMouseLeave={() => setActiveLink(null)}
                 >
                   <span
-                    className={`relative z-10 font-[family-name:var(--font-raleway)] font-medium tracking-[0.15em] uppercase transition-all duration-500 ${
-                      activeLink === item.href ? 'text-white' : 'text-white'
-                    }`}
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400"
                     style={{
-                      fontSize: '13px',
-                      textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                      fontSize: '14px',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                     }}
                   >
                     {item.label}
                   </span>
 
-                  {/* Minimal underline */}
+                  {/* Elegant underline with gold accent */}
                   <span
-                    className="absolute -bottom-1 left-0 h-[1px] bg-white transition-all duration-400 ease-out"
+                    className="absolute -bottom-0.5 left-0 h-[2px] bg-gradient-to-r from-gold-400 to-gold-500 transition-all duration-300 ease-out rounded-full"
                     style={{
                       width: activeLink === item.href ? '100%' : '0%',
-                      opacity: activeLink === item.href ? 0.8 : 0,
+                      opacity: activeLink === item.href ? 1 : 0,
                     }}
                   />
-                </button>
+                </Link>
               ))}
+            </div>
 
-              {/* Language Selector - Minimal & Elegant */}
+            {/* Logo - Absolute Center */}
+            <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center justify-center">
+              <Link
+                href="/"
+                className="group relative z-10 flex items-center"
+                onMouseEnter={() => setActiveLink('logo')}
+                onMouseLeave={() => setActiveLink(null)}
+              >
+                <div className="relative flex items-center">
+                  <img
+                    src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
+                    alt="Viña Santa Cruz"
+                    className={`h-12 md:h-14 lg:h-16 w-auto object-contain transition-all duration-500 ease-out ${
+                      activeLink === 'logo' ? 'opacity-100 scale-105' : 'opacity-95 scale-100'
+                    }`}
+                    style={{
+                      filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+                    }}
+                  />
+                </div>
+              </Link>
+            </div>
+
+            {/* Right Navigation - Hotel, Vinos (to the right of logo) */}
+            <div className="hidden lg:flex items-center gap-10 absolute left-1/2 translate-x-[150px]">
+              {rightNavigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group relative cursor-pointer whitespace-nowrap py-2"
+                  onMouseEnter={() => setActiveLink(item.href)}
+                  onMouseLeave={() => setActiveLink(null)}
+                >
+                  <span
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400"
+                    style={{
+                      fontSize: '14px',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                    }}
+                  >
+                    {item.label}
+                  </span>
+
+                  {/* Elegant underline with gold accent */}
+                  <span
+                    className="absolute -bottom-0.5 left-0 h-[2px] bg-gradient-to-r from-gold-400 to-gold-500 transition-all duration-300 ease-out rounded-full"
+                    style={{
+                      width: activeLink === item.href ? '100%' : '0%',
+                      opacity: activeLink === item.href ? 1 : 0,
+                    }}
+                  />
+                </Link>
+              ))}
+            </div>
+
+            {/* Utilities - right side with some margin */}
+            <div className="hidden lg:flex items-center gap-4 absolute right-4">
+              {/* Separator - elegant vertical line */}
+              <div className="w-px h-4 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
+
+              {/* Language Selector */}
               <div
                 className="relative"
                 onMouseEnter={() => setActiveLink('lang')}
                 onMouseLeave={() => setActiveLink(null)}
               >
                 <button
-                  className="flex items-center gap-2 text-white hover:text-white transition-all duration-300 font-[family-name:var(--font-raleway)] font-medium tracking-widest uppercase"
+                  className="flex items-center gap-1.5 text-white/90 hover:text-white transition-all duration-300 font-[family-name:var(--font-raleway)] font-medium tracking-wider uppercase"
                   style={{
-                    fontSize: '12px',
+                    fontSize: '11px',
                     textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                   }}
                 >
@@ -181,7 +266,7 @@ export default function Header() {
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                   >
                     <path
                       strokeLinecap="round"
@@ -203,7 +288,7 @@ export default function Header() {
                   </svg>
                 </button>
 
-                {/* Dropdown - Minimal */}
+                {/* Dropdown */}
                 <div
                   className={`absolute top-full right-0 mt-3 w-24 rounded-lg overflow-hidden transition-all duration-300 ${
                     activeLink === 'lang'
@@ -217,7 +302,7 @@ export default function Header() {
                   }}
                 >
                   <div className="py-1">
-                    {['ES', 'EN', 'FR', 'PT'].map((lang, idx) => (
+                    {['ES', 'EN', 'PT'].map((lang, idx) => (
                       <button
                         key={lang}
                         className={`w-full px-4 py-2 font-[family-name:var(--font-raleway)] text-xs tracking-wider transition-all duration-200 text-left ${
@@ -233,18 +318,83 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* CTA Button - Fluid water fill animation */}
+              {/* User Icon */}
+              {!isAuthenticated ? (
+                <button
+                  type="button"
+                  className="group relative p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
+                  aria-label="Iniciar sesión"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <svg
+                    className="w-[18px] h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="group relative p-1 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
+                  aria-label="Mi perfil"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <div className="w-7 h-7 rounded-full bg-gold-500 flex items-center justify-center">
+                    <span className="font-[family-name:var(--font-raleway)] font-semibold text-black text-xs">
+                      {userName ? userName.charAt(0).toUpperCase() : 'U'}
+                    </span>
+                  </div>
+                </button>
+              )}
+
+              {/* Shopping Cart Icon */}
+              <button
+                type="button"
+                className="group relative p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
+                aria-label={`Carrito de compras${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+                onClick={openCart}
+              >
+                <svg
+                  className="w-[18px] h-[18px] text-white/90 group-hover:text-white transition-colors duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                  />
+                </svg>
+                {/* Badge showing cart item count */}
+                {totalItems > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-gold-500 text-black text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+
+              {/* CTA Button - Contacto */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative px-8 py-2.5 border border-white/40 rounded-full overflow-hidden transition-all duration-0 hover:border-white cursor-pointer"
+                className="group relative px-5 py-2 border border-white/50 rounded-full overflow-hidden hover:border-gold-400 cursor-pointer ml-1 transition-all duration-300"
                 onMouseEnter={() => setActiveLink('cta')}
                 onMouseLeave={() => setActiveLink(null)}
                 style={{
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                 }}
               >
                 <span
-                  className={`relative z-10 font-[family-name:var(--font-raleway)] text-xs font-medium tracking-[0.2em] uppercase transition-none ${
+                  className={`relative z-10 font-[family-name:var(--font-raleway)] text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors duration-300 ${
                     activeLink === 'cta' ? 'text-black' : 'text-white'
                   }`}
                   style={{
@@ -254,91 +404,28 @@ export default function Header() {
                   Contacto
                 </span>
 
-                {/* Water fill from left to right */}
+                {/* Gold fill from left to right */}
                 <div
-                  className="absolute inset-y-0 left-0 bg-white transition-none"
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold-400 to-gold-500 transition-all duration-300"
                   style={{
                     width: activeLink === 'cta' ? '100%' : '0%',
                   }}
                 />
               </button>
-
-              {/* User & Cart Icons - Conditional rendering based on state */}
-              <div className="flex items-center gap-4 ml-2">
-                {/* User Icon or Profile - Shows login when not authenticated, user name when authenticated */}
-                {!isAuthenticated ? (
-                  <button
-                    type="button"
-                    className="group relative flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
-                    aria-label="Iniciar sesión"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <svg
-                      className="w-4 h-4 text-white/90 group-hover:text-white transition-colors duration-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      />
-                    </svg>
-                    <span className="font-[family-name:var(--font-raleway)] font-normal text-white/90 group-hover:text-white text-xs tracking-wider uppercase transition-colors duration-300">
-                      Ingresar
-                    </span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="group relative flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
-                    aria-label="Mi perfil"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <div className="w-7 h-7 rounded-full bg-gold-500 flex items-center justify-center">
-                      <span className="font-[family-name:var(--font-raleway)] font-semibold text-black text-xs">
-                        {userName ? userName.charAt(0).toUpperCase() : 'U'}
-                      </span>
-                    </div>
-                    <span className="font-[family-name:var(--font-raleway)] font-normal text-white/90 group-hover:text-white text-xs tracking-wider transition-colors duration-300">
-                      {userName || 'Usuario'}
-                    </span>
-                  </button>
-                )}
-
-                {/* Shopping Cart Icon - Only shows when cart has items */}
-                {cartItemCount > 0 && (
-                  <button
-                    type="button"
-                    className="group relative p-2 hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
-                    aria-label={`Carrito de compras (${cartItemCount} items)`}
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <svg
-                      className="w-5 h-5 text-white/90 group-hover:text-white transition-colors duration-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                      />
-                    </svg>
-                    {/* Badge showing cart item count */}
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold-500 text-black text-[10px] font-bold rounded-full flex items-center justify-center">
-                      {cartItemCount}
-                    </span>
-                  </button>
-                )}
-              </div>
             </div>
 
-            {/* Mobile Menu Button - Morphing animation */}
+            {/* Mobile Logo */}
+            <Link href="/" className="lg:hidden group relative z-10 flex items-center">
+              <div className="relative">
+                <img
+                  src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
+                  alt="Viña Santa Cruz"
+                  className="h-10 sm:h-12 w-auto object-contain opacity-95"
+                />
+              </div>
+            </Link>
+
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden relative w-12 h-12 flex items-center justify-center group"
@@ -416,7 +503,7 @@ export default function Header() {
             />
 
             <nav className="space-y-6 text-center">
-              {navigation.map((item, index) => (
+              {[...leftNavigation, ...rightNavigation].map((item, index) => (
                 <div
                   key={item.href}
                   className={`transition-all duration-700 ${
@@ -424,12 +511,10 @@ export default function Header() {
                   }`}
                   style={{ transitionDelay: `${100 + index * 80}ms` }}
                 >
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setIsMobileMenuOpen(false)
-                    }}
-                    className="group relative inline-block bg-transparent border-none cursor-pointer"
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="group relative inline-block cursor-pointer"
                   >
                     <span className="block text-4xl md:text-5xl font-[family-name:var(--font-playfair)] font-bold text-white group-hover:text-white/80 transition-all duration-500">
                       {item.label}
@@ -437,7 +522,7 @@ export default function Header() {
 
                     {/* Animated underline */}
                     <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-gradient-to-r from-white/0 via-white to-white/0 group-hover:w-full transition-all duration-700" />
-                  </button>
+                  </Link>
                 </div>
               ))}
             </nav>

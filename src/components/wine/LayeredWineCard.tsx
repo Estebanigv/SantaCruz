@@ -12,6 +12,8 @@ interface LayeredWineCardProps {
   wineImage: string
   grayBg: string
   colorBg: string
+  description?: string
+  onViewDetails?: () => void
 }
 
 export default function LayeredWineCard({
@@ -22,58 +24,127 @@ export default function LayeredWineCard({
   wineImage,
   grayBg,
   colorBg,
+  description,
+  onViewDetails,
 }: LayeredWineCardProps) {
-  const colorLayerRef = useRef<HTMLDivElement>(null)
+  const grayLayerRef = useRef<HTMLDivElement>(null)
   const wineImageRef = useRef<HTMLDivElement>(null)
+  const colorLayerRef = useRef<HTMLDivElement>(null)
   const [buttonFillProgress, setButtonFillProgress] = useState(0)
   const buttonFillIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [isFlipped, setIsFlipped] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const timelineRef = useRef<gsap.core.Timeline | null>(null)
+  const [revealProgress, setRevealProgress] = useState(0)
 
   const handleHover = (isEntering: boolean) => {
-    const colorLayer = colorLayerRef.current
+    const grayLayer = grayLayerRef.current
     const wineImg = wineImageRef.current
+    const colorLayer = colorLayerRef.current
 
-    if (!colorLayer) return
+    if (!grayLayer || !colorLayer) return
 
-    // Kill any running animations
-    gsap.killTweensOf([colorLayer, wineImg])
+    // Kill previous timeline
+    if (timelineRef.current) {
+      timelineRef.current.kill()
+    }
 
     if (isEntering) {
-      // Reveal color background with opacity fade (more organic)
-      gsap.to(colorLayer, {
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      })
+      const tl = gsap.timeline()
+      timelineRef.current = tl
 
-      // Slightly scale wine bottle
-      if (wineImg) {
-        gsap.to(wineImg, {
-          scale: 1.05,
-          duration: 0.8,
-          ease: 'back.out(1.2)',
-        })
-      }
-    } else {
-      // Hide color background
-      gsap.to(colorLayer, {
+      // Elegant wipe reveal from top to bottom with easing
+      tl.to({ progress: revealProgress }, {
+        progress: 100,
+        duration: 0.8,
+        ease: 'power3.out',
+        onUpdate: function() {
+          setRevealProgress(this.targets()[0].progress)
+        }
+      }, 0)
+
+      // Fade out gray layer smoothly
+      tl.to(grayLayer, {
         opacity: 0,
         duration: 0.6,
-        ease: 'power2.in',
-      })
+        ease: 'power2.out',
+      }, 0.15)
 
-      // Reset wine bottle scale
+      // BOTTLE PROTAGONIST - Dramatic lift and presence
       if (wineImg) {
-        gsap.to(wineImg, {
-          scale: 1,
+        // Strong scale and lift - bottle "pops" forward
+        tl.to(wineImg, {
+          scale: 1.12,
+          y: -15,
+          duration: 0.7,
+          ease: 'power2.out',
+        }, 0.05)
+
+        // Dramatic shadow - bottle floats above the card
+        tl.to(wineImg.querySelector('img'), {
+          filter: 'drop-shadow(0 35px 45px rgba(0, 0, 0, 0.5)) drop-shadow(0 18px 25px rgba(0, 0, 0, 0.35)) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.2))',
           duration: 0.6,
+        }, 0.05)
+      }
+    } else {
+      const tl = gsap.timeline()
+      timelineRef.current = tl
+
+      // Reverse wipe - elegant retraction
+      tl.to({ progress: revealProgress }, {
+        progress: 0,
+        duration: 0.5,
+        ease: 'power2.in',
+        onUpdate: function() {
+          setRevealProgress(this.targets()[0].progress)
+        }
+      }, 0)
+
+      // Fade in gray background
+      tl.to(grayLayer, {
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power2.in',
+      }, 0.1)
+
+      // Reset wine bottle smoothly
+      if (wineImg) {
+        tl.to(wineImg, {
+          scale: 1,
+          y: 0,
+          duration: 0.5,
           ease: 'power2.inOut',
-        })
+        }, 0)
+
+        tl.to(wineImg.querySelector('img'), {
+          filter: 'drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35))',
+          duration: 0.4,
+        }, 0)
       }
     }
+  }
+
+  // Generate organic clip-path based on progress
+  const generateClipPath = (progress: number) => {
+    if (progress <= 0) return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)'
+    if (progress >= 100) return 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
+
+    // Create organic wave effect - multiple points along the bottom edge
+    const baseY = progress
+    const wave1 = Math.sin((progress / 100) * Math.PI * 2) * 3
+    const wave2 = Math.cos((progress / 100) * Math.PI * 1.5) * 2
+    const wave3 = Math.sin((progress / 100) * Math.PI * 3) * 2
+
+    // 5 points along bottom for organic look
+    const p1 = Math.max(0, Math.min(100, baseY + wave1))
+    const p2 = Math.max(0, Math.min(100, baseY + wave2 + 1))
+    const p3 = Math.max(0, Math.min(100, baseY + wave3))
+    const p4 = Math.max(0, Math.min(100, baseY - wave1 + 1))
+    const p5 = Math.max(0, Math.min(100, baseY + wave2))
+
+    return `polygon(0% 0%, 25% 0%, 50% 0%, 75% 0%, 100% 0%, 100% ${p5}%, 75% ${p4}%, 50% ${p3}%, 25% ${p2}%, 0% ${p1}%)`
   }
 
   const handleButtonHover = (isEntering: boolean) => {
@@ -139,13 +210,13 @@ export default function LayeredWineCard({
   return (
     <div
       ref={containerRef}
-      className="perspective-1000 w-full h-full"
+      className="perspective-1000 w-full min-h-[580px]"
       style={{ perspective: '1000px' }}
       onMouseLeave={handleMouseLeave}
     >
       <div
         ref={cardRef}
-        className="relative w-full h-full transition-transform duration-700"
+        className="relative w-full min-h-[580px] transition-transform duration-700"
         style={{
           transformStyle: 'preserve-3d',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -153,12 +224,12 @@ export default function LayeredWineCard({
       >
         {/* FRONT SIDE */}
         <div
-          className="absolute inset-0 group bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col h-full"
+          className="absolute inset-0 group bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col"
           style={{ backfaceVisibility: 'hidden' }}
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
-      {/* Image Container with 3 layers */}
+      {/* Image Container with elegant wipe reveal */}
       <div className="relative aspect-[3/4] overflow-hidden bg-white">
         {/* Favorite button - top left, very subtle */}
         <button
@@ -183,36 +254,50 @@ export default function LayeredWineCard({
           </svg>
         </button>
 
-        {/* Layer 1: Gray Background (always visible) - reduced opacity */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-60">
+        {/* Layer 1: Gray Background (visible initially) */}
+        <div
+          ref={grayLayerRef}
+          className="absolute inset-0"
+        >
           <img
             src={grayBg}
             alt="Background"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-65"
           />
         </div>
 
-        {/* Layer 2: Color Background (reveals on hover) */}
+        {/* Layer 2: Color Background with animated clip-path reveal */}
         <div
           ref={colorLayerRef}
-          className="absolute inset-0 flex items-center justify-center opacity-0"
+          className="absolute inset-0"
+          style={{
+            clipPath: generateClipPath(revealProgress),
+          }}
         >
           <img
             src={colorBg}
             alt="Color Background"
             className="w-full h-full object-cover"
+            style={{
+              filter: 'saturate(0.8) brightness(1.05)',
+            }}
           />
         </div>
 
         {/* Layer 3: Wine Bottle (always on top) */}
         <div
           ref={wineImageRef}
-          className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+          className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none py-4"
         >
           <img
             src={wineImage}
             alt={name}
-            className="h-[90%] w-auto object-contain drop-shadow-2xl"
+            className="w-auto object-contain"
+            style={{
+              height: '280px',
+              maxHeight: '85%',
+              filter: 'drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35))',
+            }}
           />
         </div>
       </div>
@@ -229,10 +314,12 @@ export default function LayeredWineCard({
             {varietal}
           </p>
 
-          {/* Rating */}
-          <div className="mb-4">
-            <Rating value={rating} />
-          </div>
+          {/* Rating - only show if rating > 0 */}
+          {rating > 0 && (
+            <div className="mb-4">
+              <Rating value={rating} />
+            </div>
+          )}
         </div>
 
         {/* Price - Always at bottom */}
@@ -286,7 +373,7 @@ export default function LayeredWineCard({
 
           {/* Quick view link */}
           <button
-            onClick={handleFlip}
+            onClick={onViewDetails || handleFlip}
             className="w-full mt-2 text-sm text-gray-600 hover:text-gold-600 transition-colors duration-300 font-medium"
           >
             Ver Detalles →

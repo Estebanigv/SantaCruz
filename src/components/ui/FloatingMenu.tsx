@@ -41,12 +41,16 @@ export default function FloatingMenu() {
         </a>
 
         {/* Ver Vinos */}
-        <a href="/vinos" className="group relative flex items-center justify-end">
+        <button
+          onClick={() => alert('Página en construcción - Próximamente disponible')}
+          className="group relative flex items-center justify-end cursor-pointer"
+        >
           {/* Label */}
           <div className="mr-3 bg-black-900/95 text-white px-4 py-2 rounded-lg shadow-xl border border-white/10 backdrop-blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
             <span className="font-[family-name:var(--font-raleway)] text-xs font-light tracking-wider">
               Ver Vinos
             </span>
+            <span className="ml-2 text-[9px] px-1.5 py-0.5 bg-gold-500/30 text-gold-300 rounded font-medium">Próximamente</span>
           </div>
 
           {/* Icon Button - smaller and more subtle */}
@@ -65,7 +69,7 @@ export default function FloatingMenu() {
               />
             </svg>
           </div>
-        </a>
+        </button>
       </div>
 
       {/* Main Toggle Button - smaller and more subtle */}

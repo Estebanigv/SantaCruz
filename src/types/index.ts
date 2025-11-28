@@ -18,12 +18,19 @@ export interface Tour {
   id: string
   slug: string
   name: string
-  category: 'clasico' | 'premium' | 'privado'
+  category: 'vino' | 'cultural' | 'premium'
   description: string
   highlights: string[]
   duration: string
   price: number
+  priceType: 'persona' | 'pareja' | 'familia' | 'grupo'
+  priceNote?: string
   image: string
+  maxCapacity?: number
+  minPersons?: number
+  schedule?: string
+  featured?: boolean
+  badge?: 'popular' | 'nuevo' | 'exclusivo'
 }
 
 export interface MembershipTier {

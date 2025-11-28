@@ -3,6 +3,9 @@ import { Playfair_Display, Inter, Raleway } from 'next/font/google'
 import Header from '../src/components/layout/Header'
 import Footer from '../src/components/layout/Footer'
 import PageLoader from '../src/components/ui/PageLoader'
+import AgeVerificationModal from '../src/components/ui/AgeVerificationModal'
+import { CartProvider } from '../src/contexts/CartContext'
+import CartSidebar from '../src/components/cart/CartSidebar'
 // import PageTransition from '../src/components/PageTransition'
 import '../src/styles/globals.css'
 
@@ -39,10 +42,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${playfair.variable} ${inter.variable} ${raleway.variable}`}>
       <body>
-        <PageLoader />
-        <Header />
-        {children}
-        <Footer />
+        <CartProvider>
+          <PageLoader />
+          <AgeVerificationModal />
+          <Header />
+          {children}
+          <Footer />
+          <CartSidebar />
+        </CartProvider>
       </body>
     </html>
   )

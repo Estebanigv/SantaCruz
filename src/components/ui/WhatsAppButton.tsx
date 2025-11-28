@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function WhatsAppButton() {
   const [isHovered, setIsHovered] = useState(false)
+  const [isPulsing, setIsPulsing] = useState(false)
+
   // TODO: Connect to real WhatsApp when ready
   // const phoneNumber = "56912345678" // Reemplazar con el número real de la viña
   // const message = encodeURIComponent("Estimados, me gustaría obtener información sobre las experiencias en Viña Santa Cruz. Gracias.")
+
+  // Subtle pulse animation every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsPulsing(true)
+      setTimeout(() => setIsPulsing(false), 600)
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <button
@@ -17,11 +29,24 @@ export default function WhatsAppButton() {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative">
+        {/* Pulse ring animation */}
+        <div
+          className={`absolute inset-0 rounded-full bg-[#25D366] transition-all duration-600 ${
+            isPulsing ? 'scale-125 opacity-0' : 'scale-100 opacity-0'
+          }`}
+        />
+
         {/* Main button - Elegant design */}
-        <div className="relative w-16 h-16 rounded-full bg-[#25D366] flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110">
+        <div
+          className={`relative w-16 h-16 rounded-full bg-[#25D366] flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 ${
+            isPulsing ? 'scale-105' : 'scale-100'
+          }`}
+        >
           {/* WhatsApp Icon */}
           <svg
-            className="w-8 h-8 text-white transition-transform duration-500 group-hover:rotate-12"
+            className={`w-8 h-8 text-white transition-transform duration-500 group-hover:rotate-12 ${
+              isPulsing ? 'scale-110' : 'scale-100'
+            }`}
             fill="currentColor"
             viewBox="0 0 24 24"
           >
