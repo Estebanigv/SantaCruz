@@ -98,8 +98,8 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
         onClick={onClose}
       />
 
-      {/* Modal */}
-      <div className="relative w-full max-w-6xl h-[96vh] sm:h-[94vh] mx-2 sm:mx-4 bg-[#FDFBF7] rounded-2xl shadow-2xl overflow-hidden animate-scale-in flex flex-col">
+      {/* Modal - fullscreen en móvil, con bordes en desktop */}
+      <div className="relative w-full h-full md:max-w-6xl md:h-[94vh] md:mx-4 bg-[#FDFBF7] md:rounded-2xl shadow-2xl overflow-hidden animate-scale-in flex flex-col">
 
         {/* Decorative top border */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
@@ -201,9 +201,9 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
           </div>
         </div>
 
-        {/* Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto">
-          <div className="px-4 sm:px-8 py-8 sm:py-10 max-w-5xl mx-auto">
+        {/* Content - scroll oculto */}
+        <div ref={contentRef} className="flex-1 overflow-y-auto scrollbar-hide">
+          <div className="px-4 sm:px-8 py-6 sm:py-10 max-w-5xl mx-auto">
 
             {/* Historia */}
             {activeSection === 'historia' && (
