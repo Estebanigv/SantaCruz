@@ -197,9 +197,9 @@ export default function HeroSection() {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
-                fontSize: 'clamp(2rem, 5vw, 4rem)',
+                fontSize: 'clamp(1.75rem, 4vw, 3.5rem)',
                 lineHeight: '1.15',
-                letterSpacing: 'clamp(0.08em, 0.15em, 0.15em)',
+                letterSpacing: 'clamp(0.08em, 0.12em, 0.15em)',
                 textShadow: '0 4px 20px rgba(0,0,0,0.6)',
                 transitionDelay: '200ms',
                 fontWeight: '300',
@@ -214,7 +214,7 @@ export default function HeroSection() {
 
             {/* Subtitle */}
             <p
-              className={`font-[family-name:var(--font-raleway)] text-white/95 text-base sm:text-lg md:text-xl max-w-2xl mx-auto transition-all duration-1000 ease-out ${
+              className={`font-[family-name:var(--font-raleway)] text-white/95 text-sm sm:text-base md:text-lg max-w-2xl mx-auto transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
@@ -255,13 +255,13 @@ export default function HeroSection() {
               {/* Reserva - Botón principal dorado */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 md:px-12 py-3 sm:py-4 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('tour', true)}
                 onMouseLeave={() => handleButtonHover('tour', false)}
               >
                 {/* Shimmer effect */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-                <svg className="relative w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="relative w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="relative">Reserva</span>
@@ -270,11 +270,11 @@ export default function HeroSection() {
               {/* Ver Vinos - Botón secundario elegante */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 md:px-12 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('vinos', true)}
                 onMouseLeave={() => handleButtonHover('vinos', false)}
               >
-                <svg className="relative w-5 h-5 transition-transform group-hover:rotate-12 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="relative w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:rotate-12 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 <span className="relative">Ver Vinos</span>

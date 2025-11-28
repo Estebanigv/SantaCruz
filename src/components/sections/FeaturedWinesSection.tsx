@@ -516,6 +516,14 @@ function WineCardFront({
             className="w-full h-full object-cover"
             style={{ filter: 'saturate(0.85) brightness(1.02)' }}
           />
+          {/* Shimmer effect - brillo continuo */}
+          <div
+            className="absolute inset-0 pointer-events-none animate-shimmer-slow"
+            style={{
+              background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.08) 35%, rgba(212,175,55,0.12) 50%, rgba(255,255,255,0.08) 65%, transparent 80%)',
+              backgroundSize: '300% 100%',
+            }}
+          />
         </div>
 
         {/* Wine Bottle */}

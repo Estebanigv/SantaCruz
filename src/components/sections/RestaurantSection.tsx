@@ -85,13 +85,19 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
             </div>
           </div>
           {/* Loló Logo prominently displayed */}
-          <div className="flex flex-col items-center justify-center mb-4">
+          <div className="flex flex-col items-center justify-center mb-2">
             <img
-              src="/images/Logotipos/Logo-Lolo Horizontal.svg"
-              alt="Loló - Cocina de Origen"
-              className="h-12 md:h-14 lg:h-16 w-auto object-contain"
+              src="/images/Logotipos/LOLO.svg"
+              alt="Loló"
+              className="h-14 md:h-16 lg:h-20 w-auto object-contain"
             />
           </div>
+          <p
+            className="text-gold-600 text-xl md:text-2xl lg:text-3xl tracking-wide italic"
+            style={{ fontFamily: "'Playfair Display', 'Times New Roman', Georgia, serif", fontStyle: 'italic', fontWeight: 400 }}
+          >
+            Cocina de Origen
+          </p>
           <p className="font-[family-name:var(--font-raleway)] text-gray-600 text-base md:text-lg max-w-2xl mx-auto mt-4">
             Cocina chilena contemporánea con productos locales y de temporada, maridada con nuestros mejores vinos
           </p>
@@ -194,7 +200,7 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
         <div className="mt-20 bg-gradient-to-br from-cream-50 to-white rounded-xl shadow-lg overflow-hidden">
           <div className="p-8 md:p-12">
             <h3 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-black-900 text-center mb-3">
-              Especialidades del Chef
+              Maridajes Sugeridos
             </h3>
             <p className="font-[family-name:var(--font-raleway)] text-sm text-gray-600 text-center mb-12 max-w-2xl mx-auto">
               Cada plato es una expresión de nuestra pasión por la gastronomía chilena y el maridaje perfecto

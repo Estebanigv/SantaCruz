@@ -87,14 +87,8 @@
     line-height: var(--line-height-relaxed);
   }
 
-  /* Zoom correction for high DPI screens with 150% scaling */
-  /* 1920x1080 @ 150% = 1280px viewport */
-  /* We apply 85% zoom to make it look more like 125% scale */
-  @media screen and (min-width: 1200px) and (max-width: 1400px) {
-    html {
-      zoom: 0.85; /* 85% zoom to compensate for 150% scale */
-    }
-  }
+  /* Hero adjustments for 150% scaling (1920x1080 @ 150% = 1280px viewport) */
+  /* Text and buttons scaled down for this specific viewport range */
 
   h1, h2, h3 {
     font-family: var(--font-playfair), Georgia, serif;
@@ -537,6 +531,20 @@
   50% {
     transform: translateY(8px);
   }
+}
+
+/* Shimmer effect for wine cards */
+@keyframes shimmer-slow {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer-slow {
+  animation: shimmer-slow 8s ease-in-out infinite;
 }
 
 /* Smooth Section Transitions */
