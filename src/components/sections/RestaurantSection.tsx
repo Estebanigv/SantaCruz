@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { X, ZoomIn, ZoomOut, Download } from 'lucide-react'
+import { useState } from 'react'
+import MenuModal from '@/components/restaurant/MenuModal'
 
 interface RestaurantSectionProps {
   isAdult?: boolean | null
@@ -10,22 +9,6 @@ interface RestaurantSectionProps {
 
 export default function RestaurantSection({ isAdult = true }: RestaurantSectionProps) {
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (isMenuModalOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isMenuModalOpen])
   const features = [
     {
       icon: (
@@ -104,9 +87,9 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
           {/* Loló Logo prominently displayed */}
           <div className="flex flex-col items-center justify-center mb-4">
             <img
-              src="/images/Logotipos/Logo-Lolo.svg"
+              src="/images/Logotipos/Logo-Lolo Horizontal.svg"
               alt="Loló - Cocina de Origen"
-              className="h-16 md:h-20 lg:h-24 w-auto object-contain"
+              className="h-12 md:h-14 lg:h-16 w-auto object-contain"
             />
           </div>
           <p className="font-[family-name:var(--font-raleway)] text-gray-600 text-base md:text-lg max-w-2xl mx-auto mt-4">
@@ -294,142 +277,8 @@ export default function RestaurantSection({ isAdult = true }: RestaurantSectionP
         </div>
       </div>
 
-      {/* Menu PDF Modal */}
-      {isMounted && isMenuModalOpen && createPortal(
-        <MenuPDFModal onClose={() => setIsMenuModalOpen(false)} />,
-        document.body
-      )}
+      {/* Menu Modal */}
+      <MenuModal isOpen={isMenuModalOpen} onClose={() => setIsMenuModalOpen(false)} />
     </section>
-  )
-}
-
-// PDF Menu Modal Component
-function MenuPDFModal({ onClose }: { onClose: () => void }) {
-  const [scale, setScale] = useState(1)
-  // Start from page 2
-  const pdfUrl = '/Carta Loló/Carta-Lolo-2025-Oct-2-30x15cm-web.pdf'
-
-  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.25, 2))
-  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.5))
-
-  const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = pdfUrl
-    link.download = 'Carta-Lolo-2025.pdf'
-    link.click()
-  }
-
-  // Close on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
-
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in"
-        onClick={onClose}
-      />
-
-      {/* Modal Content - Responsive */}
-      <div className="relative w-full max-w-6xl h-[95vh] sm:h-[92vh] md:h-[90vh] bg-white rounded-lg sm:rounded-xl shadow-2xl overflow-hidden animate-scale-in flex flex-col">
-        {/* Header - Compact on mobile */}
-        <div className="flex-shrink-0 flex items-center justify-between px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-white border-b border-gray-100">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <img
-              src="/images/Logotipos/Logo-Lolo.svg"
-              alt="Loló"
-              className="h-6 sm:h-8 md:h-10 w-auto"
-            />
-            <div className="hidden xs:block">
-              <h3 className="font-[family-name:var(--font-playfair)] text-sm sm:text-lg md:text-xl font-semibold text-gray-900">
-                Carta Loló
-              </h3>
-              <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Temporada 2025</p>
-            </div>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* Zoom Controls - Hidden on very small screens */}
-            <div className="hidden md:flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={handleZoomOut}
-                className="p-1.5 hover:bg-white rounded transition-colors"
-                title="Alejar"
-              >
-                <ZoomOut className="w-4 h-4 text-gray-600" />
-              </button>
-              <span className="px-2 text-xs text-gray-600 font-medium min-w-[3rem] text-center">
-                {Math.round(scale * 100)}%
-              </span>
-              <button
-                onClick={handleZoomIn}
-                className="p-1.5 hover:bg-white rounded transition-colors"
-                title="Acercar"
-              >
-                <ZoomIn className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-
-            {/* Mobile Zoom Controls */}
-            <div className="flex md:hidden items-center gap-1">
-              <button
-                onClick={handleZoomOut}
-                className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                title="Alejar"
-              >
-                <ZoomOut className="w-4 h-4 text-gray-600" />
-              </button>
-              <button
-                onClick={handleZoomIn}
-                className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                title="Acercar"
-              >
-                <ZoomIn className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-
-            {/* Download Button */}
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 bg-gold-500 hover:bg-gold-600 text-white text-xs font-medium rounded-lg transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Descargar</span>
-            </button>
-
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Cerrar"
-            >
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-          </div>
-        </div>
-
-        {/* PDF Viewer - Responsive with page=2 */}
-        <div className="flex-1 overflow-auto bg-gray-100 p-2 sm:p-3 md:p-4">
-          <div
-            className="w-full h-full min-h-[500px] sm:min-h-[600px] flex items-start justify-center"
-            style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}
-          >
-            <iframe
-              src={`${pdfUrl}#page=2&toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-              className="w-full h-full bg-white rounded-lg shadow-lg"
-              style={{ minHeight: 'calc(100vh - 120px)' }}
-              title="Carta Loló"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }

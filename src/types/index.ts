@@ -9,6 +9,7 @@ export interface Wine {
   image: string
   grayBg?: string
   colorBg?: string
+  expandedBg?: string
   rating: number
   badge?: 'nuevo' | 'premiado' | 'exclusivo' | 'icono'
   description?: string

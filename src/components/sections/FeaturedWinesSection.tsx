@@ -623,15 +623,15 @@ function WineCardExpanded({
     <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
       {/* Top/Left - Bottle with background - más grande en móvil */}
       <div className="h-[45%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
-        {/* Background image - tenue */}
+        {/* Background image - usa expandedBg si está disponible, sino colorBg */}
         <div className="absolute inset-0 overflow-hidden">
           <img
-            src={wine.colorBg}
+            src={wine.expandedBg || wine.colorBg}
             alt=""
             loading="eager"
             decoding="async"
             className="w-full h-full object-cover"
-            style={{ filter: 'saturate(0.6) brightness(1.05)', opacity: 0.7 }}
+            style={{ filter: wine.expandedBg ? 'none' : 'saturate(0.85) brightness(1.02)', opacity: wine.expandedBg ? 1 : 0.85 }}
           />
         </div>
         {/* Wine bottle - más grande en móvil */}
@@ -691,54 +691,54 @@ function WineCardExpanded({
         </div>
 
         {/* Header */}
-        <div className="mb-2 md:mb-3 pr-16 md:pr-24">
-          <p className="text-gold-600 text-[10px] md:text-xs font-semibold uppercase tracking-wider mb-0.5 md:mb-1">
+        <div className="mb-4 pr-16 md:pr-24">
+          <p className="text-gold-600 text-[10px] md:text-xs font-semibold uppercase tracking-wider mb-1.5">
             {wine.varietal}
           </p>
           <h2 className="text-lg md:text-xl lg:text-2xl font-medium text-gray-900">
             {wine.name}
           </h2>
-          <div className="h-0.5 w-8 md:w-10 bg-gold-400 mt-1.5 md:mt-2" />
+          <div className="h-0.5 w-8 md:w-10 bg-gold-400 mt-2" />
         </div>
 
-        {/* Description - más compacta en móvil */}
-        <div className="mb-2 md:mb-3">
-          <p className="text-gray-600 text-xs md:text-sm leading-relaxed line-clamp-2 md:line-clamp-3">
+        {/* Description - texto completo */}
+        <div className="mb-6 md:mb-7">
+          <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
             {wine.description || 'Descripción no disponible.'}
           </p>
         </div>
 
-        {/* Characteristics - más compacto en móvil */}
-        <div className="grid grid-cols-2 gap-1 md:gap-1.5 mb-2 md:mb-3">
-          <div className="bg-gray-50 rounded-lg px-2 md:px-3 py-1.5 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide">Añada</p>
+        {/* Characteristics */}
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          <div className="bg-gray-50 rounded-lg px-3 py-2">
+            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Añada</p>
             <p className="font-medium text-gray-800 text-xs md:text-sm">{wine.vintage}</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-2 md:px-3 py-1.5 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide">Crianza</p>
+          <div className="bg-gray-50 rounded-lg px-3 py-2">
+            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Crianza</p>
             <p className="font-medium text-gray-800 text-xs md:text-sm">12 meses en barrica</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-2 md:px-3 py-1.5 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide">Temperatura</p>
+          <div className="bg-gray-50 rounded-lg px-3 py-2">
+            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Temperatura</p>
             <p className="font-medium text-gray-800 text-xs md:text-sm">16-18°C</p>
           </div>
-          <div className="bg-gray-50 rounded-lg px-2 md:px-3 py-1.5 md:py-2">
-            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide">Maridaje</p>
+          <div className="bg-gray-50 rounded-lg px-3 py-2">
+            <p className="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">Maridaje</p>
             <p className="font-medium text-gray-800 text-xs md:text-sm">Carnes rojas, quesos</p>
           </div>
         </div>
 
         {/* Price & Actions */}
-        <div className="mt-auto pt-2 md:pt-3 border-t border-gray-100">
+        <div className="pt-4 mt-auto border-t border-gray-100">
           {/* Price */}
-          <div className="mb-2 md:mb-3">
+          <div className="mb-3">
             <span className="text-lg md:text-xl lg:text-2xl font-semibold text-gold-600">
               {formatPrice(wine.price)}
             </span>
             <span className="text-gray-400 text-xs md:text-sm ml-1 md:ml-2">CLP</span>
           </div>
 
-          {/* Action Buttons - Siempre en fila, compactos en móvil */}
+          {/* Action Buttons */}
           <div className="flex flex-row gap-2">
             {/* Botón Añadir al Carro */}
             <button
@@ -753,7 +753,7 @@ function WineCardExpanded({
               <span className="relative whitespace-nowrap">Añadir al Carrito</span>
             </button>
 
-            {/* Botón Descargar Ficha Técnica - Compacto en móvil */}
+            {/* Botón Descargar Ficha Técnica */}
             <button
               onClick={(e) => e.preventDefault()}
               disabled
