@@ -104,17 +104,16 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
 
     // Tamaño deseado de la tarjeta expandida - responsive
     const isSmallMobile = viewportWidth <= 375 // iPhone 13 mini, SE, etc
-    const modalMargin = isMobile ? 8 : 20 // Margen horizontal a cada lado
     const maxWidth = isMobile
-      ? viewportWidth - (modalMargin * 2) // En móvil: pantalla completa menos márgenes
-      : Math.min(1100, viewportWidth - 40) // En desktop: máximo 1100px
+      ? viewportWidth - 16 // En móvil: 8px de margen a cada lado
+      : Math.min(1100, viewportWidth - 80) // En desktop: máximo 1100px con 40px a cada lado
     const maxHeight = isMobile
       ? viewportHeight - (isSmallMobile ? 20 : 40) // Más espacio en pantallas pequeñas
-      : Math.min(580, viewportHeight - 40) // En desktop: máximo 580px
+      : Math.min(580, viewportHeight - 80) // En desktop: máximo 580px
 
-    // Calcular posición centrada en el viewport
-    const centeredLeft = (viewportWidth - maxWidth) / 2 // Centrado horizontal
-    const centeredTop = isMobile ? (isSmallMobile ? 10 : 20) : (viewportHeight - maxHeight) / 2
+    // Posición centrada exacta
+    const centeredLeft = Math.round((viewportWidth - maxWidth) / 2)
+    const centeredTop = Math.round((viewportHeight - maxHeight) / 2)
 
     gsap.set(expandedCard, {
       position: 'fixed',
@@ -152,7 +151,7 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
       }, 0)
     })
 
-    // Animar hacia el centro del viewport, no hacia la posición del grid
+    // Animar hacia el centro exacto del viewport
     tl.to(expandedCard, {
       left: centeredLeft,
       top: centeredTop,
@@ -175,10 +174,10 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
     const overlay = overlayRef.current
     const expandedCard = expandedCardRef.current
 
-    if (!selectedCard || !overlay || !expandedCard) return
+    if (!selectedCard || !overlay || !expandedCard || !originalCardRect.current) return
 
-    // Obtener la posición ACTUAL de la tarjeta original (por si el usuario hizo scroll)
-    const currentRect = selectedCard.getBoundingClientRect()
+    // Usar la posición original guardada de la tarjeta
+    const targetRect = originalCardRect.current
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -186,31 +185,34 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
         setExpandedIndex(null)
         setIsAnimating(false)
         setIsModalOpen(false)
+        // Restaurar todas las tarjetas
         cards.forEach(card => {
           gsap.set(card, { clearProps: 'all' })
         })
         if (expandedCard) {
           gsap.set(expandedCard, { clearProps: 'all' })
         }
+        // Limpiar la referencia
+        originalCardRect.current = null
       }
     })
 
-    // 1. La tarjeta expandida se contrae de vuelta a su posición ACTUAL (donde está ahora la tarjeta original)
+    // 1. La tarjeta expandida se contrae de vuelta a su posición original
     tl.to(expandedCard, {
-      left: currentRect.left,
-      top: currentRect.top,
-      width: currentRect.width,
-      height: currentRect.height,
-      duration: 0.55,
+      left: targetRect.left,
+      top: targetRect.top,
+      width: targetRect.width,
+      height: targetRect.height,
+      duration: 0.5,
       ease: 'power3.inOut',
     }, 0)
 
-    // 2. Fade out del overlay (empieza un poco después)
+    // 2. Fade out del overlay
     tl.to(overlay, {
       opacity: 0,
-      duration: 0.4,
+      duration: 0.35,
       ease: 'power2.out',
-    }, 0.15)
+    }, 0.1)
 
     // 3. Las otras tarjetas vuelven a la normalidad
     otherCards.forEach((card) => {
@@ -218,25 +220,25 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
         opacity: 1,
         scale: 1,
         filter: 'blur(0px)',
-        duration: 0.4,
+        duration: 0.35,
         ease: 'power2.out',
-      }, 0.15)
+      }, 0.1)
     })
 
     // 4. Al final, la tarjeta expandida desaparece y la original aparece
     tl.to(expandedCard, {
       opacity: 0,
-      duration: 0.15,
+      duration: 0.1,
       ease: 'power2.in',
-    }, 0.45)
+    }, 0.4)
 
     tl.to(selectedCard, {
       opacity: 1,
-      duration: 0.15,
+      duration: 0.1,
       ease: 'power2.out',
-    }, 0.5)
+    }, 0.45)
 
-  }, [isAnimating, expandedWine, expandedIndex])
+  }, [isAnimating, expandedWine, expandedIndex, setIsModalOpen])
 
   const formatPrice = (price: number) => {
     return `$${price.toLocaleString('es-CL')}`
