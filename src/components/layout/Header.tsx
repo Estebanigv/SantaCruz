@@ -155,10 +155,10 @@ export default function Header() {
           }}
         />
 
-        <nav className="w-full px-4 sm:px-6 lg:px-6">
-          <div className="relative flex items-center justify-between xl:justify-center h-16 sm:h-20 md:h-24 xl:h-32">
+        <nav className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="relative flex items-center justify-between lg:justify-center h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32">
             {/* Left Navigation - Experiencias, Restaurante (to the left of logo) */}
-            <div className="hidden xl:flex items-center gap-8 absolute left-1/2 -translate-x-[calc(100%+140px)]">
+            <div className="hidden lg:flex items-center gap-4 xl:gap-8 absolute left-1/2 -translate-x-[calc(100%+100px)] xl:-translate-x-[calc(100%+140px)]">
               {leftNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -168,9 +168,8 @@ export default function Header() {
                   onMouseLeave={() => setActiveLink(null)}
                 >
                   <span
-                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400"
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.1em] lg:tracking-[0.12em] xl:tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[11px] lg:text-[12px] xl:text-[14px]"
                     style={{
-                      fontSize: '14px',
                       textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                     }}
                   >
@@ -190,7 +189,7 @@ export default function Header() {
             </div>
 
             {/* Logo - Absolute Center */}
-            <div className="absolute left-1/2 -translate-x-1/2 hidden xl:flex items-center justify-center">
+            <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center justify-center">
               <Link
                 href="/"
                 className="group relative z-10 flex items-center"
@@ -213,7 +212,7 @@ export default function Header() {
             </div>
 
             {/* Right Navigation - Hotel, Vinos (to the right of logo) */}
-            <div className="hidden xl:flex items-center gap-8 absolute left-1/2 translate-x-[140px]">
+            <div className="hidden lg:flex items-center gap-4 xl:gap-8 absolute left-1/2 translate-x-[100px] xl:translate-x-[140px]">
               {rightNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -223,9 +222,8 @@ export default function Header() {
                   onMouseLeave={() => setActiveLink(null)}
                 >
                   <span
-                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400"
+                    className="relative z-10 font-[family-name:var(--font-raleway)] font-semibold tracking-[0.1em] lg:tracking-[0.12em] xl:tracking-[0.15em] uppercase transition-all duration-300 text-white hover:text-gold-400 text-[11px] lg:text-[12px] xl:text-[14px]"
                     style={{
-                      fontSize: '14px',
                       textShadow: '0 2px 8px rgba(0,0,0,0.6)',
                     }}
                   >
@@ -245,7 +243,7 @@ export default function Header() {
             </div>
 
             {/* Utilities - right side with some margin */}
-            <div className="hidden xl:flex items-center gap-4 absolute right-4">
+            <div className="hidden lg:flex items-center gap-2 xl:gap-4 absolute right-2 xl:right-4">
               {/* Separator - elegant vertical line */}
               <div className="w-px h-4 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
 
@@ -416,7 +414,7 @@ export default function Header() {
             </div>
 
             {/* Mobile Logo */}
-            <Link href="/" className="xl:hidden group relative z-10 flex items-center flex-shrink-0">
+            <Link href="/" className="lg:hidden group relative z-10 flex items-center flex-shrink-0">
               <div className="relative">
                 <img
                   src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
@@ -430,7 +428,7 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="xl:hidden relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group flex-shrink-0"
+              className="lg:hidden relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group flex-shrink-0"
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
@@ -466,7 +464,7 @@ export default function Header() {
       {/* Mobile Menu - Immersive fullscreen */}
       {mounted && (
         <div
-          className={`fixed inset-0 z-40 xl:hidden transition-all duration-700 ${
+          className={`fixed inset-0 z-40 lg:hidden transition-all duration-700 ${
             isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
           }`}
           aria-hidden={!isMobileMenuOpen}
