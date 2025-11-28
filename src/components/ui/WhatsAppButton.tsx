@@ -3,117 +3,229 @@
 import { useState, useEffect } from 'react'
 
 export default function WhatsAppButton() {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   const [isPulsing, setIsPulsing] = useState(false)
-  const [showInitialLabel, setShowInitialLabel] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
 
   // TODO: Connect to real WhatsApp when ready
-  // const phoneNumber = "56912345678" // Reemplazar con el número real de la viña
-  // const message = encodeURIComponent("Estimados, me gustaría obtener información sobre las experiencias en Viña Santa Cruz. Gracias.")
+  // const phoneNumber = "56912345678"
+  // const message = encodeURIComponent("Hola, me gustaría obtener información sobre las experiencias en Viña Santa Cruz.")
 
-  // Hide label permanently on first scroll or when mouse passes half of the banner
+  // Detect mobile
   useEffect(() => {
-    let hasHidden = false
-
-    const hideLabel = () => {
-      if (!hasHidden) {
-        hasHidden = true
-        setShowInitialLabel(false)
-        // Remove listeners after hiding
-        window.removeEventListener('scroll', handleScroll)
-        window.removeEventListener('mousemove', handleMouseMove)
-      }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Delayed appearance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true)
+    }, 3000)
 
     const handleScroll = () => {
-      hideLabel()
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const heroHeight = window.innerHeight
-      // If mouse Y position is past half of the hero/banner
-      if (e.clientY > heroHeight * 0.5) {
-        hideLabel()
+      if (window.scrollY > 100) {
+        setIsVisible(true)
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('mousemove', handleMouseMove, { passive: true })
 
     return () => {
+      clearTimeout(timer)
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('mousemove', handleMouseMove)
     }
   }, [])
 
-  // Subtle pulse animation every 5 seconds
+  // Subtle pulse every 8 seconds (only when not expanded)
   useEffect(() => {
+    if (!isVisible) return
+
     const interval = setInterval(() => {
-      setIsPulsing(true)
-      setTimeout(() => setIsPulsing(false), 600)
-    }, 5000)
+      if (!isExpanded) {
+        setIsPulsing(true)
+        setTimeout(() => setIsPulsing(false), 2000)
+      }
+    }, 8000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isVisible, isExpanded])
 
+  // Auto-collapse after 4 seconds when expanded (mobile only)
+  useEffect(() => {
+    if (isExpanded && isMobile) {
+      const timer = setTimeout(() => {
+        setIsExpanded(false)
+      }, 4000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isExpanded, isMobile])
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    if (isMobile && !isExpanded) {
+      // First touch: expand
+      setIsExpanded(true)
+    } else {
+      // Second touch or desktop: open WhatsApp
+      // window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
+      console.log('Opening WhatsApp...')
+    }
+  }
+
+  if (!isVisible) return null
+
+  // Mobile version: Peek & Expand
+  if (isMobile) {
+    return (
+      <button
+        onClick={handleClick}
+        className={`
+          fixed z-50 bottom-6 transition-all duration-300 ease-out
+          ${isExpanded ? 'right-4' : '-right-[24px]'}
+        `}
+        style={{
+          paddingLeft: isExpanded ? 0 : '24px',
+        }}
+        aria-label="Contactar vía WhatsApp"
+        aria-expanded={isExpanded}
+      >
+        <div className="relative flex items-center">
+          {/* Label when expanded */}
+          <div
+            className={`
+              absolute right-full mr-2
+              bg-white/95 backdrop-blur-sm
+              px-3 py-1.5 rounded-full
+              shadow-md border border-gray-100
+              transition-all duration-300
+              ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}
+            `}
+          >
+            <span className="text-xs font-medium text-gray-700 whitespace-nowrap">
+              Escríbenos
+            </span>
+          </div>
+
+          {/* Pulse ring */}
+          {!isExpanded && (
+            <div
+              className={`
+                absolute inset-0 rounded-full bg-[#25D366]
+                transition-all duration-1000
+                ${isPulsing ? 'scale-150 opacity-0' : 'scale-100 opacity-0'}
+              `}
+            />
+          )}
+
+          {/* Main button */}
+          <div
+            className={`
+              relative rounded-full bg-[#25D366]
+              flex items-center justify-center
+              transition-all duration-300
+              ${isExpanded ? 'w-12 h-12 shadow-lg' : 'w-12 h-12 shadow-md'}
+              ${isPulsing && !isExpanded ? 'scale-105' : 'scale-100'}
+            `}
+          >
+            <svg
+              className={`
+                text-white transition-all duration-300
+                ${isExpanded ? 'w-6 h-6 rotate-12' : 'w-6 h-6'}
+              `}
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 012.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.15l-.3-.17-3.12.82.83-3.04-.2-.32a8.188 8.188 0 01-1.26-4.38c.01-4.54 3.7-8.24 8.25-8.24M8.53 7.33c-.16 0-.43.06-.66.31-.22.25-.87.85-.87 2.07 0 1.22.89 2.39 1 2.56.14.17 1.76 2.67 4.25 3.73.59.27 1.05.42 1.41.53.59.19 1.13.16 1.56.1.48-.07 1.46-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.16-.48-.27-.25-.14-1.47-.74-1.69-.82-.23-.08-.37-.12-.56.12-.16.25-.64.81-.78.97-.15.17-.29.19-.53.07-.26-.13-1.06-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.12-.24-.01-.39.11-.5.11-.11.27-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.11-.56-1.35-.76-1.84-.2-.48-.41-.42-.56-.43-.14 0-.3-.01-.46-.01z" />
+            </svg>
+
+            {/* Glow when expanded */}
+            <div
+              className={`
+                absolute inset-0 rounded-full bg-[#25D366] blur-xl -z-10
+                transition-opacity duration-300
+                ${isExpanded ? 'opacity-30' : 'opacity-0'}
+              `}
+            />
+          </div>
+        </div>
+      </button>
+    )
+  }
+
+  // Desktop version: Traditional floating button with tooltip
   return (
     <button
-      onClick={(e) => e.preventDefault()}
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 group cursor-pointer"
+      onClick={handleClick}
+      className="fixed bottom-6 right-6 z-50 group cursor-pointer"
       aria-label="Contactar vía WhatsApp"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
     >
       <div className="relative">
-        {/* Pulse ring animation */}
+        {/* Pulse ring */}
         <div
-          className={`absolute inset-0 rounded-full bg-[#25D366] transition-all duration-600 ${
-            isPulsing ? 'scale-125 opacity-0' : 'scale-100 opacity-0'
-          }`}
+          className={`
+            absolute inset-0 rounded-full bg-[#25D366]
+            transition-all duration-1000
+            ${isPulsing ? 'scale-150 opacity-0' : 'scale-100 opacity-0'}
+          `}
         />
 
-        {/* Main button - Más pequeño en móvil */}
+        {/* Main button */}
         <div
-          className={`relative w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg md:shadow-2xl hover:shadow-xl md:hover:shadow-3xl transition-all duration-500 hover:scale-110 ${
-            isPulsing ? 'scale-105' : 'scale-100'
-          }`}
+          className={`
+            relative w-14 h-14 rounded-full bg-[#25D366]
+            flex items-center justify-center
+            shadow-lg hover:shadow-2xl
+            transition-all duration-300 hover:scale-110
+            ${isPulsing ? 'scale-105' : 'scale-100'}
+          `}
         >
-          {/* WhatsApp Icon - Más pequeño en móvil */}
           <svg
-            className={`w-6 h-6 md:w-7 md:h-7 text-white transition-transform duration-500 group-hover:rotate-12 ${
-              isPulsing ? 'scale-110' : 'scale-100'
-            }`}
+            className="w-7 h-7 text-white transition-transform duration-300 group-hover:rotate-12"
             fill="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 012.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.39-4.19-1.15l-.3-.17-3.12.82.83-3.04-.2-.32a8.188 8.188 0 01-1.26-4.38c.01-4.54 3.7-8.24 8.25-8.24M8.53 7.33c-.16 0-.43.06-.66.31-.22.25-.87.85-.87 2.07 0 1.22.89 2.39 1 2.56.14.17 1.76 2.67 4.25 3.73.59.27 1.05.42 1.41.53.59.19 1.13.16 1.56.1.48-.07 1.46-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.16-.48-.27-.25-.14-1.47-.74-1.69-.82-.23-.08-.37-.12-.56.12-.16.25-.64.81-.78.97-.15.17-.29.19-.53.07-.26-.13-1.06-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.12-.24-.01-.39.11-.5.11-.11.27-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.11-.56-1.35-.76-1.84-.2-.48-.41-.42-.56-.43-.14 0-.3-.01-.46-.01z" />
           </svg>
 
-          {/* Elegant glow effect */}
+          {/* Glow effect on hover */}
           <div
-            className={`absolute inset-0 rounded-full bg-gold-500 blur-2xl transition-opacity duration-500 -z-10 ${
-              isHovered ? 'opacity-30' : 'opacity-0'
-            }`}
+            className={`
+              absolute inset-0 rounded-full bg-[#25D366] blur-xl -z-10
+              transition-opacity duration-300
+              ${isExpanded ? 'opacity-30' : 'opacity-0'}
+            `}
           />
         </div>
 
-        {/* Tooltip - Solo visible en desktop */}
+        {/* Tooltip */}
         <div
-          className={`hidden md:block absolute right-full mr-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${
-            (isHovered || showInitialLabel) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
-          }`}
+          className={`
+            absolute right-full mr-4 top-1/2 -translate-y-1/2
+            transition-all duration-300
+            ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'}
+          `}
         >
-          <div className="bg-black-900 text-white px-5 py-2.5 rounded-lg shadow-xl border border-gold-500/20 backdrop-blur-xl">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-gold-500" />
-              <span className="font-[family-name:var(--font-raleway)] text-sm font-light tracking-wide whitespace-nowrap">
-                Comunícate con nosotros
-              </span>
-            </div>
+          <div className="bg-gray-900/95 backdrop-blur-sm text-white px-5 py-2.5 rounded-lg shadow-xl">
+            <span className="text-sm font-light tracking-wide whitespace-nowrap">
+              Comunícate con nosotros
+            </span>
           </div>
           {/* Arrow */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full">
-            <div className="w-0 h-0 border-t-6 border-t-transparent border-b-6 border-b-transparent border-l-6 border-l-black-900" />
+          <div className="absolute left-full top-1/2 -translate-y-1/2">
+            <div className="w-0 h-0 border-y-[6px] border-y-transparent border-l-[6px] border-l-gray-900/95" />
           </div>
         </div>
       </div>
