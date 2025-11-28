@@ -190,7 +190,7 @@ export default function HeroSection() {
         {/* Content - text at top, buttons at bottom, center clear */}
         <div className="relative z-30 h-full flex flex-col">
           {/* Text at top */}
-          <div className="flex-none pt-20 sm:pt-24 md:pt-32 lg:pt-36 text-center px-4 sm:px-6">
+          <div className="flex-none pt-24 sm:pt-28 md:pt-32 lg:pt-36 text-center px-4 sm:px-6">
             {/* Main Heading */}
             <h1
               className={`font-[family-name:var(--font-raleway)] text-white mb-3 sm:mb-4 transition-all duration-1000 ease-out ${
@@ -245,9 +245,9 @@ export default function HeroSection() {
           <div className="flex-1" />
 
           {/* Buttons at bottom - Animated CTAs */}
-          <div className="flex-none pb-16 sm:pb-20 md:pb-28 lg:pb-32 text-center px-4 sm:px-6">
+          <div className="flex-none pb-16 sm:pb-20 md:pb-28 lg:pb-32 text-center px-6 sm:px-6">
             <div
-              className={`flex flex-col sm:flex-row gap-4 sm:gap-5 md:gap-6 justify-center transition-all duration-1000 ease-out ${
+              className={`flex flex-col gap-3 sm:flex-row sm:gap-5 md:gap-6 justify-center items-center transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: '600ms' }}
@@ -255,7 +255,7 @@ export default function HeroSection() {
               {/* Reserva - Botón principal dorado */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 w-[200px] sm:w-auto px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('tour', true)}
                 onMouseLeave={() => handleButtonHover('tour', false)}
               >
@@ -270,7 +270,7 @@ export default function HeroSection() {
               {/* Ver Vinos - Botón secundario elegante */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
+                className="group relative inline-flex items-center justify-center gap-2 w-[200px] sm:w-auto px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
                 onMouseEnter={() => handleButtonHover('vinos', true)}
                 onMouseLeave={() => handleButtonHover('vinos', false)}
               >

@@ -143,12 +143,11 @@ export default function Header() {
           transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
           transition:
             'transform 0.3s ease-out, background 0.5s ease-out, backdrop-filter 0.5s ease-out',
-          borderBottom: isScrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
         }}
       >
-        {/* Scroll progress indicator - Minimal */}
+        {/* Scroll progress indicator - Minimal, hidden on mobile */}
         <div
-          className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-300"
+          className="hidden md:block absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-300"
           style={{
             width: `${scrollProgress * 100}%`,
             opacity: scrollProgress > 0.01 ? 0.6 : 0,
@@ -411,15 +410,15 @@ export default function Header() {
             </div>
 
             {/* Mobile Logo */}
-            <Link href="/" className="md:hidden group relative z-10 flex items-center flex-shrink-0">
+            <Link href="/" className="md:hidden group relative z-10 flex items-center flex-shrink-0 ml-2">
               <div className="relative">
                 <img
                   src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.webp"
                   alt="Viña Santa Cruz"
-                  className="h-10 sm:h-12 w-auto object-contain opacity-95"
+                  className="h-11 sm:h-12 w-auto object-contain"
                   style={{
-                    maxWidth: '220px',
-                    filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.5))'
+                    maxWidth: '200px',
+                    filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))'
                   }}
                 />
               </div>
