@@ -27,6 +27,7 @@ export const featuredWines: Wine[] = [
     image: '/images/Vinos/Tupu/Tupu — Edición Limitada.webp',
     grayBg: '/images/Vinos/Tupu/Tupu Gris.webp',
     colorBg: '/images/Vinos/Tupu/Tupu Color.webp',
+    videoBg: '/images/Vinos/Tupu/Tupi Video.mp4',
     rating: 0,
     badge: 'nuevo',
     description: 'Tupu toma su nombre del alfiler ceremonial que la Machi mapuche utiliza para unir su vestidura y canalizar energías durante el machitún. Así como el tupu simboliza conexión y propósito, este vino reúne las mejores variedades de cada cosecha en un ensamblaje que celebra la tierra, la comunidad y el ciclo natural. Es una edición creada para quienes buscan profundidad, identidad y un relato que trascienda la copa.',
