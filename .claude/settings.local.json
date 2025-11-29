@@ -6,7 +6,11 @@
       "Bash(cat:*)",
       "Bash(npm audit:*)",
       "Bash(node scripts/optimize-images.js:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(npm run dev:*)",
+      "Bash(start http://localhost:3000)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
