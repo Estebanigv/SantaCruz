@@ -472,10 +472,25 @@ function WineCardFront({
 
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
-  // Handle touch for mobile devices
+  // Handle touch for mobile devices - auto reset after 3 seconds
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   const handleTouch = () => {
-    // Toggle hover state on touch
-    handleHover(!isHovered)
+    // Clear any existing timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current)
+    }
+
+    // Activate hover effect
+    if (!isHovered) {
+      handleHover(true)
+      // Auto-reset after 3 seconds
+      touchTimeoutRef.current = setTimeout(() => {
+        handleHover(false)
+      }, 3000)
+    } else {
+      handleHover(false)
+    }
   }
 
   return (
@@ -686,10 +701,18 @@ function WineCardExpanded({
   }, [isVisible])
 
   return (
-    <div ref={contentRef} className="flex flex-col md:flex-row h-auto md:h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
-      {/* Top/Left - Bottle with background */}
-      <div className="h-[180px] sm:h-[220px] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
-        {/* Background image - usa expandedBg si está disponible, sino colorBg */}
+    <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
+      {/* Close button - absolute on mobile, in header on desktop */}
+      <button
+        onClick={onClose}
+        className="absolute top-3 right-3 z-20 w-9 h-9 md:hidden flex items-center justify-center bg-white/90 backdrop-blur-sm hover:bg-white rounded-full shadow-lg transition-all duration-200"
+      >
+        <X className="w-5 h-5 text-gray-600" strokeWidth={2} />
+      </button>
+
+      {/* Top - Bottle with background (HERO - 50% height on mobile) */}
+      <div className="h-[50%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
+        {/* Background image */}
         <div className="absolute inset-0 overflow-hidden">
           <img
             src={wine.expandedBg || wine.colorBg}
@@ -700,38 +723,35 @@ function WineCardExpanded({
             style={{ filter: wine.expandedBg ? 'none' : 'saturate(0.85) brightness(1.02)', opacity: wine.expandedBg ? 1 : 0.85 }}
           />
         </div>
-        {/* Wine bottle */}
+        {/* Wine bottle - BIGGER on mobile */}
         <img
           src={wine.image}
           alt={wine.name}
           loading="eager"
           decoding="async"
-          className="relative z-10 h-[85%] w-auto object-contain max-h-[160px] sm:max-h-[200px] md:max-h-none"
+          className="relative z-10 h-[90%] w-auto object-contain"
           style={{ filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.35))' }}
         />
       </div>
 
-      {/* Bottom/Right - Details */}
-      <div className="md:flex-1 md:w-[58%] px-3 py-2 md:p-4 lg:p-5 flex flex-col justify-start relative bg-white overflow-y-auto">
-        {/* Top Actions */}
-        <div className="absolute top-2 right-2 md:top-4 md:right-4 flex items-center gap-2 md:gap-3 z-10">
-          {/* Botón favorito con tooltip */}
+      {/* Bottom - Details (50% height on mobile, scrollable) */}
+      <div className="h-[50%] md:h-full md:flex-1 md:w-[58%] px-4 py-3 md:p-4 lg:p-5 flex flex-col relative bg-white overflow-y-auto">
+        {/* Desktop close & favorite buttons */}
+        <div className="hidden md:flex absolute top-4 right-4 items-center gap-3 z-10">
           <div className="relative">
             <button
               onClick={onFavorite}
-              className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110 ${
+              className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 hover:scale-110 ${
                 isFavorite
                   ? 'bg-red-50 text-red-500'
                   : 'bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400'
               }`}
             >
               <Heart
-                className={`w-4 h-4 md:w-5 md:h-5 transition-all duration-200 ${isFavorite ? 'fill-current' : ''}`}
+                className={`w-5 h-5 transition-all duration-200 ${isFavorite ? 'fill-current' : ''}`}
                 strokeWidth={1.5}
               />
             </button>
-
-            {/* Tooltip de login para favoritos */}
             {showLoginPrompt && (
               <div className="absolute top-full right-0 mt-2 animate-fade-in z-30">
                 <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg shadow-lg text-xs whitespace-nowrap">
@@ -747,73 +767,88 @@ function WineCardExpanded({
               </div>
             )}
           </div>
-
           <button
             onClick={onClose}
-            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 hover:scale-110 rounded-full transition-all duration-200"
+            className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 hover:scale-110 rounded-full transition-all duration-200"
           >
-            <X className="w-4 h-4 md:w-5 md:h-5 text-gray-500" strokeWidth={1.5} />
+            <X className="w-5 h-5 text-gray-500" strokeWidth={1.5} />
           </button>
         </div>
 
-        {/* Header */}
-        <div className="mb-1 md:mb-4 pr-14 md:pr-24">
-          <p className="text-gold-600 text-[10px] md:text-xs font-semibold uppercase tracking-wider mb-0.5">
-            {wine.varietal}
-          </p>
-          <h2 className="text-sm md:text-xl lg:text-2xl font-medium text-gray-900">
-            {wine.name}
-          </h2>
-          <div className="h-0.5 w-6 md:w-10 bg-gold-400 mt-1" />
+        {/* Header - more compact on mobile */}
+        <div className="mb-2 md:mb-4 pr-0 md:pr-24 flex items-start justify-between">
+          <div>
+            <p className="text-gold-600 text-xs md:text-xs font-semibold uppercase tracking-wider mb-0.5">
+              {wine.varietal}
+            </p>
+            <h2 className="text-lg md:text-xl lg:text-2xl font-medium text-gray-900">
+              {wine.name}
+            </h2>
+            <div className="h-0.5 w-8 md:w-10 bg-gold-400 mt-1.5" />
+          </div>
+          {/* Mobile favorite button */}
+          <button
+            onClick={onFavorite}
+            className={`md:hidden w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 ${
+              isFavorite
+                ? 'bg-red-50 text-red-500'
+                : 'bg-gray-100 text-gray-400'
+            }`}
+          >
+            <Heart
+              className={`w-4 h-4 transition-all duration-200 ${isFavorite ? 'fill-current' : ''}`}
+              strokeWidth={1.5}
+            />
+          </button>
         </div>
 
-        {/* Description - texto completo */}
-        <div className="mb-1.5 md:mb-7">
-          <p className="text-gray-600 text-[10px] md:text-sm leading-snug md:leading-relaxed">
+        {/* Description - compact on mobile */}
+        <div className="mb-2 md:mb-5">
+          <p className="text-gray-600 text-xs md:text-sm leading-relaxed line-clamp-3 md:line-clamp-none">
             {wine.description || 'Descripción no disponible.'}
           </p>
         </div>
 
-        {/* Characteristics */}
-        <div className="grid grid-cols-2 gap-1 md:gap-2 mb-1.5 md:mb-5">
-          <div className="bg-gray-50 rounded px-1.5 py-1 md:px-3 md:py-2">
-            <p className="text-[7px] md:text-[10px] text-gray-400 uppercase tracking-wide">Añada</p>
-            <p className="font-medium text-gray-800 text-[10px] md:text-sm">{wine.vintage}</p>
+        {/* Characteristics - inline on mobile */}
+        <div className="flex flex-wrap gap-2 md:grid md:grid-cols-2 md:gap-2 mb-3 md:mb-5">
+          <div className="bg-gray-50 rounded-full md:rounded px-3 py-1.5 md:px-3 md:py-2 flex md:block items-center gap-1.5">
+            <p className="text-[10px] md:text-[10px] text-gray-400 uppercase tracking-wide">Añada</p>
+            <p className="font-medium text-gray-800 text-xs md:text-sm">{wine.vintage}</p>
           </div>
-          <div className="bg-gray-50 rounded px-1.5 py-1 md:px-3 md:py-2">
-            <p className="text-[7px] md:text-[10px] text-gray-400 uppercase tracking-wide">Crianza</p>
-            <p className="font-medium text-gray-800 text-[10px] md:text-sm">12 meses en barrica</p>
+          <div className="bg-gray-50 rounded-full md:rounded px-3 py-1.5 md:px-3 md:py-2 flex md:block items-center gap-1.5">
+            <p className="text-[10px] md:text-[10px] text-gray-400 uppercase tracking-wide">Crianza</p>
+            <p className="font-medium text-gray-800 text-xs md:text-sm">12 meses</p>
           </div>
-          <div className="bg-gray-50 rounded px-1.5 py-1 md:px-3 md:py-2">
-            <p className="text-[7px] md:text-[10px] text-gray-400 uppercase tracking-wide">Temperatura</p>
-            <p className="font-medium text-gray-800 text-[10px] md:text-sm">16-18°C</p>
+          <div className="bg-gray-50 rounded-full md:rounded px-3 py-1.5 md:px-3 md:py-2 flex md:block items-center gap-1.5">
+            <p className="text-[10px] md:text-[10px] text-gray-400 uppercase tracking-wide">Temp.</p>
+            <p className="font-medium text-gray-800 text-xs md:text-sm">16-18°C</p>
           </div>
-          <div className="bg-gray-50 rounded px-1.5 py-1 md:px-3 md:py-2">
-            <p className="text-[7px] md:text-[10px] text-gray-400 uppercase tracking-wide">Maridaje</p>
-            <p className="font-medium text-gray-800 text-[10px] md:text-sm">Carnes rojas, quesos</p>
+          <div className="bg-gray-50 rounded-full md:rounded px-3 py-1.5 md:px-3 md:py-2 flex md:block items-center gap-1.5">
+            <p className="text-[10px] md:text-[10px] text-gray-400 uppercase tracking-wide">Maridaje</p>
+            <p className="font-medium text-gray-800 text-xs md:text-sm">Carnes, quesos</p>
           </div>
         </div>
 
-        {/* Price & Actions */}
-        <div className="pt-1.5 md:pt-4 border-t border-gray-100">
+        {/* Price & Actions - sticky at bottom on mobile */}
+        <div className="mt-auto pt-3 md:pt-4 border-t border-gray-100">
           {/* Price */}
-          <div className="mb-1.5 md:mb-3">
-            <span className="text-base md:text-xl lg:text-2xl font-semibold text-gold-600">
+          <div className="mb-2 md:mb-3">
+            <span className="text-xl md:text-xl lg:text-2xl font-semibold text-gold-600">
               {formatPrice(wine.price)}
             </span>
-            <span className="text-gray-400 text-[9px] md:text-sm ml-1 md:ml-2">CLP</span>
+            <span className="text-gray-400 text-xs md:text-sm ml-2">CLP</span>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-row gap-1.5 md:gap-2">
+          <div className="flex gap-2 md:gap-2">
             {/* Botón Añadir al Carro */}
             <button
               onClick={onAddToCart}
-              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-[10px] sm:text-sm font-medium py-1.5 sm:py-2.5 px-2 sm:px-4 rounded-md md:rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
+              className="group/btn btn-shimmer btn-ripple relative flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 bg-[length:200%_100%] text-white text-sm font-medium py-3 px-4 rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg hover:shadow-2xl hover:shadow-gold-500/40 hover:scale-[1.02] hover:bg-right active:scale-[0.98]"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
               <ShoppingCart
-                className="relative w-3 h-3 sm:w-4 sm:h-4 transition-all duration-300 group-hover/btn:rotate-12"
+                className="relative w-4 h-4 transition-all duration-300 group-hover/btn:rotate-12"
                 strokeWidth={1.5}
               />
               <span className="relative whitespace-nowrap">Añadir al Carrito</span>
@@ -823,10 +858,10 @@ function WineCardExpanded({
             <button
               onClick={(e) => e.preventDefault()}
               disabled
-              className="group/dl flex items-center justify-center gap-1 py-1.5 sm:py-2.5 px-1.5 sm:px-4 border border-gray-200 text-gray-400 rounded-md md:rounded-lg text-[10px] sm:text-sm font-medium cursor-not-allowed opacity-50 whitespace-nowrap"
+              className="group/dl flex items-center justify-center gap-1.5 py-3 px-4 border border-gray-200 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed opacity-50 whitespace-nowrap"
             >
               <Download
-                className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                className="w-4 h-4 flex-shrink-0"
                 strokeWidth={1.5}
               />
               <span className="sm:hidden">Ficha</span>
