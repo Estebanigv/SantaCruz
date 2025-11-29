@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(copy \"E:\\Proyectos Webs\\VIÑA SANTA CRUZ – Plataforma Web Premium\\public\\images\\Logotipos\\isotipo viña blanco.png\" \"E:\\Proyectos Webs\\VIÑA SANTA CRUZ – Plataforma Web Premium\\public\\favicon.png\")",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(npm audit:*)",
+      "Bash(node scripts/optimize-images.js:*)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []

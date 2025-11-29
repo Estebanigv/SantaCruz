@@ -52,8 +52,10 @@ export default function AgeVerificationModal() {
         {/* Logo */}
         <div className={`mb-12 transition-all duration-700 delay-200 ${isTransitioning ? 'opacity-0 -translate-y-8' : 'opacity-100 translate-y-0'}`}>
           <img
-            src="/images/logo_vsc_png_byw.png"
+            src="/images/logo_vsc_png_byw.webp"
             alt="Viña Santa Cruz"
+            width="300"
+            height="120"
             className="h-20 md:h-24 w-auto object-contain filter brightness-0 invert"
           />
         </div>

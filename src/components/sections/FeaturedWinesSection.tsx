@@ -59,13 +59,10 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
     })
   }, [])
 
-  // Por ahora el carrito no hace nada - se implementará después
   const handleAddToCart = useCallback((wine: Wine, e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation()
     }
-    // TODO: Implementar carrito completo
-    console.log('Agregar al carrito:', wine.name)
   }, [])
 
   const handleExpand = useCallback((wine: Wine, index: number) => {

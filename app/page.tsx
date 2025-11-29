@@ -1,15 +1,26 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import HeroSection from '@/components/sections/HeroSection'
 import USPsSection from '@/components/sections/USPsSection'
 import FeaturedWinesSection from '@/components/sections/FeaturedWinesSection'
-import ToursSection from '@/components/sections/ToursSection'
-import RestaurantSection from '@/components/sections/RestaurantSection'
-import BrandStorySection from '@/components/sections/BrandStorySection'
-import InstagramSection from '@/components/sections/InstagramSection'
-import WhatsAppButton from '@/components/ui/WhatsAppButton'
 import { useAge } from '@/contexts/AgeContext'
 import { OrganizationSchema, LocalBusinessSchema, WebPageSchema } from '@/components/seo/StructuredData'
+
+// Lazy load non-critical sections
+const ToursSection = dynamic(() => import('@/components/sections/ToursSection'), {
+  loading: () => <div className="h-96" />,
+})
+const RestaurantSection = dynamic(() => import('@/components/sections/RestaurantSection'), {
+  loading: () => <div className="h-96" />,
+})
+const BrandStorySection = dynamic(() => import('@/components/sections/BrandStorySection'), {
+  loading: () => <div className="h-96" />,
+})
+const InstagramSection = dynamic(() => import('@/components/sections/InstagramSection'), {
+  loading: () => <div className="h-96" />,
+})
+const WhatsAppButton = dynamic(() => import('@/components/ui/WhatsAppButton'))
 
 export default function HomePage() {
   const { isAdult } = useAge()

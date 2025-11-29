@@ -13,15 +13,12 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHoveringTop, setIsHoveringTop] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [lastMouseMove, setLastMouseMove] = useState(Date.now())
   const headerRef = useRef<HTMLElement>(null)
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Cart context
   const { totalItems, openCart } = useCart()
 
-  // User state - TODO: Connect to real auth state management
   const [isAuthenticated] = useState(false)
   const [userName] = useState('')
 
@@ -56,12 +53,9 @@ export default function Header() {
       setLastScrollY(scrollY)
     }
 
-    // Detect mouse near top of screen to show header
     const handleMouseMove = (e: MouseEvent) => {
-      const threshold = 80 // pixels from top
-      setLastMouseMove(Date.now())
+      const threshold = 80
 
-      // Clear existing inactivity timeout
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current)
       }
@@ -73,8 +67,6 @@ export default function Header() {
         setIsHoveringTop(false)
       }
 
-      // Set new inactivity timeout - hide navbar after 3 seconds of no mouse movement
-      // Only if not at the top of the page
       if (window.scrollY > 80) {
         inactivityTimeoutRef.current = setTimeout(() => {
           if (!isHoveringTop) {
@@ -154,8 +146,8 @@ export default function Header() {
           }}
         />
 
-        <nav className="w-full px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
-          <div className="relative flex items-center justify-between md:justify-center h-16 sm:h-20 md:h-20 lg:h-24 xl:h-28">
+        <nav className="w-full px-4 sm:px-6 md:px-4 lg:px-6 xl:px-8">
+          <div className="relative flex items-center justify-between md:justify-center h-20 sm:h-20 md:h-20 lg:h-24 xl:h-28">
             {/* Left Navigation - Desktop (next to logo on left) */}
             <div className="hidden md:flex items-center gap-3 lg:gap-4 xl:gap-6 absolute left-1/2 -translate-x-[calc(100%+85px)] lg:-translate-x-[calc(100%+100px)] xl:-translate-x-[calc(100%+130px)]">
               {leftNavigation.map((item) => (
@@ -197,7 +189,7 @@ export default function Header() {
               >
                 <div className="relative flex items-center">
                   <img
-                    src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.png"
+                    src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.webp"
                     alt="Viña Santa Cruz"
                     className={`h-8 md:h-9 lg:h-11 xl:h-14 w-auto object-contain transition-all duration-500 ease-out ${
                       activeLink === 'logo' ? 'opacity-100 scale-105' : 'opacity-95 scale-100'
@@ -410,28 +402,28 @@ export default function Header() {
             </div>
 
             {/* Mobile Logo */}
-            <Link href="/" className="md:hidden group relative z-10 flex items-center flex-shrink-0 ml-2">
+            <Link href="/" className="md:hidden group relative z-10 flex items-center flex-shrink-0">
               <div className="relative">
                 <img
                   src="/images/Logotipos/Logo Viña Full Blanco V Horizontal.webp"
                   alt="Viña Santa Cruz"
-                  className="h-11 sm:h-12 w-auto object-contain"
+                  className="h-12 sm:h-14 w-auto object-contain"
                   style={{
-                    maxWidth: '200px',
+                    maxWidth: '180px',
                     filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))'
                   }}
                 />
               </div>
             </Link>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Touch optimized */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group flex-shrink-0"
+              className="md:hidden relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center group flex-shrink-0 -mr-2"
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <div className="relative w-6 h-5">
+              <div className="relative w-6 h-6">
                 <span
                   className={`absolute left-0 w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-out ${
                     isMobileMenuOpen ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-0 rotate-0'
@@ -493,15 +485,15 @@ export default function Header() {
           </div>
 
           {/* Menu content */}
-          <div className="relative flex flex-col items-center justify-center h-full px-4 sm:px-8">
+          <div className="relative flex flex-col items-center justify-center h-full px-6 sm:px-8">
             {/* Decorative top line */}
             <div
-              className={`absolute top-24 sm:top-32 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 ${
+              className={`absolute top-28 sm:top-32 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-700 ${
                 isMobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
               }`}
             />
 
-            <nav className="space-y-4 sm:space-y-6 text-center">
+            <nav className="space-y-6 sm:space-y-8 text-center w-full max-w-md">
               {[...leftNavigation, ...rightNavigation].map((item, index) => (
                 <div
                   key={item.href}
@@ -513,32 +505,32 @@ export default function Header() {
                   <Link
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="group relative inline-block cursor-pointer"
+                    className="group relative inline-block cursor-pointer w-full py-3 min-h-[44px] flex items-center justify-center"
                   >
-                    <span className="block text-3xl sm:text-4xl md:text-5xl font-[family-name:var(--font-playfair)] font-bold text-white group-hover:text-white/80 transition-all duration-500">
+                    <span className="block text-3xl sm:text-4xl font-[family-name:var(--font-playfair)] font-bold text-white group-hover:text-white/80 transition-all duration-500">
                       {item.label}
                     </span>
 
                     {/* Animated underline */}
-                    <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-gradient-to-r from-white/0 via-white to-white/0 group-hover:w-full transition-all duration-700" />
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-[3px] bg-gradient-to-r from-white/0 via-white to-white/0 group-hover:w-3/4 transition-all duration-700" />
                   </Link>
                 </div>
               ))}
             </nav>
 
             <div
-              className={`mt-16 transition-all duration-700 delay-500 ${
+              className={`mt-16 sm:mt-20 transition-all duration-700 delay-500 w-full ${
                 isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
               <Link
                 href="/contacto"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="group relative inline-flex items-center px-10 py-4 rounded-full overflow-hidden bg-transparent border-none cursor-pointer"
+                className="group relative inline-flex items-center justify-center px-12 py-4 sm:py-5 rounded-full overflow-hidden bg-transparent border-none cursor-pointer min-h-[56px] w-full max-w-xs mx-auto"
               >
                 <div className="absolute inset-0 bg-white transition-transform duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-white blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
-                <span className="relative z-10 text-base font-semibold text-black tracking-wide">
+                <span className="relative z-10 text-base sm:text-lg font-semibold text-black tracking-wide">
                   Contacto
                 </span>
               </Link>

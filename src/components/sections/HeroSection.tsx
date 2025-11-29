@@ -7,20 +7,16 @@ import gsap from 'gsap'
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [buttonFillProgress, setButtonFillProgress] = useState<{ [key: string]: number }>({})
   const [isInHeroSection, setIsInHeroSection] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
-  const intervalsRef = useRef<{ [key: string]: NodeJS.Timeout }>({})
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
 
-  // GSAP Custom cursor with smooth following - only in hero section
   useEffect(() => {
     const cursor = cursorRef.current
     const section = sectionRef.current
@@ -28,7 +24,6 @@ export default function HeroSection() {
     if (!cursor || !section) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Smooth cursor following with GSAP
       gsap.to(cursor, {
         duration: 0.4,
         x: e.clientX,
@@ -36,7 +31,6 @@ export default function HeroSection() {
         ease: 'power2.out',
       })
 
-      // Check if mouse is over interactive elements (buttons, links, navbar)
       const target = e.target as HTMLElement
       const isOverInteractive =
         target.closest('button') !== null ||
@@ -66,31 +60,6 @@ export default function HeroSection() {
       top: window.innerHeight,
       behavior: 'smooth',
     })
-  }
-
-  const handleButtonHover = (buttonId: string, isEntering: boolean) => {
-    // Clear any existing interval for this button
-    if (intervalsRef.current[buttonId]) {
-      clearInterval(intervalsRef.current[buttonId])
-      delete intervalsRef.current[buttonId]
-    }
-
-    if (isEntering) {
-      // Animate fill from 0 to 100 over time - MUCH faster
-      let progress = 0
-      const interval = setInterval(() => {
-        progress += 10
-        setButtonFillProgress((prev) => ({ ...prev, [buttonId]: progress }))
-        if (progress >= 100) {
-          clearInterval(interval)
-          delete intervalsRef.current[buttonId]
-        }
-      }, 10)
-      intervalsRef.current[buttonId] = interval
-    } else {
-      // Reset immediately
-      setButtonFillProgress((prev) => ({ ...prev, [buttonId]: 0 }))
-    }
   }
 
   return (
@@ -142,7 +111,7 @@ export default function HeroSection() {
 
       <section
         ref={sectionRef}
-        className="relative overflow-hidden h-[100svh] sm:h-[100svh] md:h-[95vh] min-h-[100svh] sm:min-h-[100svh] md:min-h-[600px] md:max-h-[900px]"
+        className="relative overflow-hidden h-[100svh] min-h-[600px] max-h-[900px] sm:max-h-none"
       >
         {/* Background Image - Optimized with Next.js Image */}
         <div className="absolute inset-0">
@@ -162,7 +131,7 @@ export default function HeroSection() {
           </div>
 
           <Image
-            src="/images/principal.png"
+            src="/images/principal-optimized.webp"
             alt="Viña Santa Cruz - Valle de Colchagua"
             fill
             priority
@@ -190,15 +159,15 @@ export default function HeroSection() {
         {/* Content - text at top, buttons at bottom, center clear */}
         <div className="relative z-30 h-full flex flex-col">
           {/* Text at top */}
-          <div className="flex-none pt-24 sm:pt-28 md:pt-32 lg:pt-36 text-center px-4 sm:px-6">
+          <div className="flex-none pt-28 sm:pt-32 md:pt-36 lg:pt-40 text-center px-6 sm:px-8">
             {/* Main Heading */}
             <h1
-              className={`font-[family-name:var(--font-raleway)] text-white mb-3 sm:mb-4 transition-all duration-1000 ease-out ${
+              className={`font-[family-name:var(--font-raleway)] text-white mb-4 sm:mb-5 transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
-                fontSize: 'clamp(1.75rem, 4vw, 3.5rem)',
-                lineHeight: '1.15',
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                lineHeight: '1.2',
                 letterSpacing: 'clamp(0.08em, 0.12em, 0.15em)',
                 textShadow: '0 4px 20px rgba(0,0,0,0.6)',
                 transitionDelay: '200ms',
@@ -214,7 +183,7 @@ export default function HeroSection() {
 
             {/* Subtitle */}
             <p
-              className={`font-[family-name:var(--font-raleway)] text-white/95 text-sm sm:text-base md:text-lg max-w-2xl mx-auto transition-all duration-1000 ease-out ${
+              className={`font-[family-name:var(--font-raleway)] text-white/95 text-base sm:text-lg md:text-xl max-w-2xl mx-auto transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
@@ -226,9 +195,9 @@ export default function HeroSection() {
               }}
             >
               Descubre experiencias únicas en el corazón del
-              <br />
+              <br className="hidden sm:block" />
               <span
-                className="text-white font-bold bg-gradient-to-r from-gold-500 to-gold-400 bg-clip-text text-transparent"
+                className="text-white font-bold bg-gradient-to-r from-gold-500 to-gold-400 bg-clip-text text-transparent inline-block mt-1 sm:mt-0 sm:inline"
                 style={{
                   letterSpacing: '0.12em',
                   textShadow: 'none',
@@ -245,36 +214,29 @@ export default function HeroSection() {
           <div className="flex-1" />
 
           {/* Buttons at bottom - Animated CTAs */}
-          <div className="flex-none pb-16 sm:pb-20 md:pb-28 lg:pb-32 text-center px-6 sm:px-6">
+          <div className="flex-none pb-20 sm:pb-24 md:pb-28 lg:pb-32 text-center px-6 sm:px-8">
             <div
-              className={`flex flex-col gap-3 sm:flex-row sm:gap-5 md:gap-6 justify-center items-center transition-all duration-1000 ease-out ${
+              className={`flex flex-col gap-4 sm:flex-row sm:gap-5 md:gap-6 justify-center items-stretch sm:items-center transition-all duration-1000 ease-out ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: '600ms' }}
             >
-              {/* Reserva - Botón principal dorado */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 w-[200px] sm:w-auto px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105"
-                onMouseEnter={() => handleButtonHover('tour', true)}
-                onMouseLeave={() => handleButtonHover('tour', false)}
+                className="group relative inline-flex items-center justify-center gap-2.5 min-w-[200px] sm:min-w-[220px] px-8 sm:px-10 md:px-12 py-4 sm:py-4 md:py-4.5 min-h-[56px] bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-sm sm:text-sm md:text-base rounded-full overflow-hidden transition-all duration-500 cursor-pointer shadow-lg shadow-gold-500/30 hover:shadow-xl hover:shadow-gold-500/40 hover:scale-105 active:scale-95"
               >
-                {/* Shimmer effect */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-                <svg className="relative w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="relative w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="relative">Reserva</span>
               </button>
 
-              {/* Ver Vinos - Botón secundario elegante */}
               <button
                 onClick={(e) => e.preventDefault()}
-                className="group relative inline-flex items-center justify-center gap-2 w-[200px] sm:w-auto px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[11px] sm:text-xs md:text-sm rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105"
-                onMouseEnter={() => handleButtonHover('vinos', true)}
-                onMouseLeave={() => handleButtonHover('vinos', false)}
+                className="group relative inline-flex items-center justify-center gap-2.5 min-w-[200px] sm:min-w-[220px] px-8 sm:px-10 md:px-12 py-4 sm:py-4 md:py-4.5 min-h-[56px] bg-white/10 backdrop-blur-sm border-2 border-white/80 text-white font-[family-name:var(--font-raleway)] font-semibold tracking-[0.12em] sm:tracking-[0.15em] uppercase text-sm sm:text-sm md:text-base rounded-full overflow-hidden transition-all duration-500 cursor-pointer hover:bg-white hover:text-gray-900 hover:scale-105 active:scale-95"
               >
-                <svg className="relative w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:rotate-12 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="relative w-5 h-5 sm:w-5 sm:h-5 transition-transform group-hover:rotate-12 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 <span className="relative">Ver Vinos</span>

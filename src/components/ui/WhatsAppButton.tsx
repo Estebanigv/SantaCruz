@@ -75,8 +75,6 @@ export default function WhatsAppButton() {
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
-    // window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
-    console.log('Opening WhatsApp...')
   }
 
   return (

@@ -636,11 +636,8 @@ export default function ToursSection({ isAdult = true }: ToursSectionProps) {
 
                   {/* Buttons */}
                   <div className="flex gap-4">
-                    {/* Botón principal - Reserva */}
                     <button
-                      onClick={() => {
-                        console.log('Reservar:', selectedExperience)
-                      }}
+                      onClick={() => {}}
                       className="group relative flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-white font-[family-name:var(--font-raleway)] font-semibold tracking-wide overflow-hidden transition-all duration-500 hover:shadow-xl hover:scale-[1.02]"
                       style={{
                         backgroundColor: getCategoryColor(selectedExperience.category),

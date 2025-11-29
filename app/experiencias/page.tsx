@@ -8,7 +8,6 @@ import { useCart } from '@/contexts/CartContext'
 import Image from 'next/image'
 import { BreadcrumbSchema, EventSchema, WebPageSchema } from '@/components/seo/StructuredData'
 import { useAgeVerification } from '@/hooks/useAgeVerification'
-// Link removed - not currently used but may be needed later
 
 type CategoryFilter = 'all' | 'vino' | 'cultural' | 'premium'
 
@@ -415,21 +414,21 @@ function ExperienceCard({
       </div>
 
       {/* Content - Más compacto */}
-      <div className="p-5">
-        <p className="font-[family-name:var(--font-raleway)] text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+      <div className="p-5 sm:p-6">
+        <p className="font-[family-name:var(--font-raleway)] text-gray-600 text-sm sm:text-base leading-relaxed mb-4 line-clamp-2">
           {tour.description}
         </p>
 
         {/* Price and CTA */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-[family-name:var(--font-raleway)] text-2xl font-bold text-gray-900">
+            <span className="font-[family-name:var(--font-raleway)] text-2xl sm:text-2xl font-bold text-gray-900">
               ${formatPrice(tour.price)}
             </span>
             <span className="text-gray-500 text-sm">{priceTypeLabels[tour.priceType]}</span>
           </div>
 
-          <button className="flex items-center gap-1.5 px-4 py-2 bg-gold-500/10 hover:bg-gold-500 text-gold-700 hover:text-white text-sm font-semibold rounded-full transition-all duration-300 group-hover:shadow-lg">
+          <button className="flex items-center justify-center gap-2 px-6 py-3 min-h-[48px] w-full sm:w-auto bg-gold-500/10 hover:bg-gold-500 text-gold-700 hover:text-white text-sm sm:text-base font-semibold rounded-full transition-all duration-300 group-hover:shadow-lg touch-manipulation">
             Reservar
             <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -503,22 +502,21 @@ function ExperienceDetailModal({
     }
   }, [isOpen])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setShowContent(false)
     setTimeout(() => {
       setIsAnimating(false)
       onClose()
     }, 300)
-  }
+  }, [onClose])
 
-  const handleReserve = () => {
+  const handleReserve = useCallback(() => {
     if (!date) return
     addTour(tour, date, time, persons)
     openCart()
     handleClose()
-  }
+  }, [date, tour, time, persons, addTour, openCart, handleClose])
 
-  // Handle Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -941,132 +939,6 @@ function FeaturedExperience({ tour, onReserve }: { tour: Tour; onReserve: (tour:
   )
 }
 
-// Booking Modal Component - Reserved for future use
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function BookingModal({ tour, isOpen, onClose }: { tour: Tour; isOpen: boolean; onClose: () => void }) {
-  const { addTour, openCart } = useCart()
-  const [date, setDate] = useState('')
-  const [time, setTime] = useState('10:00')
-  const [persons, setPersons] = useState(2)
-
-  const formatPrice = (price: number) => price.toLocaleString('es-CL')
-
-  const totalPrice = tour.priceType === 'persona' ? tour.price * persons : tour.price
-
-  const handleReserve = () => {
-    addTour(tour, date, time, persons)
-    openCart()
-    onClose()
-  }
-
-  if (!isOpen) return null
-
-  return (
-    <>
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" onClick={onClose} />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-          {/* Header */}
-          <div className="relative h-48">
-            <Image src={tour.image} alt={tour.name} fill className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white/30 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="absolute bottom-4 left-6 right-6">
-              <h3 className="font-[family-name:var(--font-raleway)] text-2xl font-bold text-white">
-                {tour.name}
-              </h3>
-              <p className="text-white/70 text-sm mt-1">{tour.duration}</p>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="p-6 space-y-5">
-            {/* Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-              />
-            </div>
-
-            {/* Time */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Hora</label>
-              <select
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-              >
-                <option value="10:00">10:00 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="14:00">14:00 PM</option>
-                <option value="15:00">15:00 PM</option>
-                <option value="16:00">16:00 PM</option>
-              </select>
-            </div>
-
-            {/* Persons */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Número de personas
-              </label>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setPersons(Math.max(tour.minPersons || 1, persons - 1))}
-                  className="w-12 h-12 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                  </svg>
-                </button>
-                <span className="text-2xl font-semibold text-gray-900 w-12 text-center">{persons}</span>
-                <button
-                  onClick={() => setPersons(Math.min(tour.maxCapacity || 20, persons + 1))}
-                  className="w-12 h-12 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Total */}
-            <div className="pt-4 border-t border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-600">Total</span>
-                <span className="font-[family-name:var(--font-raleway)] text-3xl font-bold text-gray-900">
-                  ${formatPrice(totalPrice)}
-                </span>
-              </div>
-
-              <button
-                onClick={handleReserve}
-                disabled={!date}
-                className="w-full py-4 bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 disabled:from-gray-300 disabled:to-gray-300 text-white font-medium rounded-xl transition-all duration-300 disabled:cursor-not-allowed"
-              >
-                {date ? 'Agregar al Carrito' : 'Selecciona una fecha'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
 function ExperienciasContent() {
   const searchParams = useSearchParams()
   const { isAdult } = useAgeVerification()
@@ -1179,7 +1051,7 @@ function ExperienciasContent() {
 
       <main className="min-h-screen bg-[#faf9f7]">
         {/* Hero Section - Full Screen */}
-        <section className="relative h-screen min-h-[700px] overflow-hidden">
+        <section className="relative h-[100svh] min-h-[600px] max-h-[900px] sm:max-h-none overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <Image
@@ -1202,13 +1074,13 @@ function ExperienciasContent() {
           {/* Content - text at top, center clear, stats at bottom */}
           <div className="relative z-30 h-full flex flex-col justify-between">
             {/* Text at top */}
-            <div className="pt-32 md:pt-40 text-center px-6">
-              <h1 className="font-[family-name:var(--font-raleway)] text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-3"
+            <div className="pt-28 sm:pt-32 md:pt-40 text-center px-6">
+              <h1 className="font-[family-name:var(--font-raleway)] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4"
                 style={{ textShadow: '0 2px 15px rgba(0,0,0,0.5)' }}
               >
                 Vive la Experiencia
               </h1>
-              <h2 className="font-[family-name:var(--font-raleway)] text-gold-400 text-3xl md:text-4xl lg:text-5xl font-semibold"
+              <h2 className="font-[family-name:var(--font-raleway)] text-gold-400 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold"
                 style={{ textShadow: '0 2px 15px rgba(0,0,0,0.5)' }}
               >
                 Valle de Colchagua
@@ -1216,9 +1088,9 @@ function ExperienciasContent() {
             </div>
 
             {/* Stats at bottom */}
-            <div className="pb-28 md:pb-36 text-center px-6">
+            <div className="pb-24 sm:pb-28 md:pb-36 text-center px-6">
               {/* Subtitle */}
-              <p className="font-[family-name:var(--font-raleway)] text-white text-base md:text-lg max-w-xl mx-auto mb-10"
+              <p className="font-[family-name:var(--font-raleway)] text-white text-base sm:text-lg md:text-xl max-w-xl mx-auto mb-10 sm:mb-12"
                 style={{ textShadow: '0 2px 10px rgba(0,0,0,0.6)', lineHeight: '1.8' }}
               >
                 Degustaciones de vinos premium, noches astronómicas
@@ -1227,15 +1099,15 @@ function ExperienciasContent() {
               </p>
 
               {/* Stats */}
-              <div className="flex flex-wrap justify-center gap-10 md:gap-16">
+              <div className="flex flex-wrap justify-center gap-8 sm:gap-10 md:gap-16">
                 {stats.map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <div className="font-[family-name:var(--font-raleway)] text-3xl md:text-4xl font-bold text-white mb-1"
+                  <div key={i} className="text-center min-w-[80px]">
+                    <div className="font-[family-name:var(--font-raleway)] text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2"
                       style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
                     >
                       {stat.value}
                     </div>
-                    <div className="font-[family-name:var(--font-raleway)] text-white/80 text-xs uppercase tracking-widest"
+                    <div className="font-[family-name:var(--font-raleway)] text-white/80 text-xs sm:text-sm uppercase tracking-widest"
                       style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
                     >
                       {stat.label}

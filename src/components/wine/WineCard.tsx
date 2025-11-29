@@ -84,9 +84,9 @@ export default function WineCard({ wine }: WineCardProps) {
   }
 
   return (
-    <div className="group bg-white border border-gray-200 rounded-lg overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col h-full">
+    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-500 hover:border-gold-500 hover:shadow-card-hover hover:-translate-y-2 flex flex-col h-full">
       {/* Image Container - Fixed aspect ratio */}
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-cream-50 to-gray-50 overflow-hidden">
+      <div className="relative aspect-[3/4] bg-gradient-to-br from-cream-50 to-gray-50 overflow-hidden touch-manipulation">
         {wine.badge && (
           <div className="absolute top-4 right-4 z-10">
             <Badge variant={badgeVariant}>{wine.badge}</Badge>
@@ -115,14 +115,14 @@ export default function WineCard({ wine }: WineCardProps) {
       </div>
 
       {/* Content - Structured for equal height */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
         {/* Wine Info - Fixed height area */}
         <div className="flex-1">
-          <h3 className="font-[family-name:var(--font-raleway)] text-xl font-semibold text-black-900 mb-2 line-clamp-2 leading-tight tracking-wide">
+          <h3 className="font-[family-name:var(--font-raleway)] text-lg sm:text-xl font-semibold text-black-900 mb-2 line-clamp-2 leading-tight tracking-wide">
             {wine.name}
           </h3>
 
-          <p className="font-[family-name:var(--font-raleway)] text-sm text-gray-600 mb-4 font-medium min-h-[20px]">
+          <p className="font-[family-name:var(--font-raleway)] text-sm sm:text-sm text-gray-600 mb-4 font-medium min-h-[20px]">
             {wine.varietal}
             {wine.vintage && ` • ${wine.vintage}`}
           </p>
@@ -138,10 +138,10 @@ export default function WineCard({ wine }: WineCardProps) {
         {/* Price - Always at bottom */}
         <div className="mt-auto">
           <div className="flex items-center gap-2 mb-4">
-            <p className="text-2xl font-bold text-gold-600 font-mono leading-none">
+            <p className="text-xl sm:text-2xl font-bold text-gold-600 font-mono leading-none">
               {formatPrice(wine.price)}
             </p>
-            <span className="font-[family-name:var(--font-raleway)] text-xs text-gray-500 self-end pb-0.5">
+            <span className="font-[family-name:var(--font-raleway)] text-xs sm:text-xs text-gray-500 self-end pb-0.5">
               CLP
             </span>
           </div>
@@ -151,7 +151,7 @@ export default function WineCard({ wine }: WineCardProps) {
 
           {/* Add to Cart Button - Simple white with gold animation */}
           <button
-            className="relative w-full inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg overflow-hidden transition-all duration-300 border border-gray-200 hover:border-gold-500 hover:shadow-md font-[family-name:var(--font-raleway)]"
+            className="relative w-full inline-flex items-center justify-center px-6 py-4 min-h-[56px] bg-white text-gray-700 font-medium text-base rounded-lg overflow-hidden transition-all duration-300 border border-gray-200 hover:border-gold-500 hover:shadow-md font-[family-name:var(--font-raleway)] touch-manipulation"
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={() => {}}
@@ -187,7 +187,7 @@ export default function WineCard({ wine }: WineCardProps) {
           {/* Quick view link */}
           <button
             onClick={(e) => e.preventDefault()}
-            className="w-full mt-2 text-sm text-gray-600 hover:text-gold-600 transition-colors duration-300 font-medium"
+            className="w-full mt-3 py-2 min-h-[44px] text-sm sm:text-base text-gray-600 hover:text-gold-600 transition-colors duration-300 font-medium touch-manipulation"
           >
             Ver Detalles →
           </button>
