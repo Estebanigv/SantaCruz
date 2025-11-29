@@ -6,7 +6,7 @@ import { featuredWines, tours } from '@/data/mockData'
 import { Wine } from '@/types'
 import SectionHeader from '../ui/SectionHeader'
 import gsap from 'gsap'
-import { ShoppingCart, Heart, X, User, Download } from 'lucide-react'
+import { ShoppingCart, Heart, X, User, Download, Grid2X2, LayoutList } from 'lucide-react'
 import Link from 'next/link'
 import { useModal } from '@/contexts/ModalContext'
 
@@ -23,6 +23,7 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
   const [isMounted, setIsMounted] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [loginPromptWineId, setLoginPromptWineId] = useState<string | null>(null)
+  const [gridView, setGridView] = useState<'single' | 'double'>('double') // 'single' = 1 col, 'double' = 2 cols
   const containerRef = useRef<HTMLDivElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<(HTMLDivElement | null)[]>([])
@@ -269,12 +270,40 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
           subtitle="Descubre nuestra cuidadosa selección de vinos premium del Valle de Colchagua"
         />
 
+        {/* View toggle - only visible on mobile */}
+        <div className="flex justify-end mb-4 md:hidden">
+          <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setGridView('double')}
+              className={`flex items-center justify-center w-9 h-9 rounded-md transition-all duration-200 ${
+                gridView === 'double'
+                  ? 'bg-white text-gold-600 shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+              aria-label="Vista de 2 columnas"
+            >
+              <Grid2X2 className="w-5 h-5" strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={() => setGridView('single')}
+              className={`flex items-center justify-center w-9 h-9 rounded-md transition-all duration-200 ${
+                gridView === 'single'
+                  ? 'bg-white text-gold-600 shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+              aria-label="Vista de 1 columna"
+            >
+              <LayoutList className="w-5 h-5" strokeWidth={1.5} />
+            </button>
+          </div>
+        </div>
+
         <div
           ref={gridRef}
           className="relative"
           style={{ perspective: '1500px', perspectiveOrigin: '50% 50%' }}
         >
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+          <div className={`grid gap-3 sm:gap-6 lg:gap-8 lg:grid-cols-4 ${gridView === 'single' ? 'grid-cols-1' : 'grid-cols-2'}`}>
             {featuredWines.map((wine, index) => (
               <div
                 key={wine.id}
