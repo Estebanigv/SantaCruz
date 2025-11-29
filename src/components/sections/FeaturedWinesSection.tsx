@@ -401,21 +401,44 @@ function WineCardFront({
   const wineImageRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isTouchDeviceRef = useRef(false)
+  const isInteractingRef = useRef(false)
 
-  const handleHover = (isEntering: boolean) => {
+  // Cleanup effect for timeouts and animations
+  useEffect(() => {
+    return () => {
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current)
+      }
+      if (timelineRef.current) {
+        timelineRef.current.kill()
+      }
+    }
+  }, [])
+
+  const handleHover = useCallback((isEntering: boolean, fromTouch = false) => {
+    // Prevent mouse events if this is a touch device and we're not coming from touch
+    if (isTouchDeviceRef.current && !fromTouch) {
+      return
+    }
+
     setIsHovered(isEntering)
+    isInteractingRef.current = isEntering
+
     const grayLayer = grayLayerRef.current
     const wineImg = wineImageRef.current
     const video = videoRef.current
 
     if (!grayLayer) return
 
+    // Kill any existing timeline
     if (timelineRef.current) {
       timelineRef.current.kill()
     }
 
-    // Detect touch device for faster animations
-    const isTouchDevice = 'ontouchstart' in window
+    // Use faster animations for touch devices
+    const isTouchDevice = isTouchDeviceRef.current
 
     if (isEntering) {
       // Play video IMMEDIATELY for instant feedback
@@ -429,7 +452,7 @@ function WineCardFront({
 
       tl.to({ progress: revealProgress }, {
         progress: 100,
-        duration: isTouchDevice ? 0.4 : 0.8,
+        duration: isTouchDevice ? 0.35 : 0.8,
         ease: isTouchDevice ? 'power2.out' : 'power3.out',
         onUpdate: function() {
           setRevealProgress(this.targets()[0].progress)
@@ -438,7 +461,7 @@ function WineCardFront({
 
       tl.to(grayLayer, {
         opacity: 0,
-        duration: isTouchDevice ? 0.3 : 0.6,
+        duration: isTouchDevice ? 0.25 : 0.6,
         ease: 'power2.out',
       }, isTouchDevice ? 0.05 : 0.15)
 
@@ -446,12 +469,12 @@ function WineCardFront({
         tl.to(wineImg, {
           scale: 1.08,
           y: -10,
-          duration: isTouchDevice ? 0.35 : 0.7,
+          duration: isTouchDevice ? 0.3 : 0.7,
           ease: 'power2.out',
         }, 0)
       }
     } else {
-      // Pause video on mouse leave
+      // Pause video
       if (video) {
         video.pause()
       }
@@ -461,7 +484,7 @@ function WineCardFront({
 
       tl.to({ progress: revealProgress }, {
         progress: 0,
-        duration: isTouchDevice ? 0.3 : 0.5,
+        duration: isTouchDevice ? 0.25 : 0.5,
         ease: 'power2.in',
         onUpdate: function() {
           setRevealProgress(this.targets()[0].progress)
@@ -470,7 +493,7 @@ function WineCardFront({
 
       tl.to(grayLayer, {
         opacity: 1,
-        duration: isTouchDevice ? 0.25 : 0.4,
+        duration: isTouchDevice ? 0.2 : 0.4,
         ease: 'power2.in',
       }, isTouchDevice ? 0.05 : 0.1)
 
@@ -478,12 +501,12 @@ function WineCardFront({
         tl.to(wineImg, {
           scale: 1,
           y: 0,
-          duration: isTouchDevice ? 0.3 : 0.5,
+          duration: isTouchDevice ? 0.25 : 0.5,
           ease: 'power2.inOut',
         }, 0)
       }
     }
-  }
+  }, [revealProgress])
 
   const generateClipPath = (progress: number) => {
     if (progress <= 0) return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)'
@@ -505,36 +528,54 @@ function WineCardFront({
 
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
-  // Handle touch for mobile devices - auto reset after 3 seconds
-  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  // Touch handlers with proper event management
+  const handleTouchStart = useCallback(() => {
+    // Mark as touch device
+    isTouchDeviceRef.current = true
 
-  const handleTouch = () => {
     // Clear any existing timeout
     if (touchTimeoutRef.current) {
       clearTimeout(touchTimeoutRef.current)
     }
 
-    // Activate hover effect
-    if (!isHovered) {
-      handleHover(true)
-      // Auto-reset after 1.5 seconds (faster for better UX)
+    // Toggle hover effect
+    if (!isInteractingRef.current) {
+      handleHover(true, true)
+      // Auto-reset after 1.2 seconds for snappy UX
       touchTimeoutRef.current = setTimeout(() => {
-        handleHover(false)
-      }, 1500)
+        if (isInteractingRef.current) {
+          handleHover(false, true)
+        }
+      }, 1200)
     } else {
-      handleHover(false)
+      handleHover(false, true)
     }
-  }
+  }, [handleHover])
+
+  const handleMouseEnter = useCallback(() => {
+    // Only process if not a touch device
+    if (!isTouchDeviceRef.current) {
+      handleHover(true, false)
+    }
+  }, [handleHover])
+
+  const handleMouseLeave = useCallback(() => {
+    // Only process if not a touch device
+    if (!isTouchDeviceRef.current) {
+      handleHover(false, false)
+    }
+  }, [handleHover])
 
   return (
     <div
-      className="flex flex-col h-full"
-      onMouseEnter={() => handleHover(true)}
-      onMouseLeave={() => handleHover(false)}
-      onTouchStart={handleTouch}
+      className="flex flex-col h-full wine-card-interactive"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      style={{ touchAction: 'manipulation' }}
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-white">
+      <div className="relative aspect-[3/4] overflow-hidden bg-white" style={{ isolation: 'isolate' }}>
         {/* Barra de login en la parte superior - horizontal */}
         {showLoginPrompt && (
           <div className="absolute top-0 left-0 right-0 z-30 animate-fade-in">

@@ -882,6 +882,45 @@ html {
   animation: spin-slow 2s linear infinite;
 }
 
+/* ========================================
+   TOUCH OPTIMIZATION FOR MOBILE
+   ======================================== */
+
+/* Optimize touch interactions for Android/iOS */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Improve scroll performance on mobile */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+/* Prevent lag on touch interactions */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Optimize video elements for mobile */
+video {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: opacity;
+}
+
+/* Hardware acceleration for interactive elements */
+.wine-card-interactive {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
