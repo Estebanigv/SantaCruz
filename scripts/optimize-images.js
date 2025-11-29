@@ -1,85 +1,126 @@
-const sharp = require('sharp')
-const fs = require('fs')
-const path = require('path')
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
 
-// Critical images that need optimization
-const criticalImages = [
-  { input: 'public/images/principal.png', output: 'public/images/principal-optimized.webp', maxWidth: 1920, quality: 85 },
-  { input: 'public/images/Telferico.png', output: 'public/images/Telferico-optimized.webp', maxWidth: 1920, quality: 85 },
-  { input: 'public/images/Uva.png', output: 'public/images/Uva-optimized.webp', maxWidth: 1920, quality: 85 },
-  { input: 'public/images/Uva2.png', output: 'public/images/Uva2-optimized.webp', maxWidth: 1920, quality: 85 },
-  { input: 'public/images/Uva3.png', output: 'public/images/Uva3-optimized.webp', maxWidth: 1920, quality: 85 },
-  { input: 'public/images/Gris Fondo.png', output: 'public/images/Gris-Fondo-optimized.webp', maxWidth: 1920, quality: 85 },
-]
-
-// Logo images optimization
-const logoImages = [
-  { input: 'public/images/Logotipos/Colchagua Vino y Ruta - blanco.png', output: 'public/images/Logotipos/Colchagua-Vino-Ruta-blanco.webp', maxWidth: 800, quality: 90 },
-  { input: 'public/images/Logotipos/Colchagua Vino y Ruta - color.png', output: 'public/images/Logotipos/Colchagua-Vino-Ruta-color.webp', maxWidth: 800, quality: 90 },
-  { input: 'public/images/Logotipos/Energia Solar - blanco.png', output: 'public/images/Logotipos/Energia-Solar-blanco.webp', maxWidth: 800, quality: 90 },
-  { input: 'public/images/Logotipos/Energia Solar - cafe.png', output: 'public/images/Logotipos/Energia-Solar-cafe.webp', maxWidth: 800, quality: 90 },
-  { input: 'public/images/Logotipos/Logo Viña Blanco V Horizontal.png', output: 'public/images/Logotipos/Logo-Vina-Blanco-H.webp', maxWidth: 600, quality: 90 },
-  { input: 'public/images/Logotipos/Logo Viña Blanco.png', output: 'public/images/Logotipos/Logo-Vina-Blanco.webp', maxWidth: 600, quality: 90 },
-  { input: 'public/images/Logotipos/Logo Viña Color V Horizontal.png', output: 'public/images/Logotipos/Logo-Vina-Color-H.webp', maxWidth: 600, quality: 90 },
-  { input: 'public/images/Logotipos/Logo Viña Color.png', output: 'public/images/Logotipos/Logo-Vina-Color.webp', maxWidth: 600, quality: 90 },
-  { input: 'public/images/Logotipos/isotipo viña blanco.png', output: 'public/images/Logotipos/isotipo-vina-blanco.webp', maxWidth: 400, quality: 90 },
-  { input: 'public/images/Logotipos/Wine of Chile logo.png', output: 'public/images/Logotipos/Wine-of-Chile.webp', maxWidth: 600, quality: 90 },
-]
+const imagesToOptimize = [
+  // Wine backgrounds - these are the heaviest
+  {
+    input: 'public/images/Vinos/Make Make/Make Make Color.webp',
+    output: 'public/images/Vinos/Make Make/Make Make Color.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Make Make/Make Make gris.webp',
+    output: 'public/images/Vinos/Make Make/Make Make gris.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Chaman/Chaman_color.webp',
+    output: 'public/images/Vinos/Chaman/Chaman_color.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Chaman/Chaman_gris.webp',
+    output: 'public/images/Vinos/Chaman/Chaman_gris.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Tupu/Tupu Color.webp',
+    output: 'public/images/Vinos/Tupu/Tupu Color.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Tupu/Tupu Gris.webp',
+    output: 'public/images/Vinos/Tupu/Tupu Gris.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Santa Cruz/Santa Cruz Terrazas fondo color.webp',
+    output: 'public/images/Vinos/Santa Cruz/Santa Cruz Terrazas fondo color.webp',
+    width: 800,
+    quality: 75
+  },
+  {
+    input: 'public/images/Vinos/Santa Cruz/Santa Cruz Terrazas fondo gris.webp',
+    output: 'public/images/Vinos/Santa Cruz/Santa Cruz Terrazas fondo gris.webp',
+    width: 800,
+    quality: 75
+  },
+  // Hero image
+  {
+    input: 'public/images/principal-optimized.webp',
+    output: 'public/images/principal-optimized.webp',
+    width: 1920,
+    quality: 80
+  },
+  // Background watercolor
+  {
+    input: 'public/images/webp/backgorund vinos destacados.webp',
+    output: 'public/images/webp/backgorund vinos destacados.webp',
+    width: 1600,
+    quality: 70
+  }
+];
 
 async function optimizeImage(config) {
-  const { input, output, maxWidth, quality } = config
+  const { input, output, width, quality } = config;
 
   try {
-    const inputPath = path.join(__dirname, '..', input)
-    const outputPath = path.join(__dirname, '..', output)
+    const inputPath = path.join(process.cwd(), input);
+    const outputPath = path.join(process.cwd(), output);
 
-    if (!fs.existsSync(inputPath)) {
-      console.log(`⚠️  Skipping ${input} - File not found`)
-      return
-    }
+    // Get original size
+    const originalStats = fs.statSync(inputPath);
+    const originalSize = (originalStats.size / 1024).toFixed(1);
 
-    const inputStats = fs.statSync(inputPath)
-    const inputSizeMB = (inputStats.size / (1024 * 1024)).toFixed(2)
+    // Create temp file path
+    const tempPath = outputPath + '.tmp';
 
-    console.log(`🔄 Processing: ${input} (${inputSizeMB}MB)`)
-
+    // Process image
     await sharp(inputPath)
-      .resize(maxWidth, null, {
-        fit: 'inside',
-        withoutEnlargement: true
+      .resize(width, null, {
+        withoutEnlargement: true,
+        fit: 'inside'
       })
       .webp({ quality })
-      .toFile(outputPath)
+      .toFile(tempPath);
 
-    const outputStats = fs.statSync(outputPath)
-    const outputSizeMB = (outputStats.size / (1024 * 1024)).toFixed(2)
-    const reduction = ((1 - outputStats.size / inputStats.size) * 100).toFixed(1)
+    // Replace original with optimized
+    fs.unlinkSync(inputPath);
+    fs.renameSync(tempPath, outputPath);
 
-    console.log(`✅ Created: ${output} (${outputSizeMB}MB) - ${reduction}% reduction`)
+    // Get new size
+    const newStats = fs.statSync(outputPath);
+    const newSize = (newStats.size / 1024).toFixed(1);
+
+    const savings = ((1 - newStats.size / originalStats.size) * 100).toFixed(1);
+
+    console.log(`✓ ${path.basename(input)}: ${originalSize} KB → ${newSize} KB (${savings}% smaller)`);
+
+    return { success: true, savings: originalStats.size - newStats.size };
   } catch (error) {
-    console.error(`❌ Error processing ${input}:`, error.message)
+    console.error(`✗ ${input}: ${error.message}`);
+    return { success: false, savings: 0 };
   }
 }
 
 async function main() {
-  console.log('🚀 Starting image optimization...\n')
-  console.log('📊 CRITICAL IMAGES:\n')
+  console.log('🖼️  Optimizing images...\n');
 
-  for (const config of criticalImages) {
-    await optimizeImage(config)
+  let totalSavings = 0;
+
+  for (const config of imagesToOptimize) {
+    const result = await optimizeImage(config);
+    totalSavings += result.savings;
   }
 
-  console.log('\n📊 LOGO IMAGES:\n')
-
-  for (const config of logoImages) {
-    await optimizeImage(config)
-  }
-
-  console.log('\n✨ Image optimization complete!')
-  console.log('\n⚠️  NEXT STEPS:')
-  console.log('1. Update component imports to use new .webp files')
-  console.log('2. Test all pages to ensure images load correctly')
-  console.log('3. Delete old .png files after verification')
+  console.log(`\n✅ Total savings: ${(totalSavings / 1024 / 1024).toFixed(2)} MB`);
 }
 
-main()
+main();
