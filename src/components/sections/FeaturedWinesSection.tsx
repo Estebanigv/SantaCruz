@@ -274,7 +274,7 @@ export default function FeaturedWinesSection({ isAdult = true }: FeaturedWinesSe
           className="relative"
           style={{ perspective: '1500px', perspectiveOrigin: '50% 50%' }}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
             {featuredWines.map((wine, index) => (
               <div
                 key={wine.id}
@@ -472,13 +472,20 @@ function WineCardFront({
 
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
+  // Handle touch for mobile devices
+  const handleTouch = () => {
+    // Toggle hover state on touch
+    handleHover(!isHovered)
+  }
+
   return (
     <div
       className="flex flex-col h-full"
       onMouseEnter={() => handleHover(true)}
       onMouseLeave={() => handleHover(false)}
+      onTouchStart={handleTouch}
     >
-      {/* Image Container - más grande */}
+      {/* Image Container */}
       <div className="relative aspect-[3/4] overflow-hidden bg-white">
         {/* Barra de login en la parte superior - horizontal */}
         {showLoginPrompt && (
@@ -597,45 +604,45 @@ function WineCardFront({
         </div>
       </div>
 
-      {/* Wine Info - más grande y elegante */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-lg font-medium text-gray-900 mb-1 line-clamp-1">
+      {/* Wine Info - responsive */}
+      <div className="p-2.5 sm:p-5 flex flex-col flex-1">
+        <h3 className="text-sm sm:text-lg font-medium text-gray-900 mb-0.5 sm:mb-1 line-clamp-1">
           {wine.name}
         </h3>
-        <p className="text-sm text-gray-500 mb-3">{wine.varietal}</p>
+        <p className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3 line-clamp-1">{wine.varietal}</p>
 
         <div className="mt-auto">
-          {/* Price - elegante */}
-          <div className="flex items-baseline gap-1.5 mb-4">
-            <span className="text-xl font-semibold text-gold-600">
+          {/* Price - responsive */}
+          <div className="flex items-baseline gap-1 sm:gap-1.5 mb-2 sm:mb-4">
+            <span className="text-base sm:text-xl font-semibold text-gold-600">
               {formatPrice(wine.price)}
             </span>
-            <span className="text-xs text-gray-400">CLP</span>
+            <span className="text-[10px] sm:text-xs text-gray-400">CLP</span>
           </div>
 
-          {/* Actions - botones más grandes */}
-          <div className="flex gap-3">
+          {/* Actions - responsive */}
+          <div className="flex gap-1.5 sm:gap-3">
             <button
               onClick={onViewDetails}
-              className="flex-1 py-2.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:border-gold-400 hover:text-gold-600 transition-colors duration-200"
+              className="flex-1 py-1.5 sm:py-2.5 text-[10px] sm:text-sm font-medium text-gray-600 border border-gray-200 rounded-md sm:rounded-lg hover:border-gold-400 hover:text-gold-600 transition-colors duration-200"
             >
               Ver Detalles
             </button>
 
-            {/* Botón carrito con tooltip */}
+            {/* Botón carrito */}
             <div className="relative">
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   onAddToCart()
                 }}
-                className="group/cart btn-shimmer btn-ripple relative w-11 h-11 flex items-center justify-center bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 bg-[length:200%_100%] text-white rounded-lg overflow-hidden transition-all duration-300 ease-out hover:shadow-xl hover:shadow-gold-500/40 hover:scale-110 hover:bg-right active:scale-95"
+                className="group/cart btn-shimmer btn-ripple relative w-8 h-8 sm:w-11 sm:h-11 flex items-center justify-center bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 bg-[length:200%_100%] text-white rounded-md sm:rounded-lg overflow-hidden transition-all duration-300 ease-out hover:shadow-xl hover:shadow-gold-500/40 hover:scale-110 hover:bg-right active:scale-95"
               >
                 {/* Efecto de brillo que cruza el botón */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/cart:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
                 {/* Ícono con animación de wiggle */}
                 <ShoppingCart
-                  className="relative w-5 h-5 transition-transform duration-300 group-hover/cart:rotate-12 group-active/cart:scale-90"
+                  className="relative w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover/cart:rotate-12 group-active/cart:scale-90"
                   strokeWidth={1.5}
                 />
               </button>
@@ -679,9 +686,9 @@ function WineCardExpanded({
   }, [isVisible])
 
   return (
-    <div ref={contentRef} className="flex flex-col md:flex-row h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
-      {/* Top/Left - Bottle with background - más pequeño en pantallas pequeñas */}
-      <div className="h-[35%] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
+    <div ref={contentRef} className="flex flex-col md:flex-row h-auto md:h-full overflow-hidden" style={{ opacity: isVisible ? 1 : 0 }}>
+      {/* Top/Left - Bottle with background */}
+      <div className="h-[180px] sm:h-[220px] md:h-full md:w-[42%] relative flex items-center justify-center flex-shrink-0">
         {/* Background image - usa expandedBg si está disponible, sino colorBg */}
         <div className="absolute inset-0 overflow-hidden">
           <img
@@ -699,13 +706,13 @@ function WineCardExpanded({
           alt={wine.name}
           loading="eager"
           decoding="async"
-          className="relative z-10 h-[92%] md:h-[85%] w-auto object-contain max-h-[220px] md:max-h-none"
+          className="relative z-10 h-[85%] w-auto object-contain max-h-[160px] sm:max-h-[200px] md:max-h-none"
           style={{ filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.35))' }}
         />
       </div>
 
       {/* Bottom/Right - Details */}
-      <div className="flex-1 md:w-[58%] px-3 py-2 md:p-4 lg:p-5 flex flex-col relative bg-white overflow-y-auto">
+      <div className="md:flex-1 md:w-[58%] px-3 py-2 md:p-4 lg:p-5 flex flex-col justify-start relative bg-white overflow-y-auto">
         {/* Top Actions */}
         <div className="absolute top-2 right-2 md:top-4 md:right-4 flex items-center gap-2 md:gap-3 z-10">
           {/* Botón favorito con tooltip */}
@@ -788,7 +795,7 @@ function WineCardExpanded({
         </div>
 
         {/* Price & Actions */}
-        <div className="pt-1.5 md:pt-4 mt-auto border-t border-gray-100">
+        <div className="pt-1.5 md:pt-4 border-t border-gray-100">
           {/* Price */}
           <div className="mb-1.5 md:mb-3">
             <span className="text-base md:text-xl lg:text-2xl font-semibold text-gold-600">
