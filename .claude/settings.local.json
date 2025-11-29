@@ -10,7 +10,16 @@
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
       "Bash(npm run dev:*)",
       "Bash(start http://localhost:3000)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Bash(powershell -Command \"(Get-Item ''public\\images\\Vinos\\Chaman\\V1F.mp4'').Length / 1MB\")",
+      "Bash(where:*)",
+      "WebFetch(domain:pagespeed.web.dev)",
+      "Bash(findstr:*)",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''public/images/principal-optimized.webp'', ''public/images/webp/backgorund vinos destacados.webp'' | Select-Object Name, @{Name=''SizeMB'';Expression={[math]::Round($_Length/1MB, 2)}}\")",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

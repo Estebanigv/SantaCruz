@@ -12,6 +12,7 @@ export const featuredWines: Wine[] = [
     image: '/images/Vinos/Chaman/Chamán — Reserva & Gran Reserva.webp',
     grayBg: '/images/Vinos/Chaman/Chaman_gris.webp',
     colorBg: '/images/Vinos/Chaman/Chaman_color.webp',
+    videoBg: '/images/Vinos/Chaman/V1F.mp4',
     rating: 0,
     description: 'Chamán nace como un homenaje a la figura espiritual más influyente de la cultura Aymara: el guía capaz de conectar el mundo terrenal con lo sagrado. Al igual que este sabio ancestral, cada vino de la línea Chamán interpreta la esencia del valle y la transforma en una experiencia sensorial única. Su carácter refleja esa dualidad: fuerza y equilibrio, tradición y misterio, tierra y espíritu.',
   },

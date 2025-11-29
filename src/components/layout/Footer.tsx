@@ -332,6 +332,16 @@ export default function Footer() {
               <p className="text-xs sm:text-sm text-gray-600">
                 © {currentYear} Viña Santa Cruz
               </p>
+              <span className="hidden sm:inline text-gray-800">·</span>
+              <a
+                href="https://agenciados.cl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-gray-700 hover:text-gray-500 transition-colors duration-300"
+                style={{ opacity: 0.6 }}
+              >
+                Creado por agenciados.cl
+              </a>
               {/* Subtle review links */}
               <span className="hidden sm:inline text-gray-700">·</span>
               <a

@@ -35,17 +35,19 @@ export default function PageLoader() {
     >
       {/* Loader content */}
       <div className="flex flex-col items-center justify-center gap-12">
-        {/* Corkscrew GIF */}
-        <div style={{ backgroundColor: 'transparent' }}>
-          <img
-            src="/images/ICONOS/preloaderMenada.gif"
-            alt="Loading..."
-            className="w-56 h-56 object-contain"
-            style={{
-              backgroundColor: 'transparent',
-              display: 'block'
-            }}
-          />
+        {/* CSS-only Santa Cruz cross spinner */}
+        <div className="relative w-56 h-56">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-32 h-32">
+              <svg viewBox="0 0 100 100" className="animate-spin-slow">
+                <path
+                  fill="rgba(212, 175, 55, 0.8)"
+                  d="M50,5 L55,45 L50,50 L45,45 Z M95,50 L55,55 L50,50 L55,45 Z M50,95 L45,55 L50,50 L55,55 Z M5,50 L45,45 L50,50 L45,55 Z"
+                />
+                <circle cx="50" cy="50" r="8" fill="rgba(212, 175, 55, 0.9)" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Brand text */}

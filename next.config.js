@@ -20,7 +20,12 @@ const nextConfig = {
     } : false,
   },
   experimental: {
-    optimizePackageImports: ['gsap', 'lucide-react'],
+    optimizePackageImports: ['gsap', 'lucide-react', 'react-dom'],
+  },
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{member}}',
+    },
   },
   async headers() {
     return [

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
-import gsap from 'gsap'
+import type { gsap as GSAPType } from 'gsap'
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -23,13 +23,28 @@ export default function HeroSection() {
 
     if (!cursor || !section) return
 
+    let gsap: typeof GSAPType | null = null
+
+    // Lazy load GSAP only when needed (after initial render)
+    const loadGSAP = async () => {
+      const gsapModule = await import('gsap')
+      gsap = gsapModule.default
+    }
+
+    loadGSAP()
+
     const handleMouseMove = (e: MouseEvent) => {
-      gsap.to(cursor, {
-        duration: 0.4,
-        x: e.clientX,
-        y: e.clientY,
-        ease: 'power2.out',
-      })
+      if (gsap) {
+        gsap.to(cursor, {
+          duration: 0.4,
+          x: e.clientX,
+          y: e.clientY,
+          ease: 'power2.out',
+        })
+      } else {
+        // Fallback to CSS transform if GSAP not loaded yet
+        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      }
 
       const target = e.target as HTMLElement
       const isOverInteractive =
@@ -115,18 +130,27 @@ export default function HeroSection() {
       >
         {/* Background Image - Optimized with Next.js Image */}
         <div className="absolute inset-0">
-          {/* Loading placeholder with corkscrew */}
+          {/* Loading placeholder with CSS spinner */}
           <div
             className={`absolute inset-0 z-10 flex items-center justify-center bg-[#1a1a1a] transition-opacity duration-700 ${
               imageLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
             }`}
           >
             <div className="flex flex-col items-center gap-4">
-              <img
-                src="/images/ICONOS/preloaderMenada.gif"
-                alt="Cargando..."
-                className="w-24 h-24 sm:w-32 sm:h-32 object-contain"
-              />
+              {/* CSS-only Santa Cruz cross spinner */}
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16">
+                    <svg viewBox="0 0 100 100" className="animate-spin-slow">
+                      <path
+                        fill="rgba(212, 175, 55, 0.8)"
+                        d="M50,5 L55,45 L50,50 L45,45 Z M95,50 L55,55 L50,50 L55,45 Z M50,95 L45,55 L50,50 L55,55 Z M5,50 L45,45 L50,50 L45,55 Z"
+                      />
+                      <circle cx="50" cy="50" r="8" fill="rgba(212, 175, 55, 0.9)" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -135,6 +159,7 @@ export default function HeroSection() {
             alt="Viña Santa Cruz - Valle de Colchagua"
             fill
             priority
+            fetchPriority="high"
             quality={85}
             sizes="100vw"
             className={`object-cover object-[center_35%] sm:object-[center_30%] transition-opacity duration-700 ${
