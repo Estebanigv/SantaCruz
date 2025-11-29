@@ -587,7 +587,7 @@ function WineCardFront({
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
   // Touch handler - toggle behavior with debounce to prevent double-firing
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  const handleTouchStart = useCallback(() => {
     const now = Date.now()
 
     // Debounce rapid touches (prevent double-firing on some Android devices)
