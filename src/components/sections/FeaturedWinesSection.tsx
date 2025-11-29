@@ -400,10 +400,15 @@ function WineCardFront({
   const grayLayerRef = useRef<HTMLDivElement>(null)
   const wineImageRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const isTouchDeviceRef = useRef(false)
-  const isInteractingRef = useRef(false)
+  const lastTouchTimeRef = useRef(0)
+  const isTouchActiveRef = useRef(false)
+
+  // Detect touch capability once on mount
+  const isTouchDevice = typeof window !== 'undefined' &&
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
   // Cleanup effect for timeouts and animations
   useEffect(() => {
@@ -417,14 +422,39 @@ function WineCardFront({
     }
   }, [])
 
-  const handleHover = useCallback((isEntering: boolean, fromTouch = false) => {
-    // Prevent mouse events if this is a touch device and we're not coming from touch
-    if (isTouchDeviceRef.current && !fromTouch) {
-      return
+  // Stable ref for deactivate function to avoid effect re-runs
+  const deactivateRef = useRef<() => void>(() => {})
+
+  // Handle touch outside to deactivate - for Android sticky hover fix
+  useEffect(() => {
+    if (!isTouchDevice) return
+
+    const handleTouchOutside = (e: TouchEvent) => {
+      if (isTouchActiveRef.current && cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        deactivateRef.current()
+      }
     }
 
-    setIsHovered(isEntering)
-    isInteractingRef.current = isEntering
+    const handleScroll = () => {
+      if (isTouchActiveRef.current) {
+        deactivateRef.current()
+      }
+    }
+
+    document.addEventListener('touchstart', handleTouchOutside, { passive: true })
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchOutside)
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isTouchDevice])
+
+  const activateHover = useCallback(() => {
+    if (isHovered) return
+
+    setIsHovered(true)
+    isTouchActiveRef.current = true
 
     const grayLayer = grayLayerRef.current
     const wineImg = wineImageRef.current
@@ -437,76 +467,104 @@ function WineCardFront({
       timelineRef.current.kill()
     }
 
-    // Use faster animations for touch devices
-    const isTouchDevice = isTouchDeviceRef.current
-
-    if (isEntering) {
-      // Play video IMMEDIATELY for instant feedback
-      if (video) {
-        video.currentTime = 0
-        video.play().catch(() => {})
-      }
-
-      const tl = gsap.timeline()
-      timelineRef.current = tl
-
-      tl.to({ progress: revealProgress }, {
-        progress: 100,
-        duration: isTouchDevice ? 0.35 : 0.8,
-        ease: isTouchDevice ? 'power2.out' : 'power3.out',
-        onUpdate: function() {
-          setRevealProgress(this.targets()[0].progress)
-        }
-      }, 0)
-
-      tl.to(grayLayer, {
-        opacity: 0,
-        duration: isTouchDevice ? 0.25 : 0.6,
-        ease: 'power2.out',
-      }, isTouchDevice ? 0.05 : 0.15)
-
-      if (wineImg) {
-        tl.to(wineImg, {
-          scale: 1.08,
-          y: -10,
-          duration: isTouchDevice ? 0.3 : 0.7,
-          ease: 'power2.out',
-        }, 0)
-      }
-    } else {
-      // Pause video
-      if (video) {
-        video.pause()
-      }
-
-      const tl = gsap.timeline()
-      timelineRef.current = tl
-
-      tl.to({ progress: revealProgress }, {
-        progress: 0,
-        duration: isTouchDevice ? 0.25 : 0.5,
-        ease: 'power2.in',
-        onUpdate: function() {
-          setRevealProgress(this.targets()[0].progress)
-        }
-      }, 0)
-
-      tl.to(grayLayer, {
-        opacity: 1,
-        duration: isTouchDevice ? 0.2 : 0.4,
-        ease: 'power2.in',
-      }, isTouchDevice ? 0.05 : 0.1)
-
-      if (wineImg) {
-        tl.to(wineImg, {
-          scale: 1,
-          y: 0,
-          duration: isTouchDevice ? 0.25 : 0.5,
-          ease: 'power2.inOut',
-        }, 0)
-      }
+    // Play video IMMEDIATELY for instant feedback
+    if (video) {
+      video.currentTime = 0
+      video.play().catch(() => {})
     }
-  }, [revealProgress])
+
+    const duration = isTouchDevice ? 0.3 : 0.8
+
+    const tl = gsap.timeline()
+    timelineRef.current = tl
+
+    tl.to({ progress: revealProgress }, {
+      progress: 100,
+      duration: duration,
+      ease: 'power2.out',
+      onUpdate: function() {
+        setRevealProgress(this.targets()[0].progress)
+      }
+    }, 0)
+
+    tl.to(grayLayer, {
+      opacity: 0,
+      duration: duration * 0.7,
+      ease: 'power2.out',
+    }, 0.05)
+
+    if (wineImg) {
+      tl.to(wineImg, {
+        scale: 1.08,
+        y: -10,
+        duration: duration * 0.9,
+        ease: 'power2.out',
+      }, 0)
+    }
+  }, [isHovered, revealProgress, isTouchDevice])
+
+  const deactivateHover = useCallback(() => {
+    if (!isHovered) return
+
+    setIsHovered(false)
+    isTouchActiveRef.current = false
+
+    // Clear any pending timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current)
+      touchTimeoutRef.current = null
+    }
+
+    const grayLayer = grayLayerRef.current
+    const wineImg = wineImageRef.current
+    const video = videoRef.current
+
+    if (!grayLayer) return
+
+    // Kill any existing timeline
+    if (timelineRef.current) {
+      timelineRef.current.kill()
+    }
+
+    // Pause video
+    if (video) {
+      video.pause()
+    }
+
+    const duration = isTouchDevice ? 0.2 : 0.5
+
+    const tl = gsap.timeline()
+    timelineRef.current = tl
+
+    tl.to({ progress: revealProgress }, {
+      progress: 0,
+      duration: duration,
+      ease: 'power2.in',
+      onUpdate: function() {
+        setRevealProgress(this.targets()[0].progress)
+      }
+    }, 0)
+
+    tl.to(grayLayer, {
+      opacity: 1,
+      duration: duration * 0.8,
+      ease: 'power2.in',
+    }, 0.05)
+
+    if (wineImg) {
+      tl.to(wineImg, {
+        scale: 1,
+        y: 0,
+        duration: duration,
+        ease: 'power2.inOut',
+      }, 0)
+    }
+  }, [isHovered, revealProgress, isTouchDevice])
+
+  // Keep deactivateRef in sync with the latest deactivateHover
+  useEffect(() => {
+    deactivateRef.current = deactivateHover
+  }, [deactivateHover])
 
   const generateClipPath = (progress: number) => {
     if (progress <= 0) return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)'
@@ -528,51 +586,54 @@ function WineCardFront({
 
   const formatPrice = (price: number) => `$${price.toLocaleString('es-CL')}`
 
-  // Touch handlers with proper event management
-  const handleTouchStart = useCallback(() => {
-    // Mark as touch device
-    isTouchDeviceRef.current = true
+  // Touch handler - toggle behavior with debounce to prevent double-firing
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const now = Date.now()
+
+    // Debounce rapid touches (prevent double-firing on some Android devices)
+    if (now - lastTouchTimeRef.current < 100) {
+      return
+    }
+    lastTouchTimeRef.current = now
 
     // Clear any existing timeout
     if (touchTimeoutRef.current) {
       clearTimeout(touchTimeoutRef.current)
     }
 
-    // Toggle hover effect
-    if (!isInteractingRef.current) {
-      handleHover(true, true)
-      // Auto-reset after 1.2 seconds for snappy UX
+    // Toggle behavior
+    if (!isTouchActiveRef.current) {
+      activateHover()
+      // Auto-deactivate after 2 seconds if user doesn't interact
       touchTimeoutRef.current = setTimeout(() => {
-        if (isInteractingRef.current) {
-          handleHover(false, true)
-        }
-      }, 1200)
+        deactivateHover()
+      }, 2000)
     } else {
-      handleHover(false, true)
+      deactivateHover()
     }
-  }, [handleHover])
+  }, [activateHover, deactivateHover])
 
+  // Mouse handlers - only for non-touch devices
   const handleMouseEnter = useCallback(() => {
-    // Only process if not a touch device
-    if (!isTouchDeviceRef.current) {
-      handleHover(true, false)
-    }
-  }, [handleHover])
+    // Ignore mouse events on touch devices (prevents sticky hover on Android)
+    if (isTouchDevice) return
+    activateHover()
+  }, [isTouchDevice, activateHover])
 
   const handleMouseLeave = useCallback(() => {
-    // Only process if not a touch device
-    if (!isTouchDeviceRef.current) {
-      handleHover(false, false)
-    }
-  }, [handleHover])
+    // Ignore mouse events on touch devices
+    if (isTouchDevice) return
+    deactivateHover()
+  }, [isTouchDevice, deactivateHover])
 
   return (
     <div
+      ref={cardRef}
       className="flex flex-col h-full wine-card-interactive"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
-      style={{ touchAction: 'manipulation' }}
+      style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] overflow-hidden bg-white" style={{ isolation: 'isolate' }}>
