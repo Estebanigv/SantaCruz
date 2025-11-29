@@ -35,19 +35,13 @@ export default function PageLoader() {
     >
       {/* Loader content */}
       <div className="flex flex-col items-center justify-center gap-12">
-        {/* CSS-only Santa Cruz cross spinner */}
-        <div className="relative w-56 h-56">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-32 h-32">
-              <svg viewBox="0 0 100 100" className="animate-spin-slow">
-                <path
-                  fill="rgba(212, 175, 55, 0.8)"
-                  d="M50,5 L55,45 L50,50 L45,45 Z M95,50 L55,55 L50,50 L55,45 Z M50,95 L45,55 L50,50 L55,55 Z M5,50 L45,45 L50,50 L45,55 Z"
-                />
-                <circle cx="50" cy="50" r="8" fill="rgba(212, 175, 55, 0.9)" />
-              </svg>
-            </div>
-          </div>
+        {/* Descorchador animado */}
+        <div className="relative w-64 h-64">
+          <img
+            src="/images/preloaderMenada.gif"
+            alt="Cargando..."
+            className="w-full h-full object-contain"
+          />
         </div>
 
         {/* Brand text */}
@@ -71,6 +65,21 @@ export default function PageLoader() {
       </div>
 
       <style jsx>{`
+        @keyframes pulse-logo {
+          0%, 100% {
+            opacity: 0.7;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+        }
+
+        .animate-pulse-logo {
+          animation: pulse-logo 2s ease-in-out infinite;
+        }
+
         @keyframes pulse-slow {
           0%, 100% {
             opacity: 0.4;
