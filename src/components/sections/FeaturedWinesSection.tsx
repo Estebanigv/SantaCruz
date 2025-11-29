@@ -414,9 +414,13 @@ function WineCardFront({
       timelineRef.current.kill()
     }
 
+    // Detect touch device for faster animations
+    const isTouchDevice = 'ontouchstart' in window
+
     if (isEntering) {
-      // Play video on hover if available
+      // Play video IMMEDIATELY for instant feedback
       if (video) {
+        video.currentTime = 0
         video.play().catch(() => {})
       }
 
@@ -425,8 +429,8 @@ function WineCardFront({
 
       tl.to({ progress: revealProgress }, {
         progress: 100,
-        duration: 0.8,
-        ease: 'power3.out',
+        duration: isTouchDevice ? 0.4 : 0.8,
+        ease: isTouchDevice ? 'power2.out' : 'power3.out',
         onUpdate: function() {
           setRevealProgress(this.targets()[0].progress)
         }
@@ -434,17 +438,17 @@ function WineCardFront({
 
       tl.to(grayLayer, {
         opacity: 0,
-        duration: 0.6,
+        duration: isTouchDevice ? 0.3 : 0.6,
         ease: 'power2.out',
-      }, 0.15)
+      }, isTouchDevice ? 0.05 : 0.15)
 
       if (wineImg) {
         tl.to(wineImg, {
           scale: 1.08,
           y: -10,
-          duration: 0.7,
+          duration: isTouchDevice ? 0.35 : 0.7,
           ease: 'power2.out',
-        }, 0.05)
+        }, 0)
       }
     } else {
       // Pause video on mouse leave
@@ -457,7 +461,7 @@ function WineCardFront({
 
       tl.to({ progress: revealProgress }, {
         progress: 0,
-        duration: 0.5,
+        duration: isTouchDevice ? 0.3 : 0.5,
         ease: 'power2.in',
         onUpdate: function() {
           setRevealProgress(this.targets()[0].progress)
@@ -466,15 +470,15 @@ function WineCardFront({
 
       tl.to(grayLayer, {
         opacity: 1,
-        duration: 0.4,
+        duration: isTouchDevice ? 0.25 : 0.4,
         ease: 'power2.in',
-      }, 0.1)
+      }, isTouchDevice ? 0.05 : 0.1)
 
       if (wineImg) {
         tl.to(wineImg, {
           scale: 1,
           y: 0,
-          duration: 0.5,
+          duration: isTouchDevice ? 0.3 : 0.5,
           ease: 'power2.inOut',
         }, 0)
       }
@@ -513,10 +517,10 @@ function WineCardFront({
     // Activate hover effect
     if (!isHovered) {
       handleHover(true)
-      // Auto-reset after 3 seconds
+      // Auto-reset after 1.5 seconds (faster for better UX)
       touchTimeoutRef.current = setTimeout(() => {
         handleHover(false)
-      }, 3000)
+      }, 1500)
     } else {
       handleHover(false)
     }
@@ -592,8 +596,9 @@ function WineCardFront({
               muted
               loop
               playsInline
-              preload="metadata"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+              preload="auto"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity ${isHovered ? 'opacity-100 duration-300' : 'opacity-0 duration-400'}`}
+              style={{ willChange: 'opacity' }}
             />
           )}
 
